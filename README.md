@@ -10,5 +10,8 @@
 
 ### React
 
-- Break down the UI into components first
-- Idetify state
+###### Break down the UI into components first
+
+###### Idetify state
+
+###### Controlled vs Uncontrolled, when to use which ?

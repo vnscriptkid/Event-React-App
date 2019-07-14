@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Segment, Item, Icon, List, Button } from 'semantic-ui-react';
 import EventListAttendee from './EventListAttendee';
-import { Event, Attendee } from '../EventDashboard/EventDashboard';
+import { Event } from '../EventDashboard/EventDashboard';
 
 interface Props {
   event: Event;
+  handleSelectEvent(event: Event): void;
+  handleDeleteEvent(eventId: string): void;
 }
 
 class EventListItem extends Component<Props> {
@@ -12,7 +14,7 @@ class EventListItem extends Component<Props> {
     const {
       hostPhotoURL,
       title,
-      hostedBy,
+      host,
       attendees,
       description
     } = this.props.event;
@@ -23,10 +25,8 @@ class EventListItem extends Component<Props> {
             <Item>
               <Item.Image size='tiny' circular src={hostPhotoURL} />
               <Item.Content>
-                <Item.Header as='a'>{title}</Item.Header>
-                <Item.Description>
-                  Hosted by <a>{hostedBy}</a>
-                </Item.Description>
+                <Item.Header>{title}</Item.Header>
+                <Item.Description>Hosted by {host}</Item.Description>
               </Item.Content>
             </Item>
           </Item.Group>
@@ -38,7 +38,6 @@ class EventListItem extends Component<Props> {
           </span>
         </Segment>
         <Segment secondary>
-          {/* <List horizontal>todo: attendees go here</List> */}
           <List horizontal>
             {attendees.map(attendee => (
               <EventListAttendee key={attendee.id} attendee={attendee} />
@@ -47,7 +46,19 @@ class EventListItem extends Component<Props> {
         </Segment>
         <Segment clearing>
           <span>{description}</span>
-          <Button as='a' color='teal' floated='right' content='view' />
+
+          <Button
+            onClick={() => this.props.handleSelectEvent(this.props.event)}
+            color='teal'
+            floated='right'
+            content='View'
+          />
+          <Button
+            onClick={() => this.props.handleDeleteEvent(this.props.event.id)}
+            color='red'
+            floated='right'
+            content='Delete'
+          />
         </Segment>
       </Segment.Group>
     );
