@@ -13,3 +13,9 @@ code {
 .main {
   margin-top: 5em;
 }
+
+.masthead {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
