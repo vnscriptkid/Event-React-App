@@ -4,7 +4,7 @@ import { NavBar } from '../../features/nav/NavBar/NavBar';
 import { Container } from 'semantic-ui-react';
 import { Route, Switch } from 'react-router';
 import { HomePage } from '../../features/home/HomePage';
-import EventDetailed from '../../features/event/EventDetailed/EventDetailedPage';
+import { EventDetailed } from '../../features/event/EventDetailed/EventDetailedPage';
 import { PeopleDashboard } from '../../features/user/PeopleDashboard/PeopleDashboard';
 import { UserDetailed } from '../../features/user/UserDetailed/UserDetailed';
 import { SettingsDashboard } from '../../features/user/Settings/SettingsDashboard';
@@ -22,7 +22,7 @@ const App: React.FC = () => {
             <Fragment>
               <NavBar />
               <Container className='main'>
-                <Route path='/events' component={EventDashboard} />
+                <Route path='/events' exact component={EventDashboard} />
                 <Route path='/events/:id' component={EventDetailed} />
                 <Route path='/people' component={PeopleDashboard} />
                 <Route path='/profile/:id' component={UserDetailed} />

@@ -2,89 +2,28 @@ import React, { Component } from 'react';
 import { Grid, Button } from 'semantic-ui-react';
 import EventListItem from '../EventList/EventListItem';
 import EventForm from '../EventForm.tsx/EventForm';
-
-export interface Attendee {
-  id: string;
-  name: string;
-  photoURL: string;
-}
-
-export interface Event {
-  id: string;
-  title: string;
-  date: string;
-  category: string;
-  description: string;
-  city: string;
-  venue: string;
-  host: string;
-  hostPhotoURL: string;
-  attendees: Attendee[];
-}
+import { Event } from '../eventContants';
+import { connect } from 'react-redux';
+import { StoreState } from '../../../app/reducers';
+import { deleteEvent, createEvent, updateEvent } from '../eventActions';
 
 interface State {
   isFormOpen: boolean;
-  events: Event[];
   selectedEvent: Event | null;
 }
 
-const eventsFromDashboard: Event[] = [
-  {
-    id: '1',
-    title: 'Trip to Tower of London',
-    date: '2019-07-14', //yyyy-MM-dd
-    category: 'Culture',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam optio quasi, est dolorem quo in quisquam sapiente, praesentium laboriosam voluptatum illo corrupti suscipit recusandae totam, voluptatem neque voluptate aut eum.',
-    city: 'London, UK',
-    venue: "Tower of London, St Katharine's & Wapping, London",
-    host: 'Bob',
-    hostPhotoURL: 'https://randomuser.me/api/portraits/women/20.jpg',
-    attendees: [
-      {
-        id: 'a',
-        name: 'Bob',
-        photoURL: 'https://randomuser.me/api/portraits/women/19.jpg'
-      },
-      {
-        id: 'b',
-        name: 'Alcie',
-        photoURL: 'https://randomuser.me/api/portraits/women/20.jpg'
-      }
-    ]
-  },
-  {
-    id: '2',
-    title: 'Wandering in Vietnam',
-    date: '2019-08-20',
-    category: 'Nature',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam optio quasi, est dolorem quo in quisquam sapiente, praesentium laboriosam voluptatum illo corrupti suscipit recusandae totam, voluptatem neque voluptate aut eum.',
-    city: 'Hanoi, Vietnam',
-    venue: 'Sword Lake',
-    host: 'Lisa',
-    hostPhotoURL: 'https://randomuser.me/api/portraits/women/22.jpg',
-    attendees: [
-      {
-        id: 'c',
-        name: 'John',
-        photoURL: 'https://randomuser.me/api/portraits/women/19.jpg'
-      },
-      {
-        id: 'd',
-        name: 'Moses',
-        photoURL: 'https://randomuser.me/api/portraits/men/15.jpg'
-      }
-    ]
-  }
-];
+interface Props {
+  events: Event[];
+  deleteEvent: typeof deleteEvent;
+  createEvent: typeof createEvent;
+  updateEvent: typeof updateEvent;
+}
 
-export class EventDashboard extends Component<any, State> {
+export class _EventDashboard extends Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {
       isFormOpen: false,
-      events: eventsFromDashboard,
       selectedEvent: null
     };
   }
@@ -100,21 +39,13 @@ export class EventDashboard extends Component<any, State> {
     newEvent.id = Math.floor(Math.random() * 10000).toString();
     newEvent.category = 'xyz';
     newEvent.hostPhotoURL = 'https://randomuser.me/api/portraits/men/2.jpg';
-    // newEvent.host = 'me';
-    this.setState(prevState => ({
-      events: [...prevState.events, newEvent]
-    }));
+    this.props.createEvent(newEvent);
   };
 
   handleUpdateEvent = (updatedEvent: any): void => {
+    this.props.updateEvent(updatedEvent.id, updatedEvent);
     this.setState(prevState => {
       return {
-        events: prevState.events.map(event => {
-          if (event.id === updatedEvent.id) {
-            return { ...event, ...updatedEvent };
-          }
-          return event;
-        }),
         selectedEvent: null,
         isFormOpen: false
       };
@@ -122,16 +53,7 @@ export class EventDashboard extends Component<any, State> {
   };
 
   handleDeleteEvent = (eventId: string): void => {
-    this.setState(prevState => {
-      return {
-        events: prevState.events.filter(event => {
-          if (event.id === eventId) return false;
-          return true;
-        }),
-        selectedEvent: null,
-        isFormOpen: false
-      };
-    });
+    this.props.deleteEvent(eventId);
   };
 
   handleSelectEvent = (event: Event): void => {
@@ -146,7 +68,7 @@ export class EventDashboard extends Component<any, State> {
     return (
       <Grid>
         <Grid.Column width={10}>
-          {this.state.events.map(event => (
+          {this.props.events.map(event => (
             <EventListItem
               key={event.id}
               event={event}
@@ -177,3 +99,12 @@ export class EventDashboard extends Component<any, State> {
     );
   }
 }
+
+const mapStateToProps = (state: StoreState) => ({
+  events: state.events
+});
+
+export const EventDashboard = connect(
+  mapStateToProps,
+  { deleteEvent, createEvent, updateEvent }
+)(_EventDashboard);

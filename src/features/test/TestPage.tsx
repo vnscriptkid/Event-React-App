@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { ReduxStore } from '../../app/reducers';
+import { StoreState } from '../../app/reducers';
 import { incrementCounter, decrementCounter } from './testActions';
 
 export interface TestPageProps {
@@ -23,7 +23,7 @@ const _TestPage: React.SFC<TestPageProps> = props => {
   );
 };
 
-const mapStateToProps = (state: ReduxStore) => {
+const mapStateToProps = (state: StoreState) => {
   return {
     counter: state.counter
   };

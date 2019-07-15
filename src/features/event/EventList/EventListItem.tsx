@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Segment, Item, Icon, List, Button } from 'semantic-ui-react';
 import EventListAttendee from './EventListAttendee';
-import { Event } from '../EventDashboard/EventDashboard';
+import { Event } from '../eventContants';
+import { Link } from 'react-router-dom';
 
 interface Props {
   event: Event;
@@ -16,7 +17,8 @@ class EventListItem extends Component<Props> {
       title,
       host,
       attendees,
-      description
+      description,
+      id
     } = this.props.event;
     return (
       <Segment.Group>
@@ -48,7 +50,9 @@ class EventListItem extends Component<Props> {
           <span>{description}</span>
 
           <Button
-            onClick={() => this.props.handleSelectEvent(this.props.event)}
+            // onClick={() => this.props.handleSelectEvent(this.props.event)}
+            as={Link}
+            to={`/events/${id}`}
             color='teal'
             floated='right'
             content='View'

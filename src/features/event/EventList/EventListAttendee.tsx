@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { List, Image } from 'semantic-ui-react';
-import { Attendee } from '../EventDashboard/EventDashboard';
+import { Attendee } from '../eventContants';
 
 interface Props {
   attendee: Attendee;
