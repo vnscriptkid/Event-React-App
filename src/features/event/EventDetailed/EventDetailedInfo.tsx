@@ -1,9 +1,14 @@
 import * as React from 'react';
 import { Segment, Grid, Icon, Button } from 'semantic-ui-react';
 
-export interface EventDetailedInfoProps {}
+export interface EventDetailedInfoProps {
+  description: string;
+  venue: string;
+  date: string;
+}
 
-const EventDetailedInfo: React.SFC<EventDetailedInfoProps> = () => {
+const EventDetailedInfo: React.SFC<EventDetailedInfoProps> = props => {
+  const { description, venue, date } = props;
   return (
     <Segment.Group>
       <Segment>
@@ -12,7 +17,7 @@ const EventDetailedInfo: React.SFC<EventDetailedInfoProps> = () => {
             <Icon size='large' color='teal' name='info' />
           </Grid.Column>
           <Grid.Column width={15}>
-            <p>Description of Event</p>
+            <p>{description}</p>
           </Grid.Column>
         </Grid>
       </Segment>
@@ -22,7 +27,7 @@ const EventDetailedInfo: React.SFC<EventDetailedInfoProps> = () => {
             <Icon size='large' color='teal' name='calendar' />
           </Grid.Column>
           <Grid.Column width={15}>
-            <p>Event Date</p>
+            <p>{date}</p>
           </Grid.Column>
         </Grid>
       </Segment>
@@ -32,7 +37,7 @@ const EventDetailedInfo: React.SFC<EventDetailedInfoProps> = () => {
             <Icon size='large' color='teal' name='map pin' />
           </Grid.Column>
           <Grid.Column width={15}>
-            <span>Event Venue</span>
+            <span>{venue}</span>
             <Button color='teal' floated='right'>
               Show Map
             </Button>

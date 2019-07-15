@@ -1,7 +1,11 @@
 import * as React from 'react';
 import { Segment, Image, Button, Item, Header } from 'semantic-ui-react';
 
-export interface EventDetailedHeaderProps {}
+export interface EventDetailedHeaderProps {
+  title: string;
+  date: string;
+  host: string;
+}
 
 const eventImageStyle = {
   filter: 'brightness(30%)'
@@ -14,7 +18,8 @@ const eventImageTextStyle = {
   color: 'white'
 };
 
-const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = () => {
+const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = props => {
+  const { title, date, host } = props;
   return (
     <Segment.Group>
       <Segment basic attached='top' style={{ padding: 0, overflow: 'hidden' }}>
@@ -29,12 +34,12 @@ const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = () => {
               <Item.Content>
                 <Header
                   size='huge'
-                  content='Event Title'
+                  content={title}
                   style={{ color: 'white' }}
                 />
-                <p>Event Date</p>
+                <p>{date}</p>
                 <p>
-                  Hosted by <strong>@Thanh Nguyen</strong>
+                  Hosted by <strong>{host}</strong>
                 </p>
               </Item.Content>
             </Item>

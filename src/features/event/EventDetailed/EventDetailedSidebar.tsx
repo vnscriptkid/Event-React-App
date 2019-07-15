@@ -1,9 +1,13 @@
 import * as React from 'react';
 import { Segment, Header, Item, Label } from 'semantic-ui-react';
+import { Attendee } from '../eventContants';
 
-export interface EventDetailedSidebarProps {}
+export interface EventDetailedSidebarProps {
+  attendees: Attendee[];
+}
 
-const EventDetailedSidebar: React.SFC<EventDetailedSidebarProps> = () => {
+const EventDetailedSidebar: React.SFC<EventDetailedSidebarProps> = props => {
+  const { attendees } = props;
   return (
     <Segment.Group>
       <Segment color='teal' inverted>
@@ -11,31 +15,23 @@ const EventDetailedSidebar: React.SFC<EventDetailedSidebarProps> = () => {
       </Segment>
       <Segment>
         <Item.Group divided>
-          <Item style={{ position: 'relative' }}>
-            <Label
-              ribbon='right'
-              color='orange'
-              style={{ position: 'absolute' }}
-            >
-              Host
-            </Label>
-            <Item.Image
-              size='tiny'
-              src='https://randomuser.me/api/portraits/men/30.jpg'
-            />
-            <Item.Content verticalAlign='middle'>
-              <Item.Header as='h3'>Thanh Nguyen</Item.Header>
-            </Item.Content>
-          </Item>
-          <Item style={{ position: 'relative' }}>
-            <Item.Image
-              size='tiny'
-              src='https://randomuser.me/api/portraits/men/20.jpg'
-            />
-            <Item.Content verticalAlign='middle'>
-              <Item.Header as='h3'>Dung Nguyen</Item.Header>
-            </Item.Content>
-          </Item>
+          {attendees.map((attendee, index) => (
+            <Item key={attendee.id} style={{ position: 'relative' }}>
+              {index === 0 && (
+                <Label
+                  ribbon='right'
+                  color='orange'
+                  style={{ position: 'absolute' }}
+                >
+                  Host
+                </Label>
+              )}
+              <Item.Image size='tiny' src={attendee.photoURL} />
+              <Item.Content verticalAlign='middle'>
+                <Item.Header as='h3'>{attendee.name}</Item.Header>
+              </Item.Content>
+            </Item>
+          ))}
         </Item.Group>
       </Segment>
     </Segment.Group>
