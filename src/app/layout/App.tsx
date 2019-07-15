@@ -9,6 +9,7 @@ import { PeopleDashboard } from '../../features/user/PeopleDashboard/PeopleDashb
 import { UserDetailed } from '../../features/user/UserDetailed/UserDetailed';
 import { SettingsDashboard } from '../../features/user/Settings/SettingsDashboard';
 import EventForm from '../../features/event/EventForm.tsx/EventForm';
+import { TestPage } from '../../features/test/TestPage';
 
 const App: React.FC = () => {
   return (
@@ -27,6 +28,7 @@ const App: React.FC = () => {
                 <Route path='/profile/:id' component={UserDetailed} />
                 <Route path='/createEvent' component={EventForm} />
                 <Route path='/settings' component={SettingsDashboard} />
+                <Route path='/test' component={TestPage} />
               </Container>
             </Fragment>
           )}

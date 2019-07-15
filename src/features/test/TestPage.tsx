@@ -1,0 +1,37 @@
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { ReduxStore } from '../../app/reducers';
+import { incrementCounter, decrementCounter } from './testActions';
+
+export interface TestPageProps {
+  counter: number;
+  incrementCounter: typeof incrementCounter;
+  decrementCounter: typeof decrementCounter;
+}
+
+const _TestPage: React.SFC<TestPageProps> = props => {
+  return (
+    <div>
+      Test: {props.counter}
+      <div>
+        <button onClick={() => props.incrementCounter()}>Increment</button>
+      </div>
+      <div>
+        <button onClick={() => props.decrementCounter()}>Decrement</button>
+      </div>
+    </div>
+  );
+};
+
+const mapStateToProps = (state: ReduxStore) => {
+  return {
+    counter: state.counter
+  };
+};
+
+const TestPage = connect(
+  mapStateToProps,
+  { incrementCounter, decrementCounter }
+)(_TestPage);
+
+export { TestPage };
