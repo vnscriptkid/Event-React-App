@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import { Menu, Button, Container } from 'semantic-ui-react';
-import { NavLink, withRouter, RouteComponentProps } from 'react-router-dom';
+import {
+  NavLink,
+  withRouter,
+  RouteComponentProps,
+  Link
+} from 'react-router-dom';
 import { SignedInMenu } from '../Menus/SignedInMenu';
 import { SignedOutMenu } from '../Menus/SignedOutMenu';
 
@@ -43,7 +48,7 @@ export class _NavBar extends Component<Props, State> {
           <Menu.Item as={NavLink} to='/test' name='Test' />
           <Menu.Item>
             <Button
-              as={NavLink}
+              as={Link}
               to='/createEvent'
               floated='right'
               positive

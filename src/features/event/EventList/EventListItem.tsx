@@ -6,8 +6,6 @@ import { Link } from 'react-router-dom';
 
 interface Props {
   event: Event;
-  handleSelectEvent(event: Event): void;
-  handleDeleteEvent(eventId: string): void;
 }
 
 class EventListItem extends Component<Props> {
@@ -57,12 +55,7 @@ class EventListItem extends Component<Props> {
             floated='right'
             content='View'
           />
-          <Button
-            onClick={() => this.props.handleDeleteEvent(this.props.event.id)}
-            color='red'
-            floated='right'
-            content='Delete'
-          />
+          <Button color='red' floated='right' content='Delete' />
         </Segment>
       </Segment.Group>
     );

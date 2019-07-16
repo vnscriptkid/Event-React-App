@@ -1,11 +1,23 @@
 import React, { Component, ChangeEvent } from 'react';
 import { Segment, Form, Button } from 'semantic-ui-react';
+import { RouteComponentProps } from 'react-router';
+import { connect } from 'react-redux';
+import { StoreState } from '../../../app/reducers';
+import { createEvent, updateEvent } from '../eventActions';
+import { Event } from '../eventContants';
 
-interface Props {
-  handleFormToggle(): void;
-  handleAddEvent(event: State): void;
-  selectedEvent: State | null;
-  handleUpdateEvent(event: State): void;
+interface Props extends RouteComponentProps {
+  event: {
+    title: string;
+    date: string;
+    city: string;
+    venue: string;
+    host: string;
+    id: string;
+  };
+  edit: boolean;
+  createEvent: typeof createEvent;
+  updateEvent: typeof updateEvent;
 }
 
 interface State {
@@ -14,7 +26,6 @@ interface State {
   city: string;
   venue: string;
   host: string;
-  id: string;
 }
 
 enum InputNames {
@@ -25,32 +36,20 @@ enum InputNames {
   host = 'host'
 }
 
-class EventForm extends Component<Props, State> {
+class _EventForm extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {
-      title: '',
-      date: '',
-      city: '',
-      venue: '',
-      host: '',
-      id: ''
-    };
-  }
-
-  componentDidMount() {
-    if (this.props.selectedEvent) {
-      const { title, date, city, venue, host, id } = this.props.selectedEvent;
-      this.setState({ title, date, city, venue, host, id });
-    }
+    const { title, date, city, venue, host } = this.props.event;
+    this.state = { title, date, city, venue, host };
   }
 
   handleFormSubmit = () => {
-    if (!this.props.selectedEvent) {
-      this.props.handleAddEvent(this.state);
+    if (this.props.edit) {
+      this.props.updateEvent(this.props.event.id, this.state as Event);
     } else {
-      this.props.handleUpdateEvent(this.state);
+      this.props.createEvent(this.state as Event);
     }
+    this.props.history.push('/events');
   };
 
   handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -118,7 +117,7 @@ class EventForm extends Component<Props, State> {
           <Button positive type='submit'>
             Submit
           </Button>
-          <Button type='button' onClick={this.props.handleFormToggle}>
+          <Button type='button' onClick={() => this.props.history.goBack()}>
             Cancel
           </Button>
         </Form>
@@ -127,4 +126,29 @@ class EventForm extends Component<Props, State> {
   }
 }
 
-export default EventForm;
+const mapStateToProps = (
+  state: StoreState,
+  ownProps: RouteComponentProps<{ id: string }>
+) => {
+  const defaultEvent = {
+    title: '',
+    date: '',
+    city: '',
+    venue: '',
+    host: '',
+    id: ''
+  };
+  let edit = false;
+  const id = ownProps.match.params.id;
+  const foundEvent = state.events.find(event => event.id === id);
+  if (id && foundEvent) {
+    const { title, date, city, venue, host, id } = foundEvent;
+    return { event: { title, date, city, venue, host, id }, edit: true };
+  }
+  return { event: defaultEvent, edit };
+};
+
+export const EventForm = connect(
+  mapStateToProps,
+  { createEvent, updateEvent }
+)(_EventForm);

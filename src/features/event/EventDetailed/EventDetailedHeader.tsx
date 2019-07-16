@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { Segment, Image, Button, Item, Header } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 
 export interface EventDetailedHeaderProps {
   title: string;
   date: string;
   host: string;
+  id: string;
 }
 
 const eventImageStyle = {
@@ -19,7 +21,7 @@ const eventImageTextStyle = {
 };
 
 const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = props => {
-  const { title, date, host } = props;
+  const { title, date, host, id } = props;
   return (
     <Segment.Group>
       <Segment basic attached='top' style={{ padding: 0, overflow: 'hidden' }}>
@@ -49,7 +51,7 @@ const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = props => {
       <Segment attached='bottom'>
         <Button>Cancel My Place</Button>
         <Button color='blue'>Join This Event</Button>
-        <Button color='orange' floated='right'>
+        <Button as={Link} to={`/manage/${id}`} color='orange' floated='right'>
           Manage Event
         </Button>
       </Segment>

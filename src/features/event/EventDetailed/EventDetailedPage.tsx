@@ -14,11 +14,11 @@ export interface EventDetailedProps {
 }
 
 const _EventDetailed: React.SFC<EventDetailedProps> = props => {
-  const { title, date, host, description, venue, attendees } = props.event;
+  const { title, date, host, description, venue, attendees, id } = props.event;
   return (
     <Grid>
       <Grid.Column width={10}>
-        <EventDetailedHeader title={title} date={date} host={host} />
+        <EventDetailedHeader id={id} title={title} date={date} host={host} />
         <EventDetailedInfo
           description={description}
           venue={venue}

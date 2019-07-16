@@ -7,11 +7,14 @@ import 'semantic-ui-css/semantic.min.css';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from './app/store/configStore';
+import { ScrollTop } from './app/common/utils/scrollTop';
 
 const Root = () => (
   <Provider store={configureStore()}>
     <BrowserRouter>
-      <App />
+      <ScrollTop>
+        <App />
+      </ScrollTop>
     </BrowserRouter>
   </Provider>
 );

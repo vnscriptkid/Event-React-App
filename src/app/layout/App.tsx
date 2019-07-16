@@ -8,7 +8,7 @@ import { EventDetailed } from '../../features/event/EventDetailed/EventDetailedP
 import { PeopleDashboard } from '../../features/user/PeopleDashboard/PeopleDashboard';
 import { UserDetailed } from '../../features/user/UserDetailed/UserDetailed';
 import { SettingsDashboard } from '../../features/user/Settings/SettingsDashboard';
-import EventForm from '../../features/event/EventForm.tsx/EventForm';
+import { EventForm } from '../../features/event/EventForm.tsx/EventForm';
 import { TestPage } from '../../features/test/TestPage';
 
 const App: React.FC = () => {
@@ -26,7 +26,12 @@ const App: React.FC = () => {
                 <Route path='/events/:id' component={EventDetailed} />
                 <Route path='/people' component={PeopleDashboard} />
                 <Route path='/profile/:id' component={UserDetailed} />
-                <Route path='/createEvent' component={EventForm} />
+                <Route
+                  path={['/createEvent', '/manage/:id']}
+                  render={props => (
+                    <EventForm key={props.location.key} {...props} />
+                  )}
+                />
                 <Route path='/settings' component={SettingsDashboard} />
                 <Route path='/test' component={TestPage} />
               </Container>
