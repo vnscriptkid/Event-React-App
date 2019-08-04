@@ -8,6 +8,10 @@
 
 - Flow or Typescript for React?
 
+### Packages:
+
+- How to see info of a package: npm ls date-fns
+
 ### React
 
 ###### Break down the UI into components first
@@ -40,3 +44,19 @@
   > Case 2: Not inside Route, need withRouter
 - Internal Routing: Redirect and Route inside Switch
 - Change pages from client, window does not scroll to top
+
+### Redux Form
+
+- Order of hoc is important ( esp. when initialValues is used): connect()(
+  reduxForm()(Component)
+  )
+
+- <Field component={X}>
+  X get props: { input, meta }
+
+* input { value, onChange ... }
+* meta { error, touched, dirty ... }
+
+- revalidate
+- moment vs date-fns: what are the differences?
+- react-datepicker v2: use native Date and date-fns
