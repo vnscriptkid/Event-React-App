@@ -1,3 +1,4 @@
+/*global google*/
 import React, { Component } from 'react';
 import { Segment, Form, Button, Grid, Header } from 'semantic-ui-react';
 import { RouteComponentProps } from 'react-router';
@@ -18,10 +19,17 @@ import { TextArea } from '../../../app/common/form/TextArea';
 import { SelectInput } from '../../../app/common/form/SelectInput';
 import DateInput from '../../../app/common/form/DateInput';
 import 'react-datepicker/dist/react-datepicker.css';
+import { AutocompleteInput } from '../../../app/common/form/AutocompleteInput';
+import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 interface Props extends RouteComponentProps {
   createEvent: typeof createEvent;
   updateEvent: typeof updateEvent;
+}
+
+interface State {
+  cityLatlng: google.maps.LatLngLiteral | null;
+  venueLatLng: google.maps.LatLngLiteral | null;
 }
 
 enum InputNames {
@@ -60,9 +68,18 @@ const validate = combineValidators({
   date: isRequired('date')
 });
 
-class _EventForm extends Component<Props & InjectedFormProps> {
+type AllProps = Props & InjectedFormProps;
+
+class _EventForm extends Component<AllProps, State> {
+  constructor(props: AllProps) {
+    super(props);
+    this.state = {
+      venueLatLng: null,
+      cityLatlng: null
+    };
+  }
+
   onFormSubmit: any = (values: Event) => {
-    debugger;
     values.date = values.date.toString();
     if (values.id) {
       this.props.updateEvent(values.id, values);
@@ -83,6 +100,27 @@ class _EventForm extends Component<Props & InjectedFormProps> {
     }
   };
 
+  handleCitySelect = (city: string): void => {
+    this.props.change(InputNames.city, city);
+    this.getGeocodeByAddress(city, (latLng: google.maps.LatLngLiteral) =>
+      this.setState({ cityLatlng: latLng })
+    );
+  };
+
+  handleVenueSelect = (venue: string): void => {
+    this.props.change(InputNames.venue, venue);
+    this.getGeocodeByAddress(venue, (latLng: google.maps.LatLngLiteral) =>
+      this.setState({ venueLatLng: latLng })
+    );
+  };
+
+  getGeocodeByAddress = (address: string, cb: Function): void => {
+    geocodeByAddress(address)
+      .then(results => results[0])
+      .then(geo => getLatLng(geo))
+      .then(latLng => cb(latLng));
+  };
+
   render() {
     const {
       history,
@@ -91,6 +129,17 @@ class _EventForm extends Component<Props & InjectedFormProps> {
       submitting,
       pristine
     } = this.props;
+
+    let venueOptions = {};
+    if (this.state.cityLatlng) {
+      const { lat, lng } = this.state.cityLatlng;
+      venueOptions = {
+        location: new google.maps.LatLng(lat, lng),
+        radius: 10000,
+        types: ['establishment']
+      };
+    }
+
     return (
       <Grid>
         <Grid.Column width={10}>
@@ -121,16 +170,20 @@ class _EventForm extends Component<Props & InjectedFormProps> {
               />
               <Header sub color='teal' content='Event Location Details' />
               <Field
-                component={TextInput}
+                component={AutocompleteInput}
                 name={InputNames.city}
-                type='text'
+                options={{ types: ['(cities)'] }}
                 placeholder='Event City'
+                handleSelect={this.handleCitySelect}
               />
               <Field
-                component={TextInput}
+                component={AutocompleteInput}
                 name={InputNames.venue}
                 type='text'
                 placeholder='Event Venue'
+                options={venueOptions}
+                disabled={!this.state.cityLatlng}
+                handleSelect={this.handleVenueSelect}
               />
               <Field
                 component={DateInput}

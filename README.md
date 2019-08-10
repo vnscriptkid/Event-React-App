@@ -60,3 +60,14 @@
 - revalidate
 - moment vs date-fns: what are the differences?
 - react-datepicker v2: use native Date and date-fns
+
+### Google Map API
+
+- API
+
+* Maps Javascript API
+* Places API: Autocomplete
+* Geocoding API: geocode <-> address
+
+- React Libs:
+  React Places Autocomplete

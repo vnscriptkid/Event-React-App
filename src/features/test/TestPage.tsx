@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { StoreState } from '../../app/reducers';
 import { incrementCounter, decrementCounter } from './testActions';
+import { LocationSearchInput } from './Autocomplete';
 
 export interface TestPageProps {
   counter: number;
@@ -12,6 +13,7 @@ export interface TestPageProps {
 const _TestPage: React.SFC<TestPageProps> = props => {
   return (
     <div>
+      <LocationSearchInput />
       Test: {props.counter}
       <div>
         <button onClick={() => props.incrementCounter()}>Increment</button>
