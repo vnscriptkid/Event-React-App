@@ -10,12 +10,10 @@ import { UserDetailed } from '../../features/user/UserDetailed/UserDetailed';
 import { SettingsDashboard } from '../../features/user/Settings/SettingsDashboard';
 import { EventForm } from '../../features/event/EventForm.tsx/EventForm';
 import { TestPage } from '../../features/test/TestPage';
-import { ModalManager } from '../../features/modals/ModalManager';
 
 const App: React.FC = () => {
   return (
     <Fragment>
-      <ModalManager />
       <Switch>
         <Route path='/' exact component={HomePage} />
         <Route

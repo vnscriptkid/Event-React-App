@@ -7,6 +7,7 @@ import {
   errorAsyncAction
 } from '../async/asyncActions';
 import { fetchEventsFromApi } from '../../app/data/eventsApi';
+import { toastr } from 'react-redux-toastr';
 
 // Fetch Event Async
 export const fetchEvents = (): ThunkAction<
@@ -58,13 +59,24 @@ export interface UpdateEventAction {
   };
 }
 
-export const updateEvent = (id: string, data: Event): UpdateEventAction => ({
+export const _updateEvent = (id: string, data: Event): UpdateEventAction => ({
   type: EventTypes.UpdateEvent,
   payload: {
     id,
     data
   }
 });
+
+export const updateEvent = (id: string, data: Event): any => {
+  return async (dispatch: any) => {
+    try {
+      dispatch(_updateEvent(id, data));
+      toastr.success('Success', 'Event has been updated');
+    } catch (e) {
+      toastr.error('Oooops!', 'Something went wrong');
+    }
+  };
+};
 
 // Delete Event
 export interface DeleteEventAction {

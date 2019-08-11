@@ -16,32 +16,6 @@ interface Props {
 }
 
 export class _EventDashboard extends Component<Props, {}> {
-  // handleAddEvent = (newEvent: any): void => {
-  //   newEvent.attendees = [];
-  //   newEvent.id = Math.floor(Math.random() * 10000).toString();
-  //   newEvent.category = 'xyz';
-  //   newEvent.hostPhotoURL = 'https://randomuser.me/api/portraits/men/2.jpg';
-  //   this.props.createEvent(newEvent);
-  // };
-
-  // handleUpdateEvent = (updatedEvent: any): void => {
-  //   this.props.updateEvent(updatedEvent.id, updatedEvent);
-  //   this.setState(prevState => {
-  //     return {
-  //       selectedEvent: null,
-  //       isFormOpen: false
-  //     };
-  //   });
-  // };
-
-  // handleDeleteEvent = (eventId: string): void => {
-  //   this.props.deleteEvent(eventId);
-  // };
-
-  // handleSelectEvent = (event: Event): void => {
-  //   this.setState({ selectedEvent: event, isFormOpen: true });
-  // };
-
   render() {
     if (this.props.loading) return <Loading />;
     return (

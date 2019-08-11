@@ -9,12 +9,21 @@ import { Provider } from 'react-redux';
 import { configureStore } from './app/store/configStore';
 import { ScrollTop } from './app/common/utils/scrollTop';
 import { fetchEvents } from './features/event/eventActions';
+import ReduxToastr from 'react-redux-toastr';
+import { ModalManager } from './features/modals/ModalManager';
+import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
 
 const store = configureStore();
 store.dispatch(fetchEvents() as any);
 
 const Root = () => (
   <Provider store={store}>
+    <ModalManager />
+    <ReduxToastr
+      position='bottom-right'
+      transitionIn='fadeIn'
+      transitionOut='fadeOut'
+    />
     <BrowserRouter>
       <ScrollTop>
         <App />
