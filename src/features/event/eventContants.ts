@@ -1,7 +1,9 @@
 export enum EventTypes {
   CreateEvent,
   DeleteEvent,
-  UpdateEvent
+  UpdateEvent,
+  FetchEvents,
+  SaveEvents
 }
 
 export interface Attendee {

@@ -8,9 +8,13 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from './app/store/configStore';
 import { ScrollTop } from './app/common/utils/scrollTop';
+import { fetchEvents } from './features/event/eventActions';
+
+const store = configureStore();
+store.dispatch(fetchEvents() as any);
 
 const Root = () => (
-  <Provider store={configureStore()}>
+  <Provider store={store}>
     <BrowserRouter>
       <ScrollTop>
         <App />

@@ -48,7 +48,6 @@ class EventListItem extends Component<Props> {
           <span>{description}</span>
 
           <Button
-            // onClick={() => this.props.handleSelectEvent(this.props.event)}
             as={Link}
             to={`/events/${id}`}
             color='teal'
