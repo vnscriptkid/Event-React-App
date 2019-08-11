@@ -8,6 +8,7 @@
 
 - Flow or Typescript for React?
 - Add: /_global google_/ first line of the file to bypass warning in case of calling google
+- With Redux Thunk: see features/test/TestPage.tsx -> incrementAsync
 
 ### Packages:
 
@@ -94,3 +95,5 @@
   and react accordingly (render appropriate Modal)
 
 * Event here is a payload of a action, contains modalName as well as modalProps
+
+### Redux Thunk

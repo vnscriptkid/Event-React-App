@@ -5,6 +5,7 @@ import { Event } from '../../features/event/eventContants';
 import { reducer as formReducer } from 'redux-form';
 import { modalReducer } from '../../features/modals/modalReducer';
 import { authReducer } from '../../features/auth/authReducer';
+import { asyncReducer } from '../../features/async/asyncReducer';
 
 export interface StoreState {
   counter: number;
@@ -12,6 +13,7 @@ export interface StoreState {
   form: any;
   modals: any;
   auth: any;
+  async: any;
 }
 
 export const rootReducer = combineReducers<StoreState>({
@@ -19,5 +21,6 @@ export const rootReducer = combineReducers<StoreState>({
   events: eventReducer,
   form: formReducer,
   modals: modalReducer,
-  auth: authReducer
+  auth: authReducer,
+  async: asyncReducer
 });

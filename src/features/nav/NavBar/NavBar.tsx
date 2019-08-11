@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Menu, Button, Container } from 'semantic-ui-react';
 import {
   NavLink,
@@ -25,6 +25,7 @@ export class _NavBar extends Component<Props> {
   };
 
   render() {
+    const { isAuthenticated, currentUser } = this.props;
     return (
       <Menu inverted fixed='top'>
         <Container>
@@ -32,21 +33,25 @@ export class _NavBar extends Component<Props> {
             Re-vents
           </Menu.Item>
           <Menu.Item as={NavLink} to='/events' name='Events' />
-          <Menu.Item as={NavLink} to='/people' name='People' />
-          <Menu.Item as={NavLink} to='/test' name='Test' />
-          <Menu.Item>
-            <Button
-              as={Link}
-              to='/createEvent'
-              floated='right'
-              positive
-              inverted
-              content='Create Event'
-            />
-          </Menu.Item>
-          {this.props.isAuthenticated ? (
+          {isAuthenticated && (
+            <Fragment>
+              <Menu.Item as={NavLink} to='/people' name='People' />
+              <Menu.Item as={NavLink} to='/test' name='Test' />
+              <Menu.Item>
+                <Button
+                  as={Link}
+                  to='/createEvent'
+                  floated='right'
+                  positive
+                  inverted
+                  content='Create Event'
+                />
+              </Menu.Item>
+            </Fragment>
+          )}
+          {isAuthenticated ? (
             <SignedInMenu
-              currentUser={this.props.currentUser}
+              currentUser={currentUser}
               handleLogout={this.handleSignout}
             />
           ) : (
