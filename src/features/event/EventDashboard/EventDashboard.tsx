@@ -5,9 +5,11 @@ import { Event } from '../eventContants';
 import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
 import { deleteEvent, createEvent, updateEvent } from '../eventActions';
+import { Loading } from '../../../app/layout/Loading';
 
 interface Props {
   events: Event[];
+  loading: boolean;
   deleteEvent: typeof deleteEvent;
   createEvent: typeof createEvent;
   updateEvent: typeof updateEvent;
@@ -41,6 +43,7 @@ export class _EventDashboard extends Component<Props, {}> {
   // };
 
   render() {
+    if (this.props.loading) return <Loading />;
     return (
       <Grid>
         <Grid.Column width={10}>
@@ -57,7 +60,8 @@ export class _EventDashboard extends Component<Props, {}> {
 }
 
 const mapStateToProps = (state: StoreState) => ({
-  events: state.events
+  events: state.events,
+  loading: state.async.loading
 });
 
 export const EventDashboard = connect(
