@@ -8,32 +8,20 @@ import {
 } from 'react-router-dom';
 import { SignedInMenu } from '../Menus/SignedInMenu';
 import { SignedOutMenu } from '../Menus/SignedOutMenu';
+import { connect } from 'react-redux';
+import { StoreState } from '../../../app/reducers';
+import { signoutUser } from '../../auth/authActions';
 
-interface State {
+interface Props extends RouteComponentProps {
   isAuthenticated: boolean;
+  currentUser: null | string;
+  signoutUser: typeof signoutUser;
 }
 
-interface Props extends RouteComponentProps {}
-
-export class _NavBar extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      isAuthenticated: false
-    };
-  }
-
-  toggleAuth = (): void => {
-    this.setState(
-      prevState => ({
-        isAuthenticated: !prevState.isAuthenticated
-      }),
-      () => {
-        if (!this.state.isAuthenticated) {
-          this.props.history.push('/');
-        }
-      }
-    );
+export class _NavBar extends Component<Props> {
+  handleSignout = (): void => {
+    this.props.signoutUser();
+    this.props.history.push('/');
   };
 
   render() {
@@ -56,10 +44,13 @@ export class _NavBar extends Component<Props, State> {
               content='Create Event'
             />
           </Menu.Item>
-          {this.state.isAuthenticated ? (
-            <SignedInMenu handleLogout={this.toggleAuth} />
+          {this.props.isAuthenticated ? (
+            <SignedInMenu
+              currentUser={this.props.currentUser}
+              handleLogout={this.handleSignout}
+            />
           ) : (
-            <SignedOutMenu handleLogIn={this.toggleAuth} />
+            <SignedOutMenu handleLogIn={() => {}} />
           )}
         </Container>
       </Menu>
@@ -67,4 +58,12 @@ export class _NavBar extends Component<Props, State> {
   }
 }
 
-export const NavBar = withRouter(_NavBar);
+const mapState = (state: StoreState) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  currentUser: state.auth.currentUser
+});
+
+export const NavBar = connect(
+  mapState,
+  { signoutUser: signoutUser }
+)(withRouter(_NavBar));

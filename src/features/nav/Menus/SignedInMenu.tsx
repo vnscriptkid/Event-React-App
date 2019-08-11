@@ -4,9 +4,13 @@ import { NavLink } from 'react-router-dom';
 
 export interface SignedInMenuProps {
   handleLogout(): void;
+  currentUser: string | null;
 }
 
-const SignedInMenu: React.SFC<SignedInMenuProps> = props => {
+const SignedInMenu: React.SFC<SignedInMenuProps> = ({
+  currentUser,
+  handleLogout
+}) => {
   return (
     <Menu.Item position='right'>
       <Image
@@ -14,7 +18,7 @@ const SignedInMenu: React.SFC<SignedInMenuProps> = props => {
         spaced='right'
         src='https://randomuser.me/api/portraits/men/62.jpg'
       />
-      <Dropdown pointing='top left' text='@vnscriptkid'>
+      <Dropdown pointing='top left' text={currentUser || ''}>
         <Dropdown.Menu>
           <Dropdown.Item text='Create Event' icon='plus' />
           <Dropdown.Item text='My Events' icon='calendar' />
@@ -26,11 +30,7 @@ const SignedInMenu: React.SFC<SignedInMenuProps> = props => {
             text='Settings'
             icon='settings'
           />
-          <Dropdown.Item
-            text='Sign Out'
-            icon='power'
-            onClick={props.handleLogout}
-          />
+          <Dropdown.Item text='Sign Out' icon='power' onClick={handleLogout} />
         </Dropdown.Menu>
       </Dropdown>
     </Menu.Item>

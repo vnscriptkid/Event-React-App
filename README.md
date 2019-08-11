@@ -7,6 +7,7 @@
 ### Typescript
 
 - Flow or Typescript for React?
+- Add: /_global google_/ first line of the file to bypass warning in case of calling google
 
 ### Packages:
 
@@ -61,13 +62,35 @@
 - moment vs date-fns: what are the differences?
 - react-datepicker v2: use native Date and date-fns
 
+- props.change('name', 'Thanh')
+
 ### Google Map API
 
 - API
 
 * Maps Javascript API
 * Places API: Autocomplete
+
+- options can be provided to get more specific results
+
 * Geocoding API: geocode <-> address
 
 - React Libs:
   React Places Autocomplete
+
+### React Hooks come to handy
+
+- Use cases
+
+* button to toggle a section: [isSomethingOpen, toggleSomething] = useState(false)
+
+### Modals
+
+- Login and Register Form using Modal but not separate Page
+
+* why ? Keep user at the current page after login (without redirecting back)
+* When ? A website that allows users to browse anonymously on some pages
+* How ? ModalManager lives at the top of the React Tree , listen for events from reducer
+  and react accordingly (render appropriate Modal)
+
+* Event here is a payload of a action, contains modalName as well as modalProps

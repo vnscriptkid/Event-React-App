@@ -1,5 +1,6 @@
 import { EventTypes, Event } from './eventContants';
 
+// Create Event
 export interface CreateEventAction {
   type: EventTypes.CreateEvent;
   payload: Event;
@@ -10,6 +11,7 @@ export const createEvent = (event: Event): CreateEventAction => ({
   payload: event
 });
 
+// Update Event
 export interface UpdateEventAction {
   type: EventTypes.UpdateEvent;
   payload: {
@@ -26,6 +28,7 @@ export const updateEvent = (id: string, data: Event): UpdateEventAction => ({
   }
 });
 
+// Delete Event
 export interface DeleteEventAction {
   type: EventTypes.DeleteEvent;
   payload: string;
