@@ -3,10 +3,7 @@ import { Segment, Item, Icon, List, Button } from 'semantic-ui-react';
 import EventListAttendee from './EventListAttendee';
 import { Event } from '../eventContants';
 import { Link } from 'react-router-dom';
-import {
-  convertToDateString,
-  convertToDateTime
-} from '../../../app/common/utils/datetime';
+import { convertTsToDateTime } from '../../../app/common/utils/datetime';
 
 interface Props {
   event: Event;
@@ -17,7 +14,7 @@ class EventListItem extends Component<Props> {
     const {
       hostPhotoURL,
       title,
-      host,
+      hostedBy,
       attendees,
       description,
       id,
@@ -31,21 +28,22 @@ class EventListItem extends Component<Props> {
               <Item.Image size='tiny' circular src={hostPhotoURL} />
               <Item.Content>
                 <Item.Header>{title}</Item.Header>
-                <Item.Description>Hosted by {host}</Item.Description>
+                <Item.Description>Hosted by {hostedBy}</Item.Description>
               </Item.Content>
             </Item>
           </Item.Group>
         </Segment>
         <Segment>
           <span>
-            <Icon name='clock' /> {convertToDateTime(date)} |
+            <Icon name='clock' /> {convertTsToDateTime(date as any)} |
             <Icon name='marker' /> time
           </span>
         </Segment>
         <Segment secondary>
           <List horizontal>
-            {attendees.map(attendee => (
-              <EventListAttendee key={attendee.id} attendee={attendee} />
+            {Object.values(attendees).map((attendee, index) => (
+              // TODO: `key` should be id, not index
+              <EventListAttendee key={index} attendee={attendee} />
             ))}
           </List>
         </Segment>

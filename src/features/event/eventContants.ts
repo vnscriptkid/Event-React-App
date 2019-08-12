@@ -21,7 +21,7 @@ export interface Event {
   city: string;
   venue: string;
   venueLatLng: google.maps.LatLngLiteral;
-  host: string;
+  hostedBy: string;
   hostPhotoURL: string;
   attendees: Attendee[];
 }

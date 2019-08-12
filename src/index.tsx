@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './app/layout/App';
@@ -12,23 +12,37 @@ import { fetchEvents } from './features/event/eventActions';
 import ReduxToastr from 'react-redux-toastr';
 import { ModalManager } from './features/modals/ModalManager';
 import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
+import { firebase, rrfConfig } from './app/config/firebase';
+import { createFirestoreInstance } from 'redux-firestore';
 
 const store = configureStore();
 store.dispatch(fetchEvents() as any);
 
+const rrfProps = {
+  firebase,
+  config: rrfConfig,
+  dispatch: store.dispatch,
+  createFirestoreInstance
+};
+
 const Root = () => (
   <Provider store={store}>
-    <ModalManager />
-    <ReduxToastr
-      position='bottom-right'
-      transitionIn='fadeIn'
-      transitionOut='fadeOut'
-    />
-    <BrowserRouter>
-      <ScrollTop>
-        <App />
-      </ScrollTop>
-    </BrowserRouter>
+    <ReactReduxFirebaseProvider {...rrfProps}>
+      <Fragment>
+        <ModalManager />
+        <ReduxToastr
+          position='bottom-right'
+          transitionIn='fadeIn'
+          transitionOut='fadeOut'
+        />
+        <BrowserRouter>
+          <ScrollTop>
+            <App />
+          </ScrollTop>
+        </BrowserRouter>
+      </Fragment>
+    </ReactReduxFirebaseProvider>
   </Provider>
 );
 

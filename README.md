@@ -102,5 +102,14 @@
 
 ### DateFns
 
+- Version matters when formating
+- react-datepicker (> v2.0) internally uses Datefns
 - parse(new Date, 'yyyy')
 - parseISO() -> convert a string to Date object
+
+### Firestore/Firebase
+
+- https://console.firebase.google.com/u/0/?pli=1
+- attendees.map is not a function -> Object.values()
+- firestore has no array
+- timestamp (Timestamp type) -> convert to native Date object by calling `ts.toDate()`

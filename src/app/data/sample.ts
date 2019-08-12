@@ -14,7 +14,7 @@ export const sampleData: Event[] = [
       lat: 21.0245,
       lng: 105.84117
     },
-    host: 'Bob',
+    hostedBy: 'Bob',
     hostPhotoURL: 'https://randomuser.me/api/portraits/women/20.jpg',
     attendees: [
       {
@@ -42,7 +42,7 @@ export const sampleData: Event[] = [
       lat: 51.3,
       lng: 0.4
     },
-    host: 'Lisa',
+    hostedBy: 'Lisa',
     hostPhotoURL: 'https://randomuser.me/api/portraits/women/22.jpg',
     attendees: [
       {

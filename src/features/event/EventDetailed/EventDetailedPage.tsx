@@ -17,7 +17,7 @@ const _EventDetailed: React.SFC<EventDetailedProps> = props => {
   const {
     title = '',
     date = '',
-    host = '',
+    hostedBy = '',
     description = '',
     venue = '',
     attendees = [],
@@ -27,7 +27,12 @@ const _EventDetailed: React.SFC<EventDetailedProps> = props => {
   return (
     <Grid>
       <Grid.Column width={10}>
-        <EventDetailedHeader id={id} title={title} date={date} host={host} />
+        <EventDetailedHeader
+          id={id}
+          title={title}
+          date={date}
+          host={hostedBy}
+        />
         <EventDetailedInfo
           description={description}
           venue={venue}

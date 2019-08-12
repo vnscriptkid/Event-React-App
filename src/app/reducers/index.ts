@@ -7,6 +7,8 @@ import { reducer as toastrReducer } from 'react-redux-toastr';
 import { modalReducer } from '../../features/modals/modalReducer';
 import { authReducer } from '../../features/auth/authReducer';
 import { asyncReducer } from '../../features/async/asyncReducer';
+import { firebaseReducer } from 'react-redux-firebase';
+import { firestoreReducer } from 'redux-firestore';
 
 export interface StoreState {
   counter: number;
@@ -16,6 +18,8 @@ export interface StoreState {
   auth: any;
   async: any;
   toastr: any;
+  firebase: any;
+  firestore: any;
 }
 
 export const rootReducer = combineReducers<StoreState>({
@@ -25,5 +29,7 @@ export const rootReducer = combineReducers<StoreState>({
   modals: modalReducer,
   auth: authReducer,
   async: asyncReducer,
-  toastr: toastrReducer
+  toastr: toastrReducer,
+  firebase: firebaseReducer,
+  firestore: firestoreReducer as any
 });
