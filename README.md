@@ -16,6 +16,8 @@
 
 ### React
 
+- Handle loading Page that get data from parent (safe loading)
+
 ###### Break down the UI into components first
 
 ###### Idetify state

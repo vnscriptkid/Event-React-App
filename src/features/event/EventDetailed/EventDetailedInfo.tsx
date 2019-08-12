@@ -6,7 +6,7 @@ export interface EventDetailedInfoProps {
   description: string;
   venue: string;
   date: string;
-  venueLatLng: google.maps.LatLngLiteral;
+  venueLatLng: google.maps.LatLngLiteral | undefined;
 }
 
 const EventDetailedInfo: React.SFC<EventDetailedInfoProps> = props => {

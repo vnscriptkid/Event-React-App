@@ -4,7 +4,7 @@ export const sampleData: Event[] = [
   {
     id: '1',
     title: 'Trip to Tower of London',
-    date: '2019-07-14', //yyyy-MM-dd
+    date: '2019-07-14T18:00:00', //yyyy-MM-dd
     category: 'Culture',
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam optio quasi, est dolorem quo in quisquam sapiente, praesentium laboriosam voluptatum illo corrupti suscipit recusandae totam, voluptatem neque voluptate aut eum.',

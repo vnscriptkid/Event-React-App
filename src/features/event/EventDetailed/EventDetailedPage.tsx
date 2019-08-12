@@ -15,15 +15,15 @@ export interface EventDetailedProps {
 
 const _EventDetailed: React.SFC<EventDetailedProps> = props => {
   const {
-    title,
-    date,
-    host,
-    description,
-    venue,
-    attendees,
-    id,
-    venueLatLng
-  } = props.event;
+    title = '',
+    date = '',
+    host = '',
+    description = '',
+    venue = '',
+    attendees = [],
+    id = '',
+    venueLatLng = undefined
+  } = props.event || {};
   return (
     <Grid>
       <Grid.Column width={10}>

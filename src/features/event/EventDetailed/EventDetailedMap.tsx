@@ -4,7 +4,7 @@ import { GOOGLE_API_KEY } from '../../../config';
 import { Icon } from 'semantic-ui-react';
 
 export interface EventDetailedMapProps {
-  latLng: google.maps.LatLngLiteral;
+  latLng: google.maps.LatLngLiteral | undefined;
 }
 
 const Marker = (props: any) => <Icon name='marker' size='big' color='red' />;
@@ -12,7 +12,6 @@ const Marker = (props: any) => <Icon name='marker' size='big' color='red' />;
 const defaultLatLng = { lat: 21.0245, lng: 105.84117 };
 
 const EventDetailedMap: React.SFC<EventDetailedMapProps> = props => {
-  const { lat, lng } = props.latLng;
   return (
     <div style={{ height: '200px', width: '100%' }}>
       <GoogleMapReact
@@ -22,7 +21,9 @@ const EventDetailedMap: React.SFC<EventDetailedMapProps> = props => {
         defaultZoom={1}
         zoom={10}
       >
-        <Marker lat={lat} lng={lng} />
+        {props.latLng && (
+          <Marker lat={props.latLng.lat} lng={props.latLng.lng} />
+        )}
       </GoogleMapReact>
     </div>
   );

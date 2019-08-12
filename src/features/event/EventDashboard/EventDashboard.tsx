@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
 import { deleteEvent, createEvent, updateEvent } from '../eventActions';
 import { Loading } from '../../../app/layout/Loading';
+import { EventActivity } from '../EventActivity/EventActivity';
 
 interface Props {
   events: Event[];
@@ -26,7 +27,7 @@ export class _EventDashboard extends Component<Props, {}> {
           ))}
         </Grid.Column>
         <Grid.Column width={6}>
-          <h2>Activity Navbar</h2>
+          <EventActivity />
         </Grid.Column>
       </Grid>
     );
