@@ -99,3 +99,8 @@
 * Event here is a payload of a action, contains modalName as well as modalProps
 
 ### Redux Thunk
+
+### DateFns
+
+- parse(new Date, 'yyyy')
+- parseISO() -> convert a string to Date object

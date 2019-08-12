@@ -21,6 +21,7 @@ import DateInput from '../../../app/common/form/DateInput';
 import 'react-datepicker/dist/react-datepicker.css';
 import { AutocompleteInput } from '../../../app/common/form/AutocompleteInput';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
+import { format } from 'date-fns';
 
 interface Props extends RouteComponentProps {
   createEvent: typeof createEvent;
@@ -80,7 +81,10 @@ class _EventForm extends Component<AllProps, State> {
   }
 
   onFormSubmit: any = (values: Event) => {
-    values.date = values.date.toString();
+    values.date =
+      format(values.date as any, 'yyyy-MM-dd') +
+      'T' +
+      format(values.date as any, 'HH:mm:ss');
     if (values.id) {
       this.props.updateEvent(values.id, values);
       this.props.history.push(`/events/${values.id}`);

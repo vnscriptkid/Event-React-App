@@ -3,6 +3,10 @@ import { Segment, Item, Icon, List, Button } from 'semantic-ui-react';
 import EventListAttendee from './EventListAttendee';
 import { Event } from '../eventContants';
 import { Link } from 'react-router-dom';
+import {
+  convertToDateString,
+  convertToDateTime
+} from '../../../app/common/utils/datetime';
 
 interface Props {
   event: Event;
@@ -16,7 +20,8 @@ class EventListItem extends Component<Props> {
       host,
       attendees,
       description,
-      id
+      id,
+      date
     } = this.props.event;
     return (
       <Segment.Group>
@@ -33,7 +38,7 @@ class EventListItem extends Component<Props> {
         </Segment>
         <Segment>
           <span>
-            <Icon name='clock' /> date |
+            <Icon name='clock' /> {convertToDateTime(date)} |
             <Icon name='marker' /> time
           </span>
         </Segment>

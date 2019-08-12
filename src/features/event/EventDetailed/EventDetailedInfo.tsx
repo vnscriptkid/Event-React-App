@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Segment, Grid, Icon, Button } from 'semantic-ui-react';
 import { EventDetailedMap } from './EventDetailedMap';
+import { convertToDateTime } from '../../../app/common/utils/datetime';
 
 export interface EventDetailedInfoProps {
   description: string;
@@ -30,7 +31,7 @@ const EventDetailedInfo: React.SFC<EventDetailedInfoProps> = props => {
             <Icon size='large' color='teal' name='calendar' />
           </Grid.Column>
           <Grid.Column width={15}>
-            <p>{date}</p>
+            <p>{date && convertToDateTime(date)}</p>
           </Grid.Column>
         </Grid>
       </Segment>

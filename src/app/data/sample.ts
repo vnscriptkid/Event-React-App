@@ -32,7 +32,7 @@ export const sampleData: Event[] = [
   {
     id: '2',
     title: 'Wandering in Vietnam',
-    date: '2019-08-20',
+    date: '2019-08-20T23:30:00',
     category: 'Nature',
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam optio quasi, est dolorem quo in quisquam sapiente, praesentium laboriosam voluptatum illo corrupti suscipit recusandae totam, voluptatem neque voluptate aut eum.',

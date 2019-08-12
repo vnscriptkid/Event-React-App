@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Segment, Image, Button, Item, Header } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import { convertToDateString } from '../../../app/common/utils/datetime';
 
 export interface EventDetailedHeaderProps {
   title: string;
@@ -39,7 +40,7 @@ const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = props => {
                   content={title}
                   style={{ color: 'white' }}
                 />
-                <p>{date}</p>
+                <p>{date && convertToDateString(date)}</p>
                 <p>
                   Hosted by <strong>{host}</strong>
                 </p>
