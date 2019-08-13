@@ -3,6 +3,8 @@
 ### Semantic UI
 
 - Grid has 16 cols, unlike Bootstrap with 12 cols
+- Form
+  > autoComplete="off"
 
 ### Typescript
 
@@ -61,7 +63,9 @@
 * input { value, onChange ... }
 * meta { error, touched, dirty ... }
 
-- revalidate
+- Form Validation:
+  > revalidate
+  > Field validation <Field validate={[passwordMustMatch]}> : in case need value of other field for example
 - moment vs date-fns: what are the differences?
 - react-datepicker v2: use native Date and date-fns
 

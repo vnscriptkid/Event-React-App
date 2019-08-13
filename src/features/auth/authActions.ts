@@ -2,6 +2,11 @@ import { AuthActionType } from './authConstants';
 import { firebase } from '../../app/config/firebase';
 import { closeModal } from '../modals/modalActions';
 import { SubmissionError } from 'redux-form';
+import { ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
+import { UserCredential } from '@firebase/auth-types';
+import { StoreState } from '../../app/reducers';
+import { getFirestore } from 'redux-firestore';
 
 // Login User
 export interface LoginUser {
@@ -45,6 +50,40 @@ export interface SignoutUser {
 export const signoutUser = (): SignoutUser => ({
   type: AuthActionType.SignoutUser
 });
+
+// register user
+export const registerUser = (user: {
+  email: string;
+  password: string;
+  displayName: string;
+}) => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
+    const { email, password, displayName } = user;
+    const { firestore } = firebase;
+    try {
+      const createdUser: UserCredential = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
+      console.log(createdUser);
+      if (createdUser.user) {
+        await createdUser.user.updateProfile({ displayName });
+        const newUser = {
+          displayName,
+          createdAt: firestore.FieldValue.serverTimestamp()
+        };
+        await firestore()
+          .collection(`users`)
+          .doc(`${createdUser.user.uid}`)
+          .set({
+            ...newUser
+          });
+        dispatch(closeModal());
+      }
+    } catch (e) {
+      throw new SubmissionError({ _error: e.message });
+    }
+  };
+};
 
 // Auth Action
 export type AuthAction = LoginUser | SignoutUser;
