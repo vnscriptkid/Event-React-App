@@ -11,8 +11,9 @@ import { SignedOutMenu } from '../Menus/SignedOutMenu';
 import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
 import { signoutUser } from '../../auth/authActions';
+import { withFirebase, WithFirebaseProps } from 'react-redux-firebase';
 
-interface Props extends RouteComponentProps {
+interface Props extends RouteComponentProps, WithFirebaseProps<void> {
   isAuthenticated: boolean;
   currentUser: null | string;
   signoutUser: typeof signoutUser;
@@ -20,7 +21,8 @@ interface Props extends RouteComponentProps {
 
 export class _NavBar extends Component<Props> {
   handleSignout = (): void => {
-    this.props.signoutUser();
+    // this.props.signoutUser();
+    this.props.firebase.logout(); // this is synchronous
     this.props.history.push('/');
   };
 
@@ -64,11 +66,21 @@ export class _NavBar extends Component<Props> {
 }
 
 const mapState = (state: StoreState) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-  currentUser: state.auth.currentUser
+  isAuthenticated: !!state.firebase.auth.uid,
+  currentUser: state.firebase.auth.email,
+  auth: state.firebase.auth
 });
 
-export const NavBar = connect(
-  mapState,
-  { signoutUser: signoutUser }
-)(withRouter(_NavBar));
+const NavBarWithRouter = withRouter(
+  connect(
+    mapState,
+    { signoutUser: signoutUser }
+  )(_NavBar)
+);
+
+export const NavBar = withFirebase<any>(NavBarWithRouter);
+
+// export const NavBar = connect(
+//   mapState,
+//   { signoutUser: signoutUser }
+// )(withFirebase(withRouter(_NavBar)));

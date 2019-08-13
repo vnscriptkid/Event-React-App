@@ -119,3 +119,9 @@
 ### Firebase Authentication
 
 - User object has some props that can not be added more (workaround: Firestore)
+- Use IndexedDB to store authentication information
+
+### React-Redux-Firebase
+
+- hoc: withFirebase (better than using firebase object)
+  > hoc intergrate methods and data into Component props
