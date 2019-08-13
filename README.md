@@ -66,6 +66,8 @@
 - react-datepicker v2: use native Date and date-fns
 
 - props.change('name', 'Thanh')
+- SubmissionError
+  > Can be throw in thunk
 
 ### Google Map API
 
@@ -107,9 +109,13 @@
 - parse(new Date, 'yyyy')
 - parseISO() -> convert a string to Date object
 
-### Firestore/Firebase
+### Firestore
 
 - https://console.firebase.google.com/u/0/?pli=1
 - attendees.map is not a function -> Object.values()
 - firestore has no array
 - timestamp (Timestamp type) -> convert to native Date object by calling `ts.toDate()`
+
+### Firebase Authentication
+
+- User object has some props that can not be added more (workaround: Firestore)

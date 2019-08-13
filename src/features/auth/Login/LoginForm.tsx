@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Segment, Button } from 'semantic-ui-react';
+import { Form, Segment, Button, Label } from 'semantic-ui-react';
 import { Field, reduxForm, InjectedFormProps } from 'redux-form';
 import { TextInput } from '../../../app/common/form/TextInput';
 import {
@@ -36,18 +36,22 @@ const validate = combineValidators({
   )()
 });
 
+interface FormData {
+  email: string;
+  password: string;
+}
+
 const _LoginForm: React.SFC<LoginFormProps> = ({
   handleSubmit,
   login,
-  closeModal
+  error
 }) => {
-  const onLoginSubmit = (input: any) => {
-    login(input.email);
-    closeModal();
-  };
+  // const onLoginSubmit = (input: any) => {
+  //   login({ email: input.email, password: input.password });
+  // };
 
   return (
-    <Form autoComplete='off' onSubmit={handleSubmit(onLoginSubmit)}>
+    <Form autoComplete='off' onSubmit={handleSubmit(login as any)}>
       <Segment>
         <Field
           name={FieldNames.email}
@@ -61,6 +65,7 @@ const _LoginForm: React.SFC<LoginFormProps> = ({
           type='password'
           placeholder='Password'
         />
+        {!!error && <Label basic color='red' content={error} />}
         <Button fluid size='large' color='teal'>
           Login
         </Button>
