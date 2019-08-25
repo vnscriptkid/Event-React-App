@@ -10,13 +10,14 @@ import {
 } from 'revalidate';
 import { isValidEmail } from '../../../app/common/validations';
 import { connect } from 'react-redux';
-import { loginUser } from '../authActions';
+import { loginUser, socialLogin } from '../authActions';
 import { closeModal } from '../../modals/modalActions';
 import { SocialLogin } from '../SocialLogin/SocialLogin';
 
 export interface LoginFormProps extends InjectedFormProps {
   login: typeof loginUser;
   closeModal: typeof closeModal;
+  socialLogin: typeof socialLogin;
 }
 
 enum FieldNames {
@@ -45,7 +46,8 @@ interface FormData {
 const _LoginForm: React.SFC<LoginFormProps> = ({
   handleSubmit,
   login,
-  error
+  error,
+  socialLogin
 }) => {
   // const onLoginSubmit = (input: any) => {
   //   login({ email: input.email, password: input.password });
@@ -71,7 +73,7 @@ const _LoginForm: React.SFC<LoginFormProps> = ({
           Login
         </Button>
         <Divider horizontal>OR</Divider>
-        <SocialLogin />
+        <SocialLogin login={socialLogin} />
       </Segment>
     </Form>
   );
@@ -79,7 +81,7 @@ const _LoginForm: React.SFC<LoginFormProps> = ({
 
 const LoginForm = connect(
   null,
-  { login: loginUser, closeModal }
+  { login: loginUser, closeModal, socialLogin }
 )(reduxForm({ form: 'loginForm', validate })(_LoginForm));
 
 export { LoginForm };

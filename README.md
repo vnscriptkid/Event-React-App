@@ -130,3 +130,10 @@
 - hoc: withFirebase (better than using firebase object)
   > hoc intergrate methods and data into Component props
 - save userProfile into firestore (we see instant changes, whereas in case of firebase, we need to reload)
+
+### Social Login
+
+- Facebook
+  > Turn on Facebook Authentication method in Firebase App
+  > Firebase App -> callback URL -> Facebook App
+  > Facebook App -> App ID, App Secret -> Firebase App

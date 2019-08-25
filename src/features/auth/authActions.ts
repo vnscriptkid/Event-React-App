@@ -1,4 +1,4 @@
-import { AuthActionType } from './authConstants';
+import { AuthActionType, AuthProviderOption } from './authConstants';
 import { firebase } from '../../app/config/firebase';
 import { closeModal } from '../modals/modalActions';
 import { SubmissionError } from 'redux-form';
@@ -32,10 +32,30 @@ export const loginUser = (creds: { email: string; password: string }): any => {
       await firebase.auth().signInWithEmailAndPassword(email, password);
       dispatch(closeModal());
     } catch (e) {
-      // console.log(e);
       throw new SubmissionError({
         _error: e.message
       });
+    }
+  };
+};
+
+const _authProviderMap = (
+  providerName: AuthProviderOption
+): firebase.auth.AuthProvider => {
+  if (providerName === AuthProviderOption.Facebook) {
+    return new firebase.auth.FacebookAuthProvider();
+  }
+  return new firebase.auth.GoogleAuthProvider();
+};
+
+export const socialLogin = (providerName: AuthProviderOption): any => {
+  return async (dispatch: any) => {
+    dispatch(closeModal());
+    try {
+      const provider = _authProviderMap(providerName);
+      await firebase.auth().signInWithPopup(provider);
+    } catch (e) {
+      console.log(e);
     }
   };
 };
@@ -62,7 +82,6 @@ export const registerUser = (user: {
       const createdUser: UserCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(email, password);
-      console.log(createdUser);
       if (createdUser.user) {
         await createdUser.user.updateProfile({ displayName });
         const newUser = {

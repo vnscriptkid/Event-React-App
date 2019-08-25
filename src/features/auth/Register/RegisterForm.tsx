@@ -10,11 +10,12 @@ import {
 } from 'revalidate';
 import { isValidEmail } from '../../../app/common/validations';
 import { connect } from 'react-redux';
-import { registerUser } from '../authActions';
+import { registerUser, socialLogin } from '../authActions';
 import { SocialLogin } from '../SocialLogin/SocialLogin';
 
 export interface RegisterFormProps extends InjectedFormProps {
   registerUser: typeof registerUser;
+  socialLogin: typeof socialLogin;
 }
 
 enum FieldNames {
@@ -80,7 +81,7 @@ const _RegisterForm: React.SFC<RegisterFormProps> = ({
           Register
         </Button>
         <Divider horizontal>OR</Divider>
-        <SocialLogin />
+        <SocialLogin login={socialLogin} />
       </Segment>
     </Form>
   );
@@ -88,5 +89,5 @@ const _RegisterForm: React.SFC<RegisterFormProps> = ({
 
 export const RegisterForm = connect(
   null,
-  { registerUser }
+  { registerUser, socialLogin }
 )(reduxForm({ form: 'registerForm', validate })(_RegisterForm));
