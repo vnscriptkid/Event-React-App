@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Segment, Button, Label } from 'semantic-ui-react';
+import { Form, Segment, Button, Label, Divider } from 'semantic-ui-react';
 import { Field, reduxForm, InjectedFormProps } from 'redux-form';
 import { TextInput } from '../../../app/common/form/TextInput';
 import {
@@ -11,6 +11,7 @@ import {
 import { isValidEmail } from '../../../app/common/validations';
 import { connect } from 'react-redux';
 import { registerUser } from '../authActions';
+import { SocialLogin } from '../SocialLogin/SocialLogin';
 
 export interface RegisterFormProps extends InjectedFormProps {
   registerUser: typeof registerUser;
@@ -78,6 +79,8 @@ const _RegisterForm: React.SFC<RegisterFormProps> = ({
         <Button fluid size='large' color='teal'>
           Register
         </Button>
+        <Divider horizontal>OR</Divider>
+        <SocialLogin />
       </Segment>
     </Form>
   );

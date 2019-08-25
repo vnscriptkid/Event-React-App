@@ -5,8 +5,6 @@ import { SubmissionError } from 'redux-form';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { UserCredential } from '@firebase/auth-types';
-import { StoreState } from '../../app/reducers';
-import { getFirestore } from 'redux-firestore';
 
 // Login User
 export interface LoginUser {

@@ -129,3 +129,4 @@
 
 - hoc: withFirebase (better than using firebase object)
   > hoc intergrate methods and data into Component props
+- save userProfile into firestore (we see instant changes, whereas in case of firebase, we need to reload)
