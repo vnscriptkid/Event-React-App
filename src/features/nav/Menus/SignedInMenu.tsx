@@ -1,24 +1,28 @@
 import React from 'react';
 import { Menu, Image, Dropdown } from 'semantic-ui-react';
 import { NavLink } from 'react-router-dom';
+import { FirebaseProfile } from '../../auth/authConstants';
+import defaultProfileImg from '../../../assets/default-user-image.png';
 
 export interface SignedInMenuProps {
   handleLogout(): void;
   currentUser: string | null;
+  profile: FirebaseProfile;
 }
 
 const SignedInMenu: React.SFC<SignedInMenuProps> = ({
   currentUser,
-  handleLogout
+  handleLogout,
+  profile
 }) => {
   return (
     <Menu.Item position='right'>
       <Image
         avatar
         spaced='right'
-        src='https://randomuser.me/api/portraits/men/62.jpg'
+        src={profile.photoURL || defaultProfileImg}
       />
-      <Dropdown pointing='top left' text={currentUser || ''}>
+      <Dropdown pointing='top left' text={profile.displayName}>
         <Dropdown.Menu>
           <Dropdown.Item text='Create Event' icon='plus' />
           <Dropdown.Item text='My Events' icon='calendar' />

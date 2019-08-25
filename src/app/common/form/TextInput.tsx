@@ -10,15 +10,16 @@ const TextInput: React.SFC<TextInputProps> = props => {
     input,
     type,
     placeholder,
+    width,
     ...rest
   } = props;
   return (
-    <Form.Field error={touched && !!error}>
+    <Form.Field error={touched && !!error} width={width as any}>
       <input
         {...input}
         type={type}
         placeholder={placeholder}
-        {...rest as any}
+        {...(rest as any)}
       />
       {touched && error && (
         <Label basic color='red'>

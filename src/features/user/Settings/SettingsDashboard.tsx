@@ -6,10 +6,16 @@ import { BasicPage } from './BasicPage';
 import { AboutPage } from './AboutPage';
 import { AccountPage } from './AccountPage';
 import { PhotosPage } from './PhotosPage';
+import { connect } from 'react-redux';
+import * as actions from '../../auth/authActions';
 
-export interface SettingsDashboardProps {}
+export interface SettingsDashboardProps {
+  updatePassword: typeof actions.updatePassword;
+}
 
-const SettingsDashboard: React.SFC<SettingsDashboardProps> = () => {
+const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
+  updatePassword
+}) => {
   return (
     <Grid>
       <Grid.Column width={12}>
@@ -18,7 +24,10 @@ const SettingsDashboard: React.SFC<SettingsDashboardProps> = () => {
           <Route path='/settings/basics' component={BasicPage} />
           <Route path='/settings/about' component={AboutPage} />
           <Route path='/settings/photos' component={PhotosPage} />
-          <Route path='/settings/account' component={AccountPage} />
+          <Route
+            path='/settings/account'
+            render={() => <AccountPage updatePassword={updatePassword} />}
+          />
         </Switch>
       </Grid.Column>
       <Grid.Column width={4}>
@@ -27,5 +36,10 @@ const SettingsDashboard: React.SFC<SettingsDashboardProps> = () => {
     </Grid>
   );
 };
+
+const SettingsDashboard = connect(
+  null,
+  actions as any
+)(_SettingsDashboard);
 
 export { SettingsDashboard };

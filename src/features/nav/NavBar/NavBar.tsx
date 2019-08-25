@@ -12,11 +12,13 @@ import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
 import { signoutUser } from '../../auth/authActions';
 import { withFirebase, WithFirebaseProps } from 'react-redux-firebase';
+import { FirebaseProfile } from '../../auth/authConstants';
 
 interface Props extends RouteComponentProps, WithFirebaseProps<void> {
   isAuthenticated: boolean;
   currentUser: null | string;
   signoutUser: typeof signoutUser;
+  profile: FirebaseProfile;
 }
 
 export class _NavBar extends Component<Props> {
@@ -27,7 +29,7 @@ export class _NavBar extends Component<Props> {
   };
 
   render() {
-    const { isAuthenticated, currentUser } = this.props;
+    const { isAuthenticated, currentUser, profile } = this.props;
     return (
       <Menu inverted fixed='top'>
         <Container>
@@ -55,6 +57,7 @@ export class _NavBar extends Component<Props> {
             <SignedInMenu
               currentUser={currentUser}
               handleLogout={this.handleSignout}
+              profile={profile}
             />
           ) : (
             <SignedOutMenu handleLogIn={() => {}} />
@@ -68,7 +71,8 @@ export class _NavBar extends Component<Props> {
 const mapState = (state: StoreState) => ({
   isAuthenticated: !!state.firebase.auth.uid,
   currentUser: state.firebase.auth.email,
-  auth: state.firebase.auth
+  auth: state.firebase.auth,
+  profile: state.firebase.profile
 });
 
 const NavBarWithRouter = withRouter(

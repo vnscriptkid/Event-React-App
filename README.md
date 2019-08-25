@@ -11,6 +11,7 @@
 - Flow or Typescript for React?
 - Add: /_global google_/ first line of the file to bypass warning in case of calling google
 - With Redux Thunk: see features/test/TestPage.tsx -> incrementAsync
+- Partial<ReactReduxFirebaseConfig> -> take only a sub part of the interface
 
 ### Packages:
 
@@ -50,6 +51,8 @@
   > Case 2: Not inside Route, need withRouter
 - Internal Routing: Redirect and Route inside Switch
 - Change pages from client, window does not scroll to top
+- <Route> : renderProps or component ? when for each?
+  > when `renderProps` ? Need to pass something to Component to render, <Route render={() => <Component name="thanh"/>}>
 
 ### Redux Form
 
@@ -72,6 +75,8 @@
 - props.change('name', 'Thanh')
 - SubmissionError
   > Can be throw in thunk
+- reset the form values in thunk is possible
+  > await dispatch(reset('formName'))
 
 ### Google Map API
 

@@ -1,10 +1,12 @@
 import { AuthActionType, AuthProviderOption } from './authConstants';
 import { firebase } from '../../app/config/firebase';
 import { closeModal } from '../modals/modalActions';
-import { SubmissionError } from 'redux-form';
+import { SubmissionError, reset } from 'redux-form';
 import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { UserCredential } from '@firebase/auth-types';
+import { toastr } from 'react-redux-toastr';
+const { firestore } = firebase;
 
 // Login User
 export interface LoginUser {
@@ -48,12 +50,28 @@ const _authProviderMap = (
   return new firebase.auth.GoogleAuthProvider();
 };
 
+// Test user Facebook: open_fmqheee_user@tfbnw.net
 export const socialLogin = (providerName: AuthProviderOption): any => {
   return async (dispatch: any) => {
     dispatch(closeModal());
     try {
       const provider = _authProviderMap(providerName);
-      await firebase.auth().signInWithPopup(provider);
+      const user = await firebase.auth().signInWithPopup(provider);
+      if (
+        firestore &&
+        user.user &&
+        user.additionalUserInfo &&
+        user.additionalUserInfo.isNewUser
+      ) {
+        await firestore()
+          .collection(`users`)
+          .doc(`${user.user.uid}`)
+          .set({
+            displayName: user.user.displayName,
+            photoURL: user.user.photoURL,
+            createdAt: firestore.FieldValue.serverTimestamp()
+          });
+      }
     } catch (e) {
       console.log(e);
     }
@@ -98,6 +116,24 @@ export const registerUser = (user: {
       }
     } catch (e) {
       throw new SubmissionError({ _error: e.message });
+    }
+  };
+};
+
+// Update Password
+export const updatePassword = (creds: any) => {
+  return async (dispatch: any) => {
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+      try {
+        await currentUser.updatePassword(creds.NewPassword);
+        await dispatch(reset('account'));
+        toastr.success('Success', 'Your password has been updated');
+      } catch (e) {
+        throw new SubmissionError({
+          _error: e.message
+        });
+      }
     }
   };
 };
