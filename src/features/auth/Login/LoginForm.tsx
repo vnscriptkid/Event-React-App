@@ -45,6 +45,8 @@ interface FormData {
 
 const _LoginForm: React.SFC<LoginFormProps> = ({
   handleSubmit,
+  submitting,
+  invalid,
   login,
   error,
   socialLogin
@@ -69,7 +71,12 @@ const _LoginForm: React.SFC<LoginFormProps> = ({
           placeholder='Password'
         />
         {!!error && <Label basic color='red' content={error} />}
-        <Button fluid size='large' color='teal'>
+        <Button
+          fluid
+          size='large'
+          color='teal'
+          disabled={submitting || invalid}
+        >
           Login
         </Button>
         <Divider horizontal>OR</Divider>

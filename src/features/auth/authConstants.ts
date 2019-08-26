@@ -15,3 +15,9 @@ export interface FirebaseProfile {
   photoURL: string | undefined;
   createdAt: FieldValue;
 }
+
+export enum ProviderName {
+  Facebook = 'facebook.com',
+  Google = 'google.com',
+  Password = 'password'
+}

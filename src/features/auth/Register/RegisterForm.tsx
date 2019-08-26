@@ -45,6 +45,8 @@ const confirmMustMatch = (value: string, allValues: any): any => {
 
 const _RegisterForm: React.SFC<RegisterFormProps> = ({
   handleSubmit,
+  invalid,
+  submitting,
   registerUser,
   error
 }) => {
@@ -77,7 +79,12 @@ const _RegisterForm: React.SFC<RegisterFormProps> = ({
           validate={[confirmMustMatch]}
         />
         {!!error && <Label basic color='red' content={error} />}
-        <Button fluid size='large' color='teal'>
+        <Button
+          fluid
+          size='large'
+          color='teal'
+          disabled={invalid || submitting}
+        >
           Register
         </Button>
         <Divider horizontal>OR</Divider>

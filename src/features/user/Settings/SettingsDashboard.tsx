@@ -8,13 +8,17 @@ import { AccountPage } from './AccountPage';
 import { PhotosPage } from './PhotosPage';
 import { connect } from 'react-redux';
 import * as actions from '../../auth/authActions';
+import { StoreState } from '../../../app/reducers';
+import { ProviderName } from '../../auth/authConstants';
 
 export interface SettingsDashboardProps {
   updatePassword: typeof actions.updatePassword;
+  providerName: ProviderName | undefined;
 }
 
 const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
-  updatePassword
+  updatePassword,
+  providerName
 }) => {
   return (
     <Grid>
@@ -26,7 +30,12 @@ const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
           <Route path='/settings/photos' component={PhotosPage} />
           <Route
             path='/settings/account'
-            render={() => <AccountPage updatePassword={updatePassword} />}
+            render={() => (
+              <AccountPage
+                updatePassword={updatePassword}
+                providerName={providerName}
+              />
+            )}
           />
         </Switch>
       </Grid.Column>
@@ -37,8 +46,14 @@ const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
   );
 };
 
+const mapState = (state: StoreState) => ({
+  providerName:
+    state.firebase.auth.providerData &&
+    state.firebase.auth.providerData[0].providerId
+});
+
 const SettingsDashboard = connect(
-  null,
+  mapState,
   actions as any
 )(_SettingsDashboard);
 

@@ -142,3 +142,8 @@
   > Turn on Facebook Authentication method in Firebase App
   > Firebase App -> callback URL -> Facebook App
   > Facebook App -> App ID, App Secret -> Firebase App
+
+### React-Redux
+
+- Instead of using `connect()` in every component, group them into a common parent
+  Using `connect()` at parent, pass down connectedProps as props
