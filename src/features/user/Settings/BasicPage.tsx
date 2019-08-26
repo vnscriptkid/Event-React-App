@@ -4,13 +4,16 @@ import { Field, reduxForm, InjectedFormProps } from 'redux-form';
 import { TextInput } from '../../../app/common/form/TextInput';
 import DateInput from '../../../app/common/form/DateInput';
 import { AutocompleteInput } from '../../../app/common/form/AutocompleteInput';
+import { RadioInput } from '../../../app/common/form/RadioInput';
+import { addYears } from 'date-fns';
 
 export interface BasicPageProps extends InjectedFormProps {}
 
 enum FieldNames {
   DisplayName = 'displayName',
   DateOfBirth = 'dateOfBirth',
-  HomeTown = 'homeTown'
+  HomeTown = 'homeTown',
+  Gender = 'gender'
 }
 
 const _BasicPage: React.SFC<BasicPageProps> = ({ pristine, submitting }) => {
@@ -25,11 +28,32 @@ const _BasicPage: React.SFC<BasicPageProps> = ({ pristine, submitting }) => {
           component={TextInput}
           placeholder='Known As'
         />
+        <Form.Group>
+          <Field
+            name={FieldNames.Gender}
+            value='male'
+            type='radio'
+            label='Male'
+            component={RadioInput}
+          />
+          <Field
+            name={FieldNames.Gender}
+            value='female'
+            type='radio'
+            label='Female'
+            component={RadioInput}
+          />
+        </Form.Group>
         <Field
           width={8}
           name={FieldNames.DateOfBirth}
           component={DateInput}
           placeholder='Date Of Birth'
+          dateFormat='dd LLL yyyy'
+          showYearDropdown={true}
+          showMonthDropdown={true}
+          dropdownMode='select'
+          maxDate={addYears(new Date(), -18)}
         />
         <Field
           width={8}
