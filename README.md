@@ -77,6 +77,8 @@
   > Can be throw in thunk
 - reset the form values in thunk is possible
   > await dispatch(reset('formName'))
+- re-render form every time initialValues changes
+  > enableReinitialize=true
 
 ### Google Map API
 

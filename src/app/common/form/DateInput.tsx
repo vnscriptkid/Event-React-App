@@ -9,16 +9,17 @@ const DateInput: React.SFC<DateInputProps> = ({
   input,
   placeholder,
   meta: { touched, error },
+  width,
   ...rest
 }) => {
   return (
-    <Form.Field error={touched && !!error}>
+    <Form.Field error={touched && !!error} width={width as any}>
       <DatePicker
-        {...rest}
         placeholderText={placeholder}
         onChange={input.onChange}
         selected={input.value ? new Date(input.value) : null}
         onChangeRaw={e => e.preventDefault()}
+        {...rest}
       />
       {touched && !!error && (
         <Label basic color='red'>
