@@ -14,6 +14,9 @@ export interface FirebaseProfile {
   displayName: string;
   photoURL: string | undefined;
   createdAt: FieldValue;
+  dateOfBirth?: number;
+  homeTown?: string;
+  gender?: string;
 }
 
 export enum ProviderName {

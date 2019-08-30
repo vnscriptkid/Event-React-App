@@ -79,6 +79,7 @@
   > await dispatch(reset('formName'))
 - re-render form every time initialValues changes
   > enableReinitialize=true
+- updateForm uses `pristine` & `submitting` to check disabled of submit button
 
 ### Google Map API
 
@@ -126,6 +127,7 @@
 - attendees.map is not a function -> Object.values()
 - firestore has no array
 - timestamp (Timestamp type) -> convert to native Date object by calling `ts.toDate()`
+- send Date as value -> store as timestamp
 
 ### Firebase Authentication
 
@@ -149,3 +151,16 @@
 
 - Instead of using `connect()` in every component, group them into a common parent
   Using `connect()` at parent, pass down connectedProps as props
+
+### Javascript
+
+- Trick: Remove some props from object
+  > const { a, b, ...preservedProps } = props;
+- Check if object is type of Date
+  > instanceof Date
+  > Object.prototype.toString.call(obj) === "[object Date]"
+
+### Programming
+
+- Data consistency:
+  > Save Date as timestamp instead of string -> sort by order

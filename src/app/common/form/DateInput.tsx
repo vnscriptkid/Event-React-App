@@ -6,7 +6,7 @@ import DatePicker from 'react-datepicker';
 export interface DateInputProps extends WrappedFieldProps, HTMLInputElement {}
 
 const DateInput: React.SFC<DateInputProps> = ({
-  input,
+  input: { value, onChange },
   placeholder,
   meta: { touched, error },
   width,
@@ -16,8 +16,14 @@ const DateInput: React.SFC<DateInputProps> = ({
     <Form.Field error={touched && !!error} width={width as any}>
       <DatePicker
         placeholderText={placeholder}
-        onChange={input.onChange}
-        selected={input.value ? new Date(input.value) : null}
+        onChange={onChange}
+        selected={
+          value
+            ? Object.prototype.toString.call(value) === '[object Date]'
+              ? value
+              : value.toDate()
+            : null
+        }
         onChangeRaw={e => e.preventDefault()}
         {...rest}
       />

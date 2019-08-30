@@ -6,8 +6,11 @@ import DateInput from '../../../app/common/form/DateInput';
 import { AutocompleteInput } from '../../../app/common/form/AutocompleteInput';
 import { RadioInput } from '../../../app/common/form/RadioInput';
 import { addYears } from 'date-fns';
+import { updateProfile } from '../userActions';
 
-export interface BasicPageProps extends InjectedFormProps {}
+export interface BasicPageProps extends InjectedFormProps {
+  updateProfile: typeof updateProfile;
+}
 
 enum FieldNames {
   DisplayName = 'displayName',
@@ -16,7 +19,12 @@ enum FieldNames {
   Gender = 'gender'
 }
 
-const _BasicPage: React.SFC<BasicPageProps> = ({ pristine, submitting }) => {
+const _BasicPage: React.SFC<BasicPageProps> = ({
+  pristine,
+  submitting,
+  handleSubmit,
+  updateProfile
+}) => {
   return (
     <Segment>
       <Header dividing size='large' content='Basics'></Header>
@@ -65,6 +73,7 @@ const _BasicPage: React.SFC<BasicPageProps> = ({ pristine, submitting }) => {
         />
         <Divider />
         <Button
+          onClick={handleSubmit(updateProfile)}
           disabled={pristine || submitting}
           size='large'
           positive
@@ -75,8 +84,9 @@ const _BasicPage: React.SFC<BasicPageProps> = ({ pristine, submitting }) => {
   );
 };
 
-const BasicPage = reduxForm({ form: 'profile', enableReinitialize: true })(
-  _BasicPage
-);
+const BasicPage = reduxForm<any, any>({
+  form: 'profile',
+  enableReinitialize: true
+})(_BasicPage);
 
 export { BasicPage };

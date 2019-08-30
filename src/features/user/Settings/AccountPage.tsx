@@ -18,9 +18,10 @@ import {
   hasLengthGreaterThan
 } from 'revalidate';
 import { ProviderName } from '../../auth/authConstants';
+import { updatePassword } from '../../auth/authActions';
 
 export interface AccountPageProps extends InjectedFormProps {
-  updatePassword(): void;
+  updatePassword: typeof updatePassword;
   providerName: ProviderName | undefined;
 }
 
