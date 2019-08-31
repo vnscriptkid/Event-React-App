@@ -86,7 +86,8 @@ const _BasicPage: React.SFC<BasicPageProps> = ({
 
 const BasicPage = reduxForm<any, any>({
   form: 'profile',
-  enableReinitialize: true
+  enableReinitialize: true,
+  destroyOnUnmount: false
 })(_BasicPage);
 
 export { BasicPage };

@@ -80,6 +80,7 @@
 - re-render form every time initialValues changes
   > enableReinitialize=true
 - updateForm uses `pristine` & `submitting` to check disabled of submit button
+- ReduxForm destroy data when form is unmounted
 
 ### Google Map API
 
@@ -125,7 +126,7 @@
 
 - https://console.firebase.google.com/u/0/?pli=1
 - attendees.map is not a function -> Object.values()
-- firestore has no array
+- firestore array cons -> updating one element causes all elements update
 - timestamp (Timestamp type) -> convert to native Date object by calling `ts.toDate()`
 - send Date as value -> store as timestamp
 

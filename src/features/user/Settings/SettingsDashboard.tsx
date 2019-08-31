@@ -39,7 +39,15 @@ const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
               />
             )}
           />
-          <Route path='/settings/about' component={AboutPage} />
+          <Route
+            path='/settings/about'
+            render={() => (
+              <AboutPage
+                initialValues={profile}
+                updateProfile={updateProfile}
+              />
+            )}
+          />
           <Route path='/settings/photos' component={PhotosPage} />
           <Route
             path='/settings/account'

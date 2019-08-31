@@ -1,10 +1,10 @@
-import { FirebaseProfile } from '../auth/authConstants';
 import firebase, { firestore } from 'firebase';
 import { reset, SubmissionError } from 'redux-form';
 import { toastr } from 'react-redux-toastr';
+import { UserProfile } from './userConstants';
 
 // Update Profile
-export const updateProfile = (profile: Partial<FirebaseProfile>) => {
+export const updateProfile = (profile: Partial<UserProfile>) => {
   return async (dispatch: any) => {
     const currentUser = firebase.auth().currentUser;
     if (currentUser && firestore) {
