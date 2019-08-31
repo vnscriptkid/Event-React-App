@@ -165,3 +165,7 @@
 
 - Data consistency:
   > Save Date as timestamp instead of string -> sort by order
+
+### Image processing on Client
+
+- Libs: ReactDropzone
