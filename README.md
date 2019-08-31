@@ -166,8 +166,9 @@
 - Data consistency:
   > Save Date as timestamp instead of string -> sort by order
 
-### Image processing on Client
+### Image processing on Client Side
 
-- Libs: ReactDropzone
+- Libs: ReactDropzone, ReactCropper
 - Get a ref to uploaded file: URL.createObjectURL(file)
-- Delete the object rul in memory (avoid memory leak): URL.revokeObjectURL(objectURL)
+- Delete the url object in memory (avoid memory leak): URL.revokeObjectURL(objectURL)
+- Blob: Binary large object

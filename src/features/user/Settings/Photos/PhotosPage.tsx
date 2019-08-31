@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import {
   Segment,
   Header,
@@ -9,11 +9,13 @@ import {
   Button
 } from 'semantic-ui-react';
 import { DropzoneInput } from './DropzoneInput';
+import { CropperInput } from './CropperInput';
 
 export interface PhotosPageProps {}
 
 const PhotosPage: React.SFC<PhotosPageProps> = () => {
   const [files, setFiles] = useState([]);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     return () => {
@@ -22,6 +24,11 @@ const PhotosPage: React.SFC<PhotosPageProps> = () => {
       });
     };
   });
+
+  function handleCancelImage() {
+    setImage(null);
+    setFiles([]);
+  }
 
   return (
     <Segment>
@@ -35,6 +42,10 @@ const PhotosPage: React.SFC<PhotosPageProps> = () => {
           <Grid.Column width={1} />
           <Grid.Column width={4}>
             <Header color='teal' sub content='Step 2 - Resize image'></Header>
+            <CropperInput
+              imagePreview={files[0] && (files[0] as any).preview}
+              setImage={setImage}
+            />
           </Grid.Column>
           <Grid.Column width={1} />
           <Grid.Column width={4}>
@@ -43,7 +54,32 @@ const PhotosPage: React.SFC<PhotosPageProps> = () => {
               sub
               content='Step 3 - Preview & Upload'
             ></Header>
-            <Image src={files[0] && (files[0] as any).preview} />
+            {files.length > 0 && (
+              <Fragment>
+                <div
+                  className='img-preview'
+                  style={{
+                    minHeight: '200px',
+                    minWidth: '200px',
+                    overflow: 'hidden'
+                  }}
+                ></div>
+                <Button.Group>
+                  <Button
+                    onClick={handleCancelImage}
+                    style={{ width: 100 }}
+                    positive
+                    icon='check'
+                  />
+                  <Button
+                    onClick={handleCancelImage}
+                    style={{ width: 100 }}
+                    color='red'
+                    icon='close'
+                  />
+                </Button.Group>
+              </Fragment>
+            )}
           </Grid.Column>
         </Grid.Row>
       </Grid>
