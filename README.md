@@ -169,3 +169,5 @@
 ### Image processing on Client
 
 - Libs: ReactDropzone
+- Get a ref to uploaded file: URL.createObjectURL(file)
+- Delete the object rul in memory (avoid memory leak): URL.revokeObjectURL(objectURL)

@@ -60,8 +60,9 @@ const _AboutPage: React.SFC<AboutPageProps> = ({
       <Form onSubmit={handleSubmit(updateProfile)}>
         <Form.Group>
           <label style={{ marginLeft: '7px' }}>Tell us your status: </label>
-          {statusMapping.map(({ label, value }) => (
+          {statusMapping.map(({ label, value }, index) => (
             <Field
+              key={index}
               name={FieldNames.Status}
               component={RadioInput}
               type='radio'

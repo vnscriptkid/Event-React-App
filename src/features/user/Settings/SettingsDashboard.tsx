@@ -5,7 +5,7 @@ import { Route, Redirect, Switch } from 'react-router';
 import { BasicPage } from './BasicPage';
 import { AboutPage } from './AboutPage';
 import { AccountPage } from './AccountPage';
-import { PhotosPage } from './PhotosPage';
+import { PhotosPage } from './Photos/PhotosPage';
 import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
 import { ProviderName, FirebaseProfile } from '../../auth/authConstants';
