@@ -9,7 +9,7 @@ import { PhotosPage } from './Photos/PhotosPage';
 import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
 import { ProviderName, FirebaseProfile } from '../../auth/authConstants';
-import { updateProfile } from '../userActions';
+import { updateProfile, updateUserImage } from '../userActions';
 import { updatePassword } from '../../auth/authActions';
 
 export interface SettingsDashboardProps {
@@ -17,11 +17,13 @@ export interface SettingsDashboardProps {
   updateProfile: typeof updateProfile;
   providerName: ProviderName | undefined;
   profile: FirebaseProfile;
+  updateUserImage: typeof updateUserImage;
 }
 
 const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
   updatePassword,
   updateProfile,
+  updateUserImage,
   providerName,
   profile
 }) => {
@@ -48,7 +50,10 @@ const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
               />
             )}
           />
-          <Route path='/settings/photos' component={PhotosPage} />
+          <Route
+            path='/settings/photos'
+            render={() => <PhotosPage updateUserImage={updateUserImage} />}
+          />
           <Route
             path='/settings/account'
             render={() => (
@@ -74,7 +79,7 @@ const mapState = (state: StoreState) => ({
   profile: state.firebase.profile
 });
 
-const actions = { updatePassword, updateProfile };
+const actions = { updatePassword, updateProfile, updateUserImage };
 
 const SettingsDashboard = connect(
   mapState,
