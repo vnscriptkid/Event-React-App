@@ -10,10 +10,18 @@ import {
 } from 'semantic-ui-react';
 import { DropzoneInput } from './DropzoneInput';
 import { CropperInput } from './CropperInput';
+import { updateUserImage } from '../../userActions';
+import { toastr } from 'react-redux-toastr';
+import { firestoreConnect, WithFirestoreProps } from 'react-redux-firebase';
+import { compose } from 'redux';
+import { StoreState } from '../../../../app/reducers';
+import { connect } from 'react-redux';
 
-export interface PhotosPageProps {}
+export interface PhotosPageProps extends WithFirestoreProps {
+  updateUserImage: typeof updateUserImage;
+}
 
-const PhotosPage: React.SFC<PhotosPageProps> = () => {
+const _PhotosPage: React.SFC<PhotosPageProps> = props => {
   const [files, setFiles] = useState([]);
   const [image, setImage] = useState(null);
 
@@ -29,6 +37,16 @@ const PhotosPage: React.SFC<PhotosPageProps> = () => {
     setImage(null);
     setFiles([]);
   }
+
+  const handleImageUpload = async () => {
+    try {
+      await props.updateUserImage(image, 'avatar.jpeg');
+      toastr.success('Success', 'Image has been uploaded successfully');
+      handleCancelImage();
+    } catch (e) {
+      toastr.error('Oooops!', 'Upload image failed');
+    }
+  };
 
   return (
     <Segment>
@@ -66,7 +84,7 @@ const PhotosPage: React.SFC<PhotosPageProps> = () => {
                 ></div>
                 <Button.Group>
                   <Button
-                    onClick={handleCancelImage}
+                    onClick={handleImageUpload}
                     style={{ width: 100 }}
                     positive
                     icon='check'
@@ -105,5 +123,25 @@ const PhotosPage: React.SFC<PhotosPageProps> = () => {
     </Segment>
   );
 };
+
+const mapState = (state: StoreState) => ({
+  auth: state.firebase.auth
+});
+
+const PhotosPage = compose<any>(
+  connect(mapState),
+  firestoreConnect<any>(({ auth }): any => {
+    return auth.isLoaded
+      ? [
+          {
+            collection: 'users',
+            doc: auth.uid,
+            subcollections: [{ collection: 'photos' }],
+            storeAs: 'photos'
+          }
+        ]
+      : [];
+  })
+)(_PhotosPage);
 
 export { PhotosPage };
