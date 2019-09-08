@@ -1,13 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import {
-  Segment,
-  Header,
-  Grid,
-  Divider,
-  Card,
-  Image,
-  Button
-} from 'semantic-ui-react';
+import { Segment, Header, Grid, Divider, Button } from 'semantic-ui-react';
 import { DropzoneInput } from './DropzoneInput';
 import { CropperInput } from './CropperInput';
 import { updateUserImage } from '../../userActions';
@@ -16,12 +8,19 @@ import { firestoreConnect, WithFirestoreProps } from 'react-redux-firebase';
 import { compose } from 'redux';
 import { StoreState } from '../../../../app/reducers';
 import { connect } from 'react-redux';
+import { UserPhotos } from './UserPhotos';
 
 export interface PhotosPageProps extends WithFirestoreProps {
   updateUserImage: typeof updateUserImage;
+  profile: any;
+  photos: any[];
 }
 
-const _PhotosPage: React.SFC<PhotosPageProps> = props => {
+const _PhotosPage: React.SFC<PhotosPageProps> = ({
+  profile,
+  photos,
+  updateUserImage
+}) => {
   const [files, setFiles] = useState([]);
   const [image, setImage] = useState(null);
 
@@ -40,7 +39,7 @@ const _PhotosPage: React.SFC<PhotosPageProps> = props => {
 
   const handleImageUpload = async () => {
     try {
-      await props.updateUserImage(image, 'avatar.jpeg');
+      await updateUserImage(image, 'avatar.jpeg');
       toastr.success('Success', 'Image has been uploaded successfully');
       handleCancelImage();
     } catch (e) {
@@ -105,32 +104,21 @@ const _PhotosPage: React.SFC<PhotosPageProps> = props => {
       <Divider />
       <Header sub color='teal' content='All Photos' />
 
-      <Card.Group itemsPerRow={5}>
-        <Card>
-          <Image src={`https://randomuser.me/api/portraits/men/64.jpg`} />
-          <Button positive>Main Photo</Button>
-        </Card>
-        <Card>
-          <Image src={`https://randomuser.me/api/portraits/men/64.jpg`} />
-          <div className='ui two buttons'>
-            <Button basic color='green'>
-              Main
-            </Button>
-            <Button basic icon='trash' color='red'></Button>
-          </div>
-        </Card>
-      </Card.Group>
+      <UserPhotos profile={profile} photos={photos} />
     </Segment>
   );
 };
 
 const mapState = (state: StoreState) => ({
-  auth: state.firebase.auth
+  auth: state.firebase.auth,
+  profile: state.firebase.profile,
+  photos: state.firestore.ordered.photos
 });
 
 const PhotosPage = compose<any>(
   connect(mapState),
-  firestoreConnect<any>(({ auth }): any => {
+  firestoreConnect<any>(({ auth, profile }): any => {
+    console.log(auth, profile);
     return auth.isLoaded
       ? [
           {
