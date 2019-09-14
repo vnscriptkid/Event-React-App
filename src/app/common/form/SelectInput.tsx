@@ -18,7 +18,7 @@ const SelectInput: React.SFC<SelectInputProps> = ({
       <Select
         options={options as any}
         type='text'
-        value={input.value || null}
+        value={input.value || []}
         onChange={(e, data) => input.onChange(data.value)}
         multiple={multiple}
         placeholder={placeholder}

@@ -6,15 +6,20 @@ export interface UserPhotosProps {
   photos: any[];
 }
 
-const UserPhotos: React.SFC<UserPhotosProps> = ({ profile, photos }) => {
+const UserPhotos: React.SFC<UserPhotosProps> = ({ profile, photos = [] }) => {
+  const photosWithoutMainOne = photos.filter(
+    photo => photo.url !== profile.photoURL
+  );
   return (
     <Card.Group itemsPerRow={5}>
-      <Card>
-        <Image src={profile.photoURL} />
-        <Button positive>Main Photo</Button>
-      </Card>
+      {profile.photoURL && (
+        <Card>
+          <Image src={profile.photoURL} />
+          <Button positive>Main Photo</Button>
+        </Card>
+      )}
       {photos &&
-        photos.map(photo => (
+        photosWithoutMainOne.map(photo => (
           <Card>
             <Image src={photo.url} />
             <div className='ui two buttons'>
