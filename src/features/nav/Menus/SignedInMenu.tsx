@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, Image, Dropdown } from 'semantic-ui-react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { FirebaseProfile } from '../../auth/authConstants';
 import defaultProfileImg from '../../../assets/default-user-image.png';
 
@@ -8,12 +8,14 @@ export interface SignedInMenuProps {
   handleLogout(): void;
   currentUser: string | null;
   profile: FirebaseProfile;
+  auth: any;
 }
 
 const SignedInMenu: React.SFC<SignedInMenuProps> = ({
   currentUser,
   handleLogout,
-  profile
+  profile,
+  auth
 }) => {
   return (
     <Menu.Item position='right'>
@@ -27,7 +29,12 @@ const SignedInMenu: React.SFC<SignedInMenuProps> = ({
           <Dropdown.Item text='Create Event' icon='plus' />
           <Dropdown.Item text='My Events' icon='calendar' />
           <Dropdown.Item text='My Network' icon='users' />
-          <Dropdown.Item text='My Profile' icon='user' />
+          <Dropdown.Item
+            as={Link}
+            to={`/profile/${auth.uid}`}
+            text='My Profile'
+            icon='user'
+          />
           <Dropdown.Item
             as={NavLink}
             to='/settings'

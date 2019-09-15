@@ -19,6 +19,7 @@ interface Props extends RouteComponentProps, WithFirebaseProps<void> {
   currentUser: null | string;
   signoutUser: typeof signoutUser;
   profile: FirebaseProfile;
+  auth: any;
 }
 
 export class _NavBar extends Component<Props> {
@@ -58,6 +59,7 @@ export class _NavBar extends Component<Props> {
               currentUser={currentUser}
               handleLogout={this.handleSignout}
               profile={profile}
+              auth={this.props.auth}
             />
           ) : (
             <SignedOutMenu handleLogIn={() => {}} />
