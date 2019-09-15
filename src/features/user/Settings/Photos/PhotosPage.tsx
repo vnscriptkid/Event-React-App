@@ -16,6 +16,7 @@ export interface PhotosPageProps extends WithFirestoreProps {
   setMainPhoto: typeof setMainPhoto;
   profile: any;
   photos: any[];
+  loading: boolean;
 }
 
 const _PhotosPage: React.SFC<PhotosPageProps> = ({
@@ -23,7 +24,8 @@ const _PhotosPage: React.SFC<PhotosPageProps> = ({
   photos,
   updateUserImage,
   deleteImage,
-  setMainPhoto
+  setMainPhoto,
+  loading
 }) => {
   const [files, setFiles] = useState([]);
   const [image, setImage] = useState(null);
@@ -105,6 +107,7 @@ const _PhotosPage: React.SFC<PhotosPageProps> = ({
                 ></div>
                 <Button.Group>
                   <Button
+                    loading={loading}
                     onClick={handleImageUpload}
                     style={{ width: 100 }}
                     positive

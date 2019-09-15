@@ -25,6 +25,7 @@ export interface SettingsDashboardProps {
   updateUserImage: typeof updateUserImage;
   deleteImage: typeof deleteImage;
   setMainPhoto: typeof setMainPhoto;
+  loading: boolean;
 }
 
 const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
@@ -34,7 +35,8 @@ const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
   providerName,
   profile,
   deleteImage,
-  setMainPhoto
+  setMainPhoto,
+  loading
 }) => {
   return (
     <Grid>
@@ -66,6 +68,7 @@ const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
                 updateUserImage={updateUserImage}
                 deleteImage={deleteImage}
                 setMainPhoto={setMainPhoto}
+                loading={loading}
               />
             )}
           />
@@ -91,7 +94,8 @@ const mapState = (state: StoreState) => ({
   providerName:
     state.firebase.auth.providerData &&
     state.firebase.auth.providerData[0].providerId,
-  profile: state.firebase.profile
+  profile: state.firebase.profile,
+  loading: state.async.loading
 });
 
 const actions = {
