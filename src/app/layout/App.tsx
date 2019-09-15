@@ -25,7 +25,7 @@ const App: React.FC = () => {
                 <Route path='/events' exact component={EventDashboard as any} />
                 <Route path='/events/:id' component={EventDetailed} />
                 <Route path='/people' component={PeopleDashboard} />
-                <Route path='/profile/:id' component={UserDetailed} />
+                <Route path='/profile/:id' component={UserDetailed as any} />
                 <Route
                   path={['/createEvent', '/manage/:id']}
                   render={props => (

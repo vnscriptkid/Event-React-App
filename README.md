@@ -153,6 +153,7 @@
 - save userProfile into firestore (we see instant changes, whereas in case of firebase, we need to reload)
   > config: userProfile: `users` -> attach user info (from firestore) into `firebase.profile`
 - firestoreConnect HOC specifies where to get data (what collection, doc, sub ...), then attaches data to `firestore.ordered`
+- withFirestore vs firestoreConnect ?
 
 ### Social Login
 

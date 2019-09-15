@@ -22,7 +22,7 @@ enum FieldNames {
 
 enum Status {
   Single = 'single',
-  Relationship = 'reletionship',
+  Relationship = 'relationship',
   Married = 'married'
 }
 
