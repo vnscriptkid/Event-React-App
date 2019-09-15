@@ -129,11 +129,15 @@ export const setMainPhoto = (photo: any) => {
     if (!currentUser) throw new Error('Unauthenticated');
     if (!photoURL) throw new Error('photoURL is not available');
     try {
-      // update in firestore
+      // update in firestore (instant change)
       const userRef = firestore()
         .collection(`users`)
         .doc(currentUser.uid);
       await userRef.update({
+        photoURL
+      });
+      // update in firebase auth (need reload to see the change)
+      await currentUser.updateProfile({
         photoURL
       });
     } catch (e) {
