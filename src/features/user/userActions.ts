@@ -90,3 +90,55 @@ export const updateUserImage = (image: any, imageName: string) => {
     }
   };
 };
+
+export const deleteImage = (photo: any) => {
+  return async (dispatch: Dispatch<any>) => {
+    const currentUser = firebase.auth().currentUser;
+    const { name: photoName, id: photoId } = photo;
+    if (!currentUser) throw new Error('Unauthenticated');
+    if (!photoName || !photoId)
+      throw new Error('photoName nad photoId is not available');
+
+    try {
+      // delete from storage /userId/user_images/imageName.jpeg
+      await firebase
+        .storage()
+        .ref(`${currentUser.uid}/user_images`)
+        .child(photoName)
+        .delete();
+
+      // delete from firestore /users/userId/photos/photoId
+      await firestore()
+        .collection(`users`)
+        .doc(currentUser.uid)
+        .collection(`photos`)
+        .doc(photoId)
+        .delete();
+    } catch (e) {
+      console.log(e);
+      throw new Error(e);
+    }
+  };
+};
+
+export const setMainPhoto = (photo: any) => {
+  return async (dispatch: Dispatch<any>) => {
+    // update photoURL in user doc\
+    const currentUser = firebase.auth().currentUser;
+    const { url: photoURL } = photo;
+    if (!currentUser) throw new Error('Unauthenticated');
+    if (!photoURL) throw new Error('photoURL is not available');
+    try {
+      // update in firestore
+      const userRef = firestore()
+        .collection(`users`)
+        .doc(currentUser.uid);
+      await userRef.update({
+        photoURL
+      });
+    } catch (e) {
+      console.log(e);
+      throw new Error(e);
+    }
+  };
+};

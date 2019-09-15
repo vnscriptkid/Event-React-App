@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 import { Segment, Header, Grid, Divider, Button } from 'semantic-ui-react';
 import { DropzoneInput } from './DropzoneInput';
 import { CropperInput } from './CropperInput';
-import { updateUserImage } from '../../userActions';
+import { updateUserImage, deleteImage, setMainPhoto } from '../../userActions';
 import { toastr } from 'react-redux-toastr';
 import { firestoreConnect, WithFirestoreProps } from 'react-redux-firebase';
 import { compose } from 'redux';
@@ -12,6 +12,8 @@ import { UserPhotos } from './UserPhotos';
 
 export interface PhotosPageProps extends WithFirestoreProps {
   updateUserImage: typeof updateUserImage;
+  deleteImage: typeof deleteImage;
+  setMainPhoto: typeof setMainPhoto;
   profile: any;
   photos: any[];
 }
@@ -19,7 +21,9 @@ export interface PhotosPageProps extends WithFirestoreProps {
 const _PhotosPage: React.SFC<PhotosPageProps> = ({
   profile,
   photos,
-  updateUserImage
+  updateUserImage,
+  deleteImage,
+  setMainPhoto
 }) => {
   const [files, setFiles] = useState([]);
   const [image, setImage] = useState(null);
@@ -44,6 +48,24 @@ const _PhotosPage: React.SFC<PhotosPageProps> = ({
       handleCancelImage();
     } catch (e) {
       toastr.error('Oooops!', 'Upload image failed');
+    }
+  };
+
+  const handleSetMainPhoto = async (photo: any) => {
+    try {
+      await setMainPhoto(photo);
+      toastr.success('Success', 'Set main photo successfully');
+    } catch (e) {
+      toastr.error('Error', 'Can not set main photo');
+    }
+  };
+
+  const handleImageDelete = async (image: any) => {
+    try {
+      await deleteImage(image);
+      toastr.success('Success', 'Image has been deleted successfully');
+    } catch (e) {
+      toastr.error('Oooops', 'Can not delete the photo');
     }
   };
 
@@ -104,7 +126,12 @@ const _PhotosPage: React.SFC<PhotosPageProps> = ({
       <Divider />
       <Header sub color='teal' content='All Photos' />
 
-      <UserPhotos profile={profile} photos={photos} />
+      <UserPhotos
+        profile={profile}
+        photos={photos}
+        deleteImage={handleImageDelete}
+        setMainPhoto={handleSetMainPhoto}
+      />
     </Segment>
   );
 };
@@ -118,7 +145,6 @@ const mapState = (state: StoreState) => ({
 const PhotosPage = compose<any>(
   connect(mapState),
   firestoreConnect<any>(({ auth, profile }): any => {
-    console.log(auth, profile);
     return auth.isLoaded
       ? [
           {

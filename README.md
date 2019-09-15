@@ -82,6 +82,17 @@
 - updateForm uses `pristine` & `submitting` to check disabled of submit button
 - ReduxForm destroy data when form is unmounted
 
+### Redux
+
+- compose(
+  a,
+  b,
+  c,
+  )() chain hoc nicely from top to bottom (a -> b -> c), props pass down this way
+- Error handling for async action
+  > async action: return async (dispatch) => { try { ... } catch (e) { throw new Error(e) } }
+  > Component: try { await props.doAsync() } catch (e) { ... }
+
 ### Google Map API
 
 - API
@@ -140,6 +151,7 @@
 - hoc: withFirebase (better than using firebase object)
   > hoc intergrate methods and data into Component props
 - save userProfile into firestore (we see instant changes, whereas in case of firebase, we need to reload)
+- firestoreConnect HOC specifies where to get data (what collection, doc, sub ...), then attaches data to `firestore.ordered`
 
 ### Social Login
 
@@ -172,3 +184,18 @@
 - Get a ref to uploaded file: URL.createObjectURL(file)
 - Delete the url object in memory (avoid memory leak): URL.revokeObjectURL(objectURL)
 - Blob: Binary large object
+
+### Debugging
+
+{
+"type": "chrome",
+"request": "launch",
+"name": "Launch Chrome against localhost",
+"url": "http://localhost:3000",
+"webRoot": "\${workspaceFolder}/src"
+}
+
+### Common mistakes:
+
+- Forget to inject actions into Component so that when we call `props.action`
+  We actually dispatch an action internally

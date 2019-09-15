@@ -9,7 +9,12 @@ import { PhotosPage } from './Photos/PhotosPage';
 import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
 import { ProviderName, FirebaseProfile } from '../../auth/authConstants';
-import { updateProfile, updateUserImage } from '../userActions';
+import {
+  updateProfile,
+  updateUserImage,
+  deleteImage,
+  setMainPhoto
+} from '../userActions';
 import { updatePassword } from '../../auth/authActions';
 
 export interface SettingsDashboardProps {
@@ -18,6 +23,8 @@ export interface SettingsDashboardProps {
   providerName: ProviderName | undefined;
   profile: FirebaseProfile;
   updateUserImage: typeof updateUserImage;
+  deleteImage: typeof deleteImage;
+  setMainPhoto: typeof setMainPhoto;
 }
 
 const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
@@ -25,7 +32,9 @@ const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
   updateProfile,
   updateUserImage,
   providerName,
-  profile
+  profile,
+  deleteImage,
+  setMainPhoto
 }) => {
   return (
     <Grid>
@@ -52,7 +61,13 @@ const _SettingsDashboard: React.SFC<SettingsDashboardProps> = ({
           />
           <Route
             path='/settings/photos'
-            render={() => <PhotosPage updateUserImage={updateUserImage} />}
+            render={() => (
+              <PhotosPage
+                updateUserImage={updateUserImage}
+                deleteImage={deleteImage}
+                setMainPhoto={setMainPhoto}
+              />
+            )}
           />
           <Route
             path='/settings/account'
@@ -79,7 +94,13 @@ const mapState = (state: StoreState) => ({
   profile: state.firebase.profile
 });
 
-const actions = { updatePassword, updateProfile, updateUserImage };
+const actions = {
+  updatePassword,
+  updateProfile,
+  updateUserImage,
+  deleteImage,
+  setMainPhoto
+};
 
 const SettingsDashboard = connect(
   mapState,
