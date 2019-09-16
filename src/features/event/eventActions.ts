@@ -85,9 +85,22 @@ export const createEventAsync = (event: Event) => {
       const newEvent = addEventProps(event, currentUser as any);
 
       // create new event in firestore at path /events/eventid/event
-      await firestore()
+      const eventDoc = await firestore()
         .collection(`events`)
         .add(newEvent);
+
+      // save to look up table event_attendee (determine who attend what event)
+      await firestore()
+        .collection(`event_attendee`)
+        .doc(`${eventDoc.id}_${currentUser.uid}`)
+        .set({
+          eventId: eventDoc.id,
+          userId: currentUser.uid,
+          eventDate: event.date,
+          host: true
+        });
+
+      return eventDoc;
     } catch (e) {
       console.log(e);
       throw new Error(e);

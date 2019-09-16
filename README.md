@@ -82,7 +82,7 @@
 - updateForm uses `pristine` & `submitting` to check disabled of submit button
 - ReduxForm destroy data when form is unmounted
 
-### Redux
+### Redux, Redux Thunk
 
 - compose(
   a,
@@ -92,6 +92,8 @@
 - Error handling for async action
   > async action: return async (dispatch) => { try { ... } catch (e) { throw new Error(e) } }
   > Component: try { await props.doAsync() } catch (e) { ... }
+- Async action can return a value
+  > const doAsync = () => { return async () => { ... return x; } }
 
 ### Google Map API
 
@@ -145,11 +147,13 @@
 - DB design:
   > no SQL: duplicate data (embedded docs) -> less queries (1MB max per doc)
   > SQL: relationship -> normalize data
-  > use cases:
-  > List all the attendees of an event -> keep all attendees data inside event
-  > List all events that an user has joined
-  > user: { events: [] }
-  > event_attendee: { event, user }
+  - use cases:
+    - List all the attendees of an event -> keep all attendees data inside event
+    - List all events that an user has joined
+      > user: { events: [] }
+      > event_attendee: { event, user }
+  - Look-up table (collection)
+  - Think up front what queries will be used
 - firebase vs firestore
   > realtime firebase has no support for query
   > firestore has queries

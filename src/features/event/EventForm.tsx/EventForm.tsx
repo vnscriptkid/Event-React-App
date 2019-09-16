@@ -43,8 +43,11 @@ enum InputNames {
 }
 
 const categories: any[] = [
-  { key: 'culture', text: 'Culture', value: 'Culture' },
-  { key: 'nature', text: 'Nature', value: 'Nature' }
+  { key: '1', text: 'Culture', value: 'Culture' },
+  { key: '2', text: 'Nature', value: 'Nature' },
+  { key: '3', text: 'Food And Beverage', value: 'F&B' },
+  { key: '4', text: 'Music', value: 'Music' },
+  { key: '5', text: 'Dance', value: 'Dance' }
 ];
 
 const validate = combineValidators({
@@ -88,8 +91,8 @@ class _EventForm extends Component<AllProps, State> {
         ...values
       };
       try {
-        await this.props.createEventAsync(newEvent);
-        this.props.history.push(`/events/${newEvent.id}`);
+        const savedEvent = await this.props.createEventAsync(newEvent);
+        this.props.history.push(`/events/${(savedEvent as any).id}`);
         toastr.success('success', 'New event has been created');
       } catch (e) {
         toastr.error('Ooops', e.message);
