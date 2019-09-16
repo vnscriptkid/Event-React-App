@@ -13,11 +13,13 @@ export interface Attendee {
 }
 
 export interface Event {
-  id: string;
+  id?: string;
+  hostUid?: string;
   title: string;
-  date: string;
+  createdAt?: string;
   category: string;
   description: string;
+  date: string;
   city: string;
   venue: string;
   venueLatLng: google.maps.LatLngLiteral;

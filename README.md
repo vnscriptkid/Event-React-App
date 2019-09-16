@@ -130,7 +130,7 @@
 
 - Version matters when formating
 - react-datepicker (> v2.0) internally uses Datefns
-- parse(new Date, 'yyyy')
+- parse(new Date(), 'yyyy')
 - parseISO() -> convert a string to Date object
 
 ### Firestore
@@ -140,6 +140,23 @@
 - firestore array cons -> updating one element causes all elements update
 - timestamp (Timestamp type) -> convert to native Date object by calling `ts.toDate()`
 - send Date as value -> store as timestamp
+- firestore shallow subcollections by default
+  > users > uid > photos : fetch user does not include photos, need to make separate query for photos
+- DB design:
+  > no SQL: duplicate data (embedded docs) -> less queries (1MB max per doc)
+  > SQL: relationship -> normalize data
+  > use cases:
+  > List all the attendees of an event -> keep all attendees data inside event
+  > List all events that an user has joined
+  > user: { events: [] }
+  > event_attendee: { event, user }
+- firebase vs firestore
+  > realtime firebase has no support for query
+  > firestore has queries
+- Data consistency:
+- add vs set
+  > add: new id is generated per doc
+  > set: update data for a doc, if not existed yet, create a new one
 
 ### Firebase Authentication
 
@@ -179,6 +196,8 @@
 
 - Data consistency:
   > Save Date as timestamp instead of string -> sort by order
+- Clean code:
+  > modularize code: event.a = x; event.b = y; event.c = z -> newEvent = addEventProps(event, x, y, z)
 
 ### Image processing on Client Side
 

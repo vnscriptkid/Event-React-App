@@ -11,21 +11,21 @@ import {
 } from 'revalidate';
 
 import { StoreState } from '../../../app/reducers';
-import { createEvent, updateEvent } from '../eventActions';
+import { createEvent, updateEvent, createEventAsync } from '../eventActions';
 import { Event } from '../eventContants';
 import { reduxForm, InjectedFormProps, Field } from 'redux-form';
 import { TextInput } from '../../../app/common/form/TextInput';
 import { TextArea } from '../../../app/common/form/TextArea';
 import { SelectInput } from '../../../app/common/form/SelectInput';
 import DateInput from '../../../app/common/form/DateInput';
-import 'react-datepicker/dist/react-datepicker.css';
 import { AutocompleteInput } from '../../../app/common/form/AutocompleteInput';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import { format } from 'date-fns';
+import { toastr } from 'react-redux-toastr';
 
 interface Props extends RouteComponentProps {
   createEvent: typeof createEvent;
   updateEvent: typeof updateEvent;
+  createEventAsync: typeof createEventAsync;
 }
 
 interface State {
@@ -47,14 +47,6 @@ const categories: any[] = [
   { key: 'nature', text: 'Nature', value: 'Nature' }
 ];
 
-// interface FormData {
-//   title: string;
-//   category: string;
-//   description: string;
-//   date: string;
-//   city: string;
-//   venue: string;
-// }
 const validate = combineValidators({
   title: isRequired({ message: 'The event title is required' }),
   category: isRequired({ message: 'The category is required' }),
@@ -80,27 +72,28 @@ class _EventForm extends Component<AllProps, State> {
     };
   }
 
-  onFormSubmit: any = (values: Event) => {
-    values.date =
-      format(values.date as any, 'yyyy-MM-dd') +
-      'T' +
-      format(values.date as any, 'HH:mm:ss');
+  onFormSubmit: any = async (values: Event) => {
+    // values.date now is a Date (JS native) object
+    // values.date =
+    //   format(values.date as any, 'yyyy-MM-dd') +
+    //   'T' +
+    //   format(values.date as any, 'HH:mm:ss');
     if (values.id) {
+      // update form
       this.props.updateEvent(values.id, values);
       this.props.history.push(`/events/${values.id}`);
     } else {
       // create form
-      const newEvent = {
-        ...values,
-        id: Date.now().toString(),
-        host: 'someone',
-        hostPhotoURL: `https://randomuser.me/api/portraits/men/${Math.floor(
-          Math.random() * 30 + 1
-        )}.jpg`,
-        attendees: []
+      const newEvent: Event = {
+        ...values
       };
-      this.props.createEvent(newEvent);
-      this.props.history.push(`/events/${newEvent.id}`);
+      try {
+        await this.props.createEventAsync(newEvent);
+        this.props.history.push(`/events/${newEvent.id}`);
+        toastr.success('success', 'New event has been created');
+      } catch (e) {
+        toastr.error('Ooops', e.message);
+      }
     }
   };
 
@@ -196,6 +189,7 @@ class _EventForm extends Component<AllProps, State> {
                 dateFormat='dd LLL yyyy h:mm a'
                 showTimeSelect
                 timeFormat='HH:mm'
+                width={16}
               />
               <Button
                 disabled={pristine || invalid || submitting}
@@ -249,7 +243,7 @@ const DecoratedForm = reduxForm<{}, any>({ form: 'event', validate })(
 
 export const EventForm = connect(
   mapStateToProps,
-  { createEvent, updateEvent }
+  { createEvent, updateEvent, createEventAsync }
 )(DecoratedForm);
 
 // const DecoratedForm = reduxForm({

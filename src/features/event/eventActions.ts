@@ -8,6 +8,9 @@ import {
 } from '../async/asyncActions';
 import { fetchEventsFromApi } from '../../app/data/eventsApi';
 import { toastr } from 'react-redux-toastr';
+import { firebase } from '../../app/config/firebase';
+import { Dispatch } from 'react';
+const { firestore } = firebase;
 
 // Fetch Event Async
 export const fetchEvents = (): ThunkAction<
@@ -49,6 +52,48 @@ export const createEvent = (event: Event): CreateEventAction => ({
   type: EventTypes.CreateEvent,
   payload: event
 });
+
+function addEventProps(
+  event: Partial<Event>,
+  user: { displayName: string; photoURL: string; uid: string }
+): any {
+  const { displayName, photoURL, uid } = user;
+  return {
+    ...event,
+    hostUid: uid,
+    hostedBy: displayName,
+    hostPhotoURL: photoURL,
+    createdAt: firestore.FieldValue.serverTimestamp(),
+    attendees: {
+      [uid]: {
+        going: true,
+        joinDate: firestore.FieldValue.serverTimestamp(),
+        photoURL: photoURL || '/assets/user.png',
+        displayName,
+        host: true
+      }
+    }
+  };
+}
+
+export const createEventAsync = (event: Event) => {
+  return async (dispatch: Dispatch<any>) => {
+    const { currentUser } = firebase.auth();
+    if (!currentUser) throw new Error('Unauthenticated user');
+    try {
+      // pre-process event
+      const newEvent = addEventProps(event, currentUser as any);
+
+      // create new event in firestore at path /events/eventid/event
+      await firestore()
+        .collection(`events`)
+        .add(newEvent);
+    } catch (e) {
+      console.log(e);
+      throw new Error(e);
+    }
+  };
+};
 
 // Update Event
 export interface UpdateEventAction {
