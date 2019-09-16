@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Form, Label } from 'semantic-ui-react';
 import { WrappedFieldProps } from 'redux-form';
 import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import './DateInput.css';
 
 export interface DateInputProps extends WrappedFieldProps, HTMLInputElement {}
 
