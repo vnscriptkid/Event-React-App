@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Segment, Item, List, Button } from 'semantic-ui-react';
+import { Segment, Item, List, Button, Icon } from 'semantic-ui-react';
 import EventListAttendee from './EventListAttendee';
 import { Event } from '../eventContants';
 import { Link } from 'react-router-dom';
-// import { convertTsToDateTime } from '../../../app/common/utils/datetime';
+import { format } from 'date-fns';
 
 interface Props {
   event: Event;
@@ -17,8 +17,11 @@ class EventListItem extends Component<Props> {
       hostedBy,
       attendees,
       description,
-      id
+      id,
+      date,
+      venue
     } = this.props.event;
+    console.log(date);
     return (
       <Segment.Group>
         <Segment>
@@ -34,8 +37,9 @@ class EventListItem extends Component<Props> {
         </Segment>
         <Segment>
           <span>
-            {/* <Icon name='clock' /> {convertTsToDateTime(date as any)} |
-            <Icon name='marker' /> time */}
+            <Icon name='clock' />{' '}
+            {format((date as any).toDate(), 'EEEE do MMMM h:mm aaaa')} |
+            <Icon name='marker' /> {venue}
           </span>
         </Segment>
         <Segment secondary>
