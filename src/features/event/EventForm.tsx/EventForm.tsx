@@ -88,7 +88,9 @@ class _EventForm extends Component<AllProps, State> {
     } else {
       // create form
       const newEvent: Event = {
-        ...values
+        ...values,
+        venueLatLng: this.state.venueLatLng as any,
+        cityLatLng: this.state.cityLatlng as any
       };
       try {
         const savedEvent = await this.props.createEventAsync(newEvent);

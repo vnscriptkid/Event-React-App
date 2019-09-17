@@ -14,6 +14,10 @@ export const sampleData: Event[] = [
       lat: 21.0245,
       lng: 105.84117
     },
+    cityLatLng: {
+      lat: 21.0245,
+      lng: 105.84117
+    },
     hostedBy: 'Bob',
     hostPhotoURL: 'https://randomuser.me/api/portraits/women/20.jpg',
     attendees: [
@@ -41,6 +45,10 @@ export const sampleData: Event[] = [
     venueLatLng: {
       lat: 51.3,
       lng: 0.4
+    },
+    cityLatLng: {
+      lat: 21.0245,
+      lng: 105.84117
     },
     hostedBy: 'Lisa',
     hostPhotoURL: 'https://randomuser.me/api/portraits/women/22.jpg',
