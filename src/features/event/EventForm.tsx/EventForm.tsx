@@ -21,8 +21,11 @@ import DateInput from '../../../app/common/form/DateInput';
 import { AutocompleteInput } from '../../../app/common/form/AutocompleteInput';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { toastr } from 'react-redux-toastr';
+import { compose } from 'redux';
+import { withFirestore, WithFirestoreProps } from 'react-redux-firebase';
+import { DocumentSnapshot } from '@firebase/firestore-types';
 
-interface Props extends RouteComponentProps {
+interface Props extends RouteComponentProps, WithFirestoreProps {
   createEvent: typeof createEvent;
   updateEvent: typeof updateEvent;
   createEventAsync: typeof createEventAsync;
@@ -73,6 +76,26 @@ class _EventForm extends Component<AllProps, State> {
       venueLatLng: null,
       cityLatlng: null
     };
+  }
+
+  async componentDidMount() {
+    const {
+      match: { params },
+      firestore,
+      history
+    } = this.props;
+    const eventId = (params as any).id;
+    try {
+      const eventDoc: DocumentSnapshot = (await firestore.get(
+        `events/${eventId}`
+      )) as any;
+      if (!eventDoc.exists) {
+        throw new Error('Event not found');
+      }
+    } catch (e) {
+      toastr.error('Ooops', e.message);
+      history.push('/events');
+    }
   }
 
   onFormSubmit: any = async (values: Event) => {
@@ -233,29 +256,20 @@ const mapStateToProps = (
     city: '',
     venue: ''
   };
-  const id = ownProps.match.params.id;
-  const foundEvent = state.events.find(event => event.id === id);
-  if (id && foundEvent) {
+  const eventId = ownProps.match.params.id;
+  const { events = [] } = state.firestore.ordered;
+  const foundEvent = events.find((event: Event) => event.id === eventId);
+  if (foundEvent) {
     initialValues = foundEvent;
   }
   return { initialValues };
 };
 
-// todo: fix any (just a workaround)
-const DecoratedForm = reduxForm<{}, any>({ form: 'event', validate })(
-  _EventForm
-);
-
-export const EventForm = connect(
-  mapStateToProps,
-  { createEvent, updateEvent, createEventAsync }
-)(DecoratedForm);
-
-// const DecoratedForm = reduxForm({
-//   form: 'event'
-// })(_EventForm);
-
-// export const EventForm = connect(
-//   mapStateToProps,
-//   { createEvent, updateEvent }
-// )(reduxForm<FormData, AllProps>({ form: 'eventForm' })(_EventForm));
+export const EventForm = compose(
+  withFirestore,
+  connect(
+    mapStateToProps,
+    { createEvent, updateEvent, createEventAsync }
+  ),
+  reduxForm({ form: 'event', validate, enableReinitialize: true })
+)(_EventForm) as any;
