@@ -7,16 +7,16 @@ export interface EventDetailedSidebarProps {
 }
 
 const EventDetailedSidebar: React.SFC<EventDetailedSidebarProps> = props => {
-  const { attendees } = props;
+  const { attendees = [] } = props;
   return (
     <Segment.Group>
       <Segment color='teal' inverted>
-        <Header>2 People Going</Header>
+        <Header>{attendees.length} People Going</Header>
       </Segment>
       <Segment>
         <Item.Group divided>
           {attendees.map((attendee, index) => (
-            <Item key={attendee.id} style={{ position: 'relative' }}>
+            <Item key={index} style={{ position: 'relative' }}>
               {index === 0 && (
                 <Label
                   ribbon='right'

@@ -23,7 +23,7 @@ const App: React.FC = () => {
               <NavBar />
               <Container className='main'>
                 <Route path='/events' exact component={EventDashboard as any} />
-                <Route path='/events/:id' component={EventDetailed} />
+                <Route path='/events/:id' component={EventDetailed as any} />
                 <Route path='/people' component={PeopleDashboard} />
                 <Route path='/profile/:id' component={UserDetailed as any} />
                 <Route

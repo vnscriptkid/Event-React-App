@@ -21,7 +21,6 @@ class EventListItem extends Component<Props> {
       date,
       venue
     } = this.props.event;
-    console.log(date);
     return (
       <Segment.Group>
         <Segment>
