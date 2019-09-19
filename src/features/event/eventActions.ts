@@ -136,6 +136,20 @@ export const updateEvent = (id: string, data: Event): any => {
   };
 };
 
+export const updateEventAsync = (id: string, data: Partial<Event>): any => {
+  return async (dispatch: any) => {
+    try {
+      await firestore()
+        .collection(`events`)
+        .doc(id)
+        .update(data);
+      toastr.success('Success', 'Event has been updated');
+    } catch (e) {
+      toastr.error('Oooops!', 'Something went wrong');
+    }
+  };
+};
+
 // Delete Event
 export interface DeleteEventAction {
   type: EventTypes.DeleteEvent;

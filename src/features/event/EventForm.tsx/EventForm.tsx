@@ -11,7 +11,12 @@ import {
 } from 'revalidate';
 
 import { StoreState } from '../../../app/reducers';
-import { createEvent, updateEvent, createEventAsync } from '../eventActions';
+import {
+  createEvent,
+  updateEvent,
+  createEventAsync,
+  updateEventAsync
+} from '../eventActions';
 import { Event } from '../eventContants';
 import { reduxForm, InjectedFormProps, Field } from 'redux-form';
 import { TextInput } from '../../../app/common/form/TextInput';
@@ -29,6 +34,7 @@ interface Props extends RouteComponentProps, WithFirestoreProps {
   createEvent: typeof createEvent;
   updateEvent: typeof updateEvent;
   createEventAsync: typeof createEventAsync;
+  updateEventAsync: typeof updateEventAsync;
 }
 
 interface State {
@@ -82,31 +88,32 @@ class _EventForm extends Component<AllProps, State> {
     const {
       match: { params },
       firestore,
-      history
+      history,
+      initialValues
     } = this.props;
     const eventId = (params as any).id;
-    try {
-      const eventDoc: DocumentSnapshot = (await firestore.get(
-        `events/${eventId}`
-      )) as any;
-      if (!eventDoc.exists) {
-        throw new Error('Event not found');
+
+    if (eventId && initialValues) {
+      try {
+        const eventDoc: DocumentSnapshot = (await firestore.get(
+          `events/${eventId}`
+        )) as any;
+        if (!eventDoc.exists) {
+          throw new Error('Event not found');
+        }
+      } catch (e) {
+        toastr.error('Ooops', e.message);
+        history.push('/events');
       }
-    } catch (e) {
-      toastr.error('Ooops', e.message);
-      history.push('/events');
     }
   }
 
   onFormSubmit: any = async (values: Event) => {
     // values.date now is a Date (JS native) object
-    // values.date =
-    //   format(values.date as any, 'yyyy-MM-dd') +
-    //   'T' +
-    //   format(values.date as any, 'HH:mm:ss');
     if (values.id) {
       // update form
-      this.props.updateEvent(values.id, values);
+      const { cityLatLng, venueLatLng, ...valuesToUpdate } = values;
+      await this.props.updateEventAsync(values.id, valuesToUpdate);
       this.props.history.push(`/events/${values.id}`);
     } else {
       // create form
@@ -231,7 +238,7 @@ class _EventForm extends Component<AllProps, State> {
                 onClick={
                   (initialValues as any).id
                     ? () => history.push(`/events/${(initialValues as any).id}`)
-                    : () => history.push('/events')
+                    : () => history.push(`/events`)
                 }
               >
                 Cancel
@@ -269,7 +276,12 @@ export const EventForm = compose(
   withFirestore,
   connect(
     mapStateToProps,
-    { createEvent, updateEvent, createEventAsync }
+    {
+      createEvent,
+      updateEvent,
+      createEventAsync,
+      updateEventAsync
+    }
   ),
   reduxForm({ form: 'event', validate, enableReinitialize: true })
 )(_EventForm) as any;
