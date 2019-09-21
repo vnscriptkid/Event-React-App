@@ -4,6 +4,7 @@ import EventListAttendee from './EventListAttendee';
 import { Event } from '../eventContants';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { mergeKeyToObject } from '../../../app/common/utils/converter';
 
 interface Props {
   event: Event;
@@ -15,7 +16,7 @@ class EventListItem extends Component<Props> {
       hostPhotoURL,
       title,
       hostedBy,
-      attendees,
+      attendees = {},
       description,
       id,
       date,
@@ -33,7 +34,9 @@ class EventListItem extends Component<Props> {
                 src={hostPhotoURL || '/assets/user.png'}
               />
               <Item.Content>
-                <Item.Header>{title}</Item.Header>
+                <Item.Header as={Link} to={`/events/${id}`}>
+                  {title}
+                </Item.Header>
                 <Item.Description>Hosted by {hostedBy}</Item.Description>
                 {cancelled && (
                   <Label
@@ -56,9 +59,8 @@ class EventListItem extends Component<Props> {
         </Segment>
         <Segment secondary>
           <List horizontal>
-            {Object.values(attendees).map((attendee, index) => (
-              // TODO: `key` should be id, not index
-              <EventListAttendee key={index} attendee={attendee} />
+            {mergeKeyToObject(attendees).map(attendee => (
+              <EventListAttendee key={attendee.id} attendee={attendee} />
             ))}
           </List>
         </Segment>

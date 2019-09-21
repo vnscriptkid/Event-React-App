@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { List, Image } from 'semantic-ui-react';
 import { Attendee } from '../eventContants';
+import { Link } from 'react-router-dom';
 
 interface Props {
   attendee: Attendee;
@@ -8,10 +9,16 @@ interface Props {
 
 class EventListAttendee extends Component<Props> {
   render() {
-    const { photoURL } = this.props.attendee;
+    const { photoURL, id } = this.props.attendee;
     return (
       <List.Item>
-        <Image as='a' size='mini' circular src={photoURL} />
+        <Image
+          as={Link}
+          to={`/profile/${id}`}
+          size='mini'
+          circular
+          src={photoURL}
+        />
       </List.Item>
     );
   }

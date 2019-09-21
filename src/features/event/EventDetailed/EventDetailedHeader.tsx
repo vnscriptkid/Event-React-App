@@ -32,7 +32,8 @@ const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = ({
   joinEventAsync,
   cancelGoingToEvent
 }) => {
-  const { title = '', date = '', hostedBy = '', id = '' } = event || {};
+  const { title = '', date = '', hostedBy = '', id = '', hostUid = '' } =
+    event || {};
 
   const handleJoinEvent = async (event?: Event) => {
     if (!event) return;
@@ -73,7 +74,10 @@ const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = ({
                 />
                 <p>{date && convertTsToDate(date as any)}</p>
                 <p>
-                  Hosted by <strong>{hostedBy}</strong>
+                  Hosted by{' '}
+                  <strong>
+                    <Link to={`/profile/${hostUid}`}>{hostedBy}</Link>
+                  </strong>
                 </p>
               </Item.Content>
             </Item>

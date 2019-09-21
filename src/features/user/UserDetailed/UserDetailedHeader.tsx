@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { Grid, Segment, Item, Header } from 'semantic-ui-react';
+import { UserProfile } from '../userConstants';
 
 export interface UserDetailedHeaderProps {
-  displayName: string;
-  occupation: string;
-  homeTown: string;
+  userProfile: UserProfile;
 }
 
 const UserDetailedHeader: React.SFC<UserDetailedHeaderProps> = ({
-  displayName,
-  occupation,
-  homeTown
+  userProfile
 }) => {
+  const { displayName = '', occupation = '', homeTown = '', photoURL = '' } =
+    userProfile || {};
   return (
     <Grid.Column width={16}>
       <Segment>
@@ -20,7 +19,7 @@ const UserDetailedHeader: React.SFC<UserDetailedHeaderProps> = ({
             <Item.Image
               avatar
               size='small'
-              src='https://randomuser.me/api/portraits/men/51.jpg'
+              src={photoURL || '/assets/user.png'}
             />
             <Item.Content verticalAlign='bottom'>
               <Header as='h1'>{displayName}</Header>

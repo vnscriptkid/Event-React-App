@@ -1,25 +1,23 @@
 import * as React from 'react';
 import { Grid, Segment, Header, List, Item, Icon } from 'semantic-ui-react';
 import { format } from 'date-fns/esm';
+import { UserProfile } from 'react-redux-firebase';
 
 export interface UserDetailedAboutProps {
-  displayName: string;
-  occupation: string;
-  origin: string;
-  about: string;
-  interests: string[];
-  createdAt: any;
+  userProfile: UserProfile;
 }
 
 const UserDetailedAbout: React.SFC<UserDetailedAboutProps> = ({
-  displayName,
-  occupation,
-  origin,
-  about,
-  interests,
-  createdAt
+  userProfile
 }) => {
-  console.log(createdAt);
+  const {
+    displayName = '',
+    occupation = '',
+    origin = '',
+    about = '',
+    interests = [],
+    createdAt = null
+  } = userProfile || {};
   return (
     <Grid.Column width={12}>
       <Segment>

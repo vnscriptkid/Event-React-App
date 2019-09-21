@@ -9,41 +9,25 @@ import { UserDetailedHeader } from './UserDetailedHeader';
 import { UserDetailedAbout } from './UserDetailedAbout';
 import { UserDetailedPhotos } from './UserDetailedPhotos';
 import { UserDetailedEvents } from './UserDetailedEvents';
+import { RouteComponentProps } from 'react-router';
+import { userDetailedQueryFactory } from './userQueries';
 
 export interface UserDetailedProps extends WithFirestoreProps {
   profile: UserProfile;
   photos: any[];
+  userProfile: any;
 }
 
 const _UserDetailed: React.SFC<UserDetailedProps> = ({
-  profile: {
-    displayName = '',
-    occupation = 'btn',
-    homeTown = 'btn',
-    about = '',
-    origin = 'btn',
-    interests = [],
-    createdAt
-  },
+  userProfile,
   photos = []
 }) => {
   return (
     <Grid>
       {/* General info */}
-      <UserDetailedHeader
-        displayName={displayName}
-        occupation={occupation}
-        homeTown={homeTown}
-      />
+      <UserDetailedHeader userProfile={userProfile} />
       {/* About Section */}
-      <UserDetailedAbout
-        displayName={displayName}
-        occupation={occupation}
-        about={about}
-        origin={origin}
-        interests={interests}
-        createdAt={createdAt}
-      />
+      <UserDetailedAbout userProfile={userProfile} />
       {/* Edit Section */}
       <Grid.Column width='4'>
         <Segment>
@@ -58,28 +42,19 @@ const _UserDetailed: React.SFC<UserDetailedProps> = ({
   );
 };
 
-const mapState = (state: StoreState) => ({
+const mapState = (
+  state: StoreState,
+  ownProps: RouteComponentProps<{ id: string }>
+) => ({
   profile: state.firebase.profile,
   photos: state.firestore.ordered.photos,
-  auth: state.firebase.auth
+  userId: ownProps.match.params.id,
+  userProfile: state.firestore.data.userProfile
 });
 
 const UserDetailed = compose(
   connect(mapState),
-  firestoreConnect<any>(({ auth }) =>
-    auth.isLoaded
-      ? [
-          {
-            collection: `users`,
-            doc: auth.uid,
-            subcollections: [{ collection: `photos` }],
-            storeAs: 'photos'
-          }
-        ]
-      : []
-  )
+  firestoreConnect<any>(({ userId }) => userDetailedQueryFactory(userId))
 )(_UserDetailed);
-
-// const UserDetailed = connect(mapState)(_UserDetailed);
 
 export { UserDetailed };

@@ -244,3 +244,22 @@
 
 - Forget to inject actions into Component so that when we call `props.action`
   We actually dispatch an action internally
+
+### DB Design
+
+- Current design
+  - users
+    - `photoURL`
+  - events
+    - attendees
+      - userId
+      - displayName
+      - `photoURL`
+    - id
+    - name
+    - category
+    - date
+    - ...
+  - event_attendee: lookup table
+- Question to ask
+  > What if user change their photoURL, photoURL that is inside embeded doc would not be updated instantly

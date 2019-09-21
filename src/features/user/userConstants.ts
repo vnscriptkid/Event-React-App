@@ -9,4 +9,5 @@ export interface UserProfile {
   displayName: string;
   about?: string;
   createdAt?: any;
+  photoURL?: string;
 }
