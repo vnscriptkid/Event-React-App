@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Segment, Button } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
 import { UserProfile } from '../userConstants';
@@ -11,16 +11,19 @@ import { UserDetailedPhotos } from './UserDetailedPhotos';
 import { UserDetailedEvents } from './UserDetailedEvents';
 import { RouteComponentProps } from 'react-router';
 import { userDetailedQueryFactory } from './userQueries';
+import { UserDetailedSidebar } from './UserDetailedSidebar';
 
 export interface UserDetailedProps extends WithFirestoreProps {
   profile: UserProfile;
   photos: any[];
   userProfile: any;
+  isMyProfile: boolean;
 }
 
 const _UserDetailed: React.SFC<UserDetailedProps> = ({
   userProfile,
-  photos = []
+  photos = [],
+  isMyProfile
 }) => {
   return (
     <Grid>
@@ -29,11 +32,7 @@ const _UserDetailed: React.SFC<UserDetailedProps> = ({
       {/* About Section */}
       <UserDetailedAbout userProfile={userProfile} />
       {/* Edit Section */}
-      <Grid.Column width='4'>
-        <Segment>
-          <Button color='teal' fluid basic content='Edit Profile'></Button>
-        </Segment>
-      </Grid.Column>
+      <UserDetailedSidebar isMyProfile={isMyProfile} />
       {/* User Photos Section */}
       <UserDetailedPhotos photos={photos} />
       {/* Events Section */}
@@ -49,7 +48,9 @@ const mapState = (
   profile: state.firebase.profile,
   photos: state.firestore.ordered.photos,
   userId: ownProps.match.params.id,
-  userProfile: state.firestore.data.userProfile
+  loggedUserId: state.firebase.auth.uid,
+  userProfile: state.firestore.data.userProfile,
+  isMyProfile: ownProps.match.params.id === state.firebase.auth.uid
 });
 
 const UserDetailed = compose(
