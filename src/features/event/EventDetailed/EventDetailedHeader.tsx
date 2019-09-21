@@ -98,9 +98,11 @@ const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = ({
             )}
           </React.Fragment>
         )}
-        <Button as={Link} to={`/manage/${id}`} color='orange' floated='right'>
-          Manage Event
-        </Button>
+        {isHost && (
+          <Button as={Link} to={`/manage/${id}`} color='orange' floated='right'>
+            Manage Event
+          </Button>
+        )}
       </Segment>
     </Segment.Group>
   );
