@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Segment, Item, List, Button, Icon } from 'semantic-ui-react';
+import { Segment, Item, List, Button, Icon, Label } from 'semantic-ui-react';
 import EventListAttendee from './EventListAttendee';
 import { Event } from '../eventContants';
 import { Link } from 'react-router-dom';
@@ -19,7 +19,8 @@ class EventListItem extends Component<Props> {
       description,
       id,
       date,
-      venue
+      venue,
+      cancelled
     } = this.props.event;
     return (
       <Segment.Group>
@@ -30,6 +31,14 @@ class EventListItem extends Component<Props> {
               <Item.Content>
                 <Item.Header>{title}</Item.Header>
                 <Item.Description>Hosted by {hostedBy}</Item.Description>
+                {cancelled && (
+                  <Label
+                    style={{ top: -40 }}
+                    ribbon='right'
+                    content='This event has been cancelled'
+                    color='red'
+                  />
+                )}
               </Item.Content>
             </Item>
           </Item.Group>
@@ -59,7 +68,6 @@ class EventListItem extends Component<Props> {
             floated='right'
             content='View'
           />
-          <Button color='red' floated='right' content='Delete' />
         </Segment>
       </Segment.Group>
     );
