@@ -178,6 +178,42 @@ export const deleteEvent = (eventId: string): DeleteEventAction => ({
   payload: eventId
 });
 
+// Join an event
+export const joinEventAsync = (event: Event) => {
+  return async (dispatch: Dispatch<any>) => {
+    try {
+      const currentUser = firebase.auth().currentUser;
+      if (!currentUser) throw new Error('You are not authenticated');
+      // add user current logged user to events/eventId/attendees
+      await firestore()
+        .collection(`events`)
+        .doc(event.id)
+        .update({
+          [`attendees.${currentUser.uid}`]: {
+            displayName: currentUser.displayName,
+            going: true,
+            host: false,
+            joinDate: firestore.FieldValue.serverTimestamp(),
+            photoURL: currentUser.photoURL || '/assets/user.png'
+          }
+        });
+
+      // add a new record to event_attendee collection
+      await firestore()
+        .collection(`event_attendee`)
+        .doc(`${event.id}_${currentUser.uid}`)
+        .set({
+          eventDate: event.date,
+          eventId: event.id,
+          host: false,
+          userId: currentUser.uid
+        });
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
+};
+
 export type EventAction =
   | CreateEventAction
   | UpdateEventAction

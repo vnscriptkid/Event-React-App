@@ -3,11 +3,14 @@ import { Segment, Image, Button, Item, Header } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { convertTsToDate } from '../../../app/common/utils/datetime';
 import { Event } from '../eventContants';
+import { joinEventAsync } from '../eventActions';
+import { toastr } from 'react-redux-toastr';
 
 export interface EventDetailedHeaderProps {
   event?: Event;
   isHost: boolean;
   isGoing: boolean;
+  joinEventAsync: typeof joinEventAsync;
 }
 
 const eventImageStyle = {
@@ -24,9 +27,21 @@ const eventImageTextStyle = {
 const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = ({
   event,
   isHost,
-  isGoing
+  isGoing,
+  joinEventAsync
 }) => {
   const { title = '', date = '', hostedBy = '', id = '' } = event || {};
+
+  const handleJoinEvent = async (event?: Event) => {
+    if (!event) return;
+    try {
+      await joinEventAsync(event);
+      toastr.success('Success', 'You have joined the event');
+    } catch (e) {
+      toastr.error('Oooops!', e.message);
+    }
+  };
+
   return (
     <Segment.Group>
       <Segment basic attached='top' style={{ padding: 0, overflow: 'hidden' }}>
@@ -59,7 +74,9 @@ const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = ({
             {isGoing ? (
               <Button>Cancel My Place</Button>
             ) : (
-              <Button color='blue'>Join This Event</Button>
+              <Button color='blue' onClick={() => handleJoinEvent(event)}>
+                Join This Event
+              </Button>
             )}
           </React.Fragment>
         )}

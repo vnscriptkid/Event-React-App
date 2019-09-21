@@ -27,7 +27,11 @@ class EventListItem extends Component<Props> {
         <Segment>
           <Item.Group>
             <Item>
-              <Item.Image size='tiny' circular src={hostPhotoURL} />
+              <Item.Image
+                size='tiny'
+                circular
+                src={hostPhotoURL || '/assets/user.png'}
+              />
               <Item.Content>
                 <Item.Header>{title}</Item.Header>
                 <Item.Description>Hosted by {hostedBy}</Item.Description>

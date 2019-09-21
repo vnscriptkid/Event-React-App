@@ -8,7 +8,7 @@ export enum EventTypes {
 
 export interface Attendee {
   id: string;
-  name: string;
+  displayName: string;
   photoURL: string;
 }
 

@@ -11,8 +11,8 @@ import { Event } from '../eventContants';
 import { compose } from 'redux';
 import { withFirestore, WithFirestoreProps } from 'react-redux-firebase';
 import { toastr } from 'react-redux-toastr';
-import { DocumentSnapshot } from '@firebase/firestore-types';
 import { mergeKeyToObject } from '../../../app/common/utils/converter';
+import { joinEventAsync } from '../eventActions';
 
 export interface EventDetailedProps
   extends WithFirestoreProps,
@@ -20,6 +20,7 @@ export interface EventDetailedProps
   event: Event;
   eventId: string;
   auth: any;
+  joinEventAsync: typeof joinEventAsync;
 }
 
 export interface EventDetailedState {}
@@ -31,21 +32,27 @@ class _EventDetailed extends React.Component<
   EventDetailedState
 > {
   async componentDidMount() {
-    const { firestore, eventId } = this.props;
+    const { firestore, eventId, history } = this.props;
     try {
-      const eventDoc: DocumentSnapshot = (await firestore.get(
-        `events/${eventId}`
-      )) as any;
-      if (!eventDoc.exists) {
-        throw new Error('Event not found');
-      }
+      await firestore.setListener({
+        collection: `events`,
+        doc: eventId
+      });
     } catch (e) {
       toastr.error('Oooops!', e.message);
+      history.push(`/events`);
     }
   }
 
+  componentWillUnmount() {
+    this.props.firestore.unsetListener({
+      collection: `events`,
+      doc: this.props.eventId
+    });
+  }
+
   render() {
-    const { event, auth } = this.props;
+    const { event, auth, joinEventAsync } = this.props;
     let { attendees = {}, hostUid = null } = event || {};
     const attendeesArr = mergeKeyToObject(attendees);
     const isHost = auth.uid === hostUid;
@@ -57,6 +64,7 @@ class _EventDetailed extends React.Component<
             event={this.props.event}
             isHost={isHost}
             isGoing={isGoing}
+            joinEventAsync={joinEventAsync}
           />
           <EventDetailedInfo event={this.props.event} />
           <EventDetailedChat />
@@ -84,7 +92,14 @@ const mapStateToProps = (
   return { event, eventId, auth: state.firebase.auth };
 };
 
+const actions = {
+  joinEventAsync: joinEventAsync
+};
+
 export const EventDetailed = compose(
-  connect(mapStateToProps),
+  connect(
+    mapStateToProps,
+    actions
+  ),
   withFirestore
 )(_EventDetailed);
