@@ -3,7 +3,7 @@ import { Segment, Image, Button, Item, Header } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { convertTsToDate } from '../../../app/common/utils/datetime';
 import { Event } from '../eventContants';
-import { joinEventAsync } from '../eventActions';
+import { joinEventAsync, cancelGoingToEvent } from '../eventActions';
 import { toastr } from 'react-redux-toastr';
 
 export interface EventDetailedHeaderProps {
@@ -11,6 +11,7 @@ export interface EventDetailedHeaderProps {
   isHost: boolean;
   isGoing: boolean;
   joinEventAsync: typeof joinEventAsync;
+  cancelGoingToEvent: typeof cancelGoingToEvent;
 }
 
 const eventImageStyle = {
@@ -28,7 +29,8 @@ const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = ({
   event,
   isHost,
   isGoing,
-  joinEventAsync
+  joinEventAsync,
+  cancelGoingToEvent
 }) => {
   const { title = '', date = '', hostedBy = '', id = '' } = event || {};
 
@@ -39,6 +41,16 @@ const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = ({
       toastr.success('Success', 'You have joined the event');
     } catch (e) {
       toastr.error('Oooops!', e.message);
+    }
+  };
+
+  const handleCancelGoingToEvent = async (event?: Event) => {
+    if (!event) return;
+    try {
+      await cancelGoingToEvent(event);
+      toastr.success('Success', 'You have cancelled going to this event');
+    } catch (e) {
+      toastr.error('Oooops', e.message);
     }
   };
 
@@ -72,7 +84,9 @@ const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = ({
         {!isHost && (
           <React.Fragment>
             {isGoing ? (
-              <Button>Cancel My Place</Button>
+              <Button onClick={() => handleCancelGoingToEvent(event)}>
+                Cancel My Place
+              </Button>
             ) : (
               <Button color='blue' onClick={() => handleJoinEvent(event)}>
                 Join This Event

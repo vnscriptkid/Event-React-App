@@ -214,6 +214,31 @@ export const joinEventAsync = (event: Event) => {
   };
 };
 
+// cancel an event
+export const cancelGoingToEvent = (event: Event) => {
+  return async (dispatch: Dispatch<any>) => {
+    try {
+      const currentUser = firebase.auth().currentUser;
+      if (!currentUser) throw new Error('You are not authenticated');
+      // remove current logged user from /events/eventId/attendees
+      await firestore()
+        .collection(`events`)
+        .doc(event.id)
+        .update({
+          [`attendees.${currentUser.uid}`]: firestore.FieldValue.delete()
+        });
+
+      // remove one record from /event_attendee
+      await firestore()
+        .collection(`event_attendee`)
+        .doc(`${event.id}_${currentUser.uid}`)
+        .delete();
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
+};
+
 export type EventAction =
   | CreateEventAction
   | UpdateEventAction

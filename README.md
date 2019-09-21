@@ -20,6 +20,7 @@
 ### React
 
 - Handle loading Page that get data from parent (safe loading)
+- ComponentDidMount -> get the latest state of data
 
 ###### Break down the UI into components first
 
@@ -158,9 +159,14 @@
   > realtime firebase has no support for query
   > firestore has queries
 - Data consistency:
-- add vs set
+- add vs set vs update
   > add: new id is generated per doc
-  > set: update data for a doc, if not existed yet, create a new one
+  > set: update data for a doc, if not existed yet, create a new one (overwrite whole doc) (like PUT)
+  > update -> do partial update only (like PATCH)
+- doc = await firestore.get(`events/eventId`)
+  > fetch data then you're done, don't set up a listener (the case of firestoreConnect), don't need live data
+  > doc.data()
+  > return doc snapshot
 
 ### Firebase Authentication
 
@@ -175,6 +181,7 @@
   > config: userProfile: `users` -> attach user info (from firestore) into `firebase.profile`
 - firestoreConnect HOC specifies where to get data (what collection, doc, sub ...), then attaches data to `firestore.ordered`
 - withFirestore vs firestoreConnect ?
+  > withFirestore inject `firebase` & `firestore` object into Component props
 
 ### Social Login
 
@@ -192,9 +199,16 @@
 
 - Trick: Remove some props from object
   > const { a, b, ...preservedProps } = props;
+- Trick 2: Merge id as key to object `{ id: { ...data } }`
+  > Object.entries(obj)
+- Trick 3: Check empty object
+  > Object.keys(obj) === 0
 - Check if object is type of Date
   > instanceof Date
   > Object.prototype.toString.call(obj) === "[object Date]"
+- arr.some() vs arr.includes()
+  > some: used for array
+  > includes: used for primitive value
 
 ### Programming
 
@@ -202,6 +216,7 @@
   > Save Date as timestamp instead of string -> sort by order
 - Clean code:
   > modularize code: event.a = x; event.b = y; event.c = z -> newEvent = addEventProps(event, x, y, z)
+- turnOn() + turnOff() = toggle()
 
 ### Image processing on Client Side
 
@@ -219,6 +234,11 @@
 "url": "http://localhost:3000",
 "webRoot": "\${workspaceFolder}/src"
 }
+
+### User experience:
+
+- Should show a dialog of confirmation in case user do a serious action (cancel an event)
+  > toastr.confirm()
 
 ### Common mistakes:
 
