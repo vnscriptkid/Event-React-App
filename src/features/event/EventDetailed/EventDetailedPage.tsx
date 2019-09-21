@@ -19,6 +19,7 @@ export interface EventDetailedProps
     RouteComponentProps {
   event: Event;
   eventId: string;
+  auth: any;
 }
 
 export interface EventDetailedState {}
@@ -44,36 +45,24 @@ class _EventDetailed extends React.Component<
   }
 
   render() {
-    let {
-      title = '',
-      hostedBy = '',
-      description = '',
-      venue = '',
-      attendees = {},
-      id = '',
-      venueLatLng = undefined,
-      date = ''
-    } = this.props.event || {};
-    attendees = mergeKeyToObject(attendees);
+    const { event, auth } = this.props;
+    let { attendees = {}, hostUid = null } = event || {};
+    const attendeesArr = mergeKeyToObject(attendees);
+    const isHost = auth.uid === hostUid;
+    const isGoing = attendeesArr.some(a => a.id === auth.uid);
     return (
       <Grid>
         <Grid.Column width={10}>
           <EventDetailedHeader
-            id={id}
-            title={title}
-            date={date}
-            host={hostedBy}
+            event={this.props.event}
+            isHost={isHost}
+            isGoing={isGoing}
           />
-          <EventDetailedInfo
-            description={description}
-            venue={venue}
-            date={date}
-            venueLatLng={venueLatLng}
-          />
+          <EventDetailedInfo event={this.props.event} />
           <EventDetailedChat />
         </Grid.Column>
         <Grid.Column width={6}>
-          <EventDetailedSidebar attendees={attendees as any} />
+          <EventDetailedSidebar attendees={attendeesArr as any} />
         </Grid.Column>
       </Grid>
     );
@@ -85,14 +74,14 @@ const mapStateToProps = (
   ownProps: RouteComponentProps<Params>
 ) => {
   const { events = [] } = state.firestore.ordered;
-  let event = null;
   const eventId = ownProps.match.params.id;
+  let event = null;
 
   if (events.length > 0) {
     event = events.find((event: any) => event.id === eventId);
   }
 
-  return { event, eventId };
+  return { event, eventId, auth: state.firebase.auth };
 };
 
 export const EventDetailed = compose(

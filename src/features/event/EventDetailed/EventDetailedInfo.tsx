@@ -2,17 +2,16 @@ import React, { useState } from 'react';
 import { Segment, Grid, Icon, Button } from 'semantic-ui-react';
 import { EventDetailedMap } from './EventDetailedMap';
 import { convertTsToDateTime } from '../../../app/common/utils/datetime';
+import { Event } from '../eventContants';
 
 export interface EventDetailedInfoProps {
-  description: string;
-  venue: string;
-  date: string;
-  venueLatLng: google.maps.LatLngLiteral | undefined;
+  event?: Event;
 }
 
 const EventDetailedInfo: React.SFC<EventDetailedInfoProps> = props => {
   const [isMapOpen, toggleMap] = useState(false);
-  const { description, venue, date, venueLatLng } = props;
+  let { description = '', venue = '', date = '', venueLatLng } = (props.event ||
+    {}) as Partial<NonNullable<typeof props.event>>;
   return (
     <Segment.Group>
       <Segment>

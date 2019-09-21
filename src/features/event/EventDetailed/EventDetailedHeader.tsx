@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Segment, Image, Button, Item, Header } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { convertTsToDate } from '../../../app/common/utils/datetime';
+import { Event } from '../eventContants';
 
 export interface EventDetailedHeaderProps {
-  title: string;
-  date: string;
-  host: string;
-  id: string;
+  event?: Event;
+  isHost: boolean;
+  isGoing: boolean;
 }
 
 const eventImageStyle = {
@@ -21,8 +21,12 @@ const eventImageTextStyle = {
   color: 'white'
 };
 
-const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = props => {
-  const { title, date, host, id } = props;
+const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = ({
+  event,
+  isHost,
+  isGoing
+}) => {
+  const { title = '', date = '', hostedBy = '', id = '' } = event || {};
   return (
     <Segment.Group>
       <Segment basic attached='top' style={{ padding: 0, overflow: 'hidden' }}>
@@ -42,16 +46,23 @@ const EventDetailedHeader: React.SFC<EventDetailedHeaderProps> = props => {
                 />
                 <p>{date && convertTsToDate(date as any)}</p>
                 <p>
-                  Hosted by <strong>{host}</strong>
+                  Hosted by <strong>{hostedBy}</strong>
                 </p>
               </Item.Content>
             </Item>
           </Item.Group>
         </Segment>
       </Segment>
-      <Segment attached='bottom'>
-        <Button>Cancel My Place</Button>
-        <Button color='blue'>Join This Event</Button>
+      <Segment attached='bottom' clearing>
+        {!isHost && (
+          <React.Fragment>
+            {isGoing ? (
+              <Button>Cancel My Place</Button>
+            ) : (
+              <Button color='blue'>Join This Event</Button>
+            )}
+          </React.Fragment>
+        )}
         <Button as={Link} to={`/manage/${id}`} color='orange' floated='right'>
           Manage Event
         </Button>
