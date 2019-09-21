@@ -1,4 +1,4 @@
-export const mergeKeyToObject = (object: any) => {
+export const mergeKeyToObject = (object: any): any[] => {
   // input: { '123': { name: 'thanh' }, '234': { name: 'dung' } }
   // [ [ '123', { name: 'thanh' } ], [ '234', { name: 'dung' } ] ]
   // output: [{ id: '123', name: 'thanh' }, { id: '234', name: dung }]

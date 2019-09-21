@@ -28,7 +28,11 @@ import { AutocompleteInput } from '../../../app/common/form/AutocompleteInput';
 import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { toastr } from 'react-redux-toastr';
 import { compose } from 'redux';
-import { withFirestore, WithFirestoreProps } from 'react-redux-firebase';
+import {
+  withFirestore,
+  WithFirestoreProps,
+  ReduxFirestoreQuerySetting
+} from 'react-redux-firebase';
 
 interface Props extends RouteComponentProps, WithFirestoreProps {
   createEvent: typeof createEvent;
@@ -79,6 +83,7 @@ const validate = combineValidators({
 type AllProps = Props & InjectedFormProps;
 
 class _EventForm extends Component<AllProps, State> {
+  eventItemListener: ReduxFirestoreQuerySetting | undefined;
   constructor(props: AllProps) {
     super(props);
     this.state = {
@@ -93,11 +98,18 @@ class _EventForm extends Component<AllProps, State> {
     // case of update form
     if (eventId) {
       try {
-        await firestore.setListener({ collection: `events`, doc: eventId });
+        this.eventItemListener = { collection: `events`, doc: eventId };
+        await firestore.setListener(this.eventItemListener);
       } catch (e) {
         toastr.error('Ooops', e.message);
         history.push('/events');
       }
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.eventItemListener) {
+      this.props.firestore.unsetListener(this.eventItemListener);
     }
   }
 
