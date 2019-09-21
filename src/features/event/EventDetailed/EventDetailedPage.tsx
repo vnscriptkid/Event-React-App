@@ -18,6 +18,7 @@ export interface EventDetailedProps
   extends WithFirestoreProps,
     RouteComponentProps {
   event: Event;
+  eventId: string;
 }
 
 export interface EventDetailedState {}
@@ -29,23 +30,16 @@ class _EventDetailed extends React.Component<
   EventDetailedState
 > {
   async componentDidMount() {
-    const {
-      firestore,
-      match: { params },
-      event
-    } = this.props;
-    if (!event) {
-      try {
-        const eventId = (params as Params).id;
-        const eventDoc: DocumentSnapshot = (await firestore.get(
-          `events/${eventId}`
-        )) as any;
-        if (!eventDoc.exists) {
-          throw new Error('Event not found');
-        }
-      } catch (e) {
-        toastr.error('Oooops!', e.message);
+    const { firestore, eventId } = this.props;
+    try {
+      const eventDoc: DocumentSnapshot = (await firestore.get(
+        `events/${eventId}`
+      )) as any;
+      if (!eventDoc.exists) {
+        throw new Error('Event not found');
       }
+    } catch (e) {
+      toastr.error('Oooops!', e.message);
     }
   }
 
@@ -92,12 +86,13 @@ const mapStateToProps = (
 ) => {
   const { events = [] } = state.firestore.ordered;
   let event = null;
+  const eventId = ownProps.match.params.id;
 
   if (events.length > 0) {
-    event = events.find((event: any) => event.id === ownProps.match.params.id);
+    event = events.find((event: any) => event.id === eventId);
   }
 
-  return { event };
+  return { event, eventId };
 };
 
 export const EventDetailed = compose(

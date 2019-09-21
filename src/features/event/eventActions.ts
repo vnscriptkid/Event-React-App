@@ -150,6 +150,23 @@ export const updateEventAsync = (id: string, data: Partial<Event>): any => {
   };
 };
 
+// cancel event async
+export const toggleEventCancelAsync = (id: string, cancelled: boolean) => {
+  return async (dispatch: any) => {
+    try {
+      await firestore()
+        .collection(`events`)
+        .doc(id)
+        .update({
+          cancelled
+        });
+    } catch (e) {
+      console.log(e);
+      throw new Error(e);
+    }
+  };
+};
+
 // Delete Event
 export interface DeleteEventAction {
   type: EventTypes.DeleteEvent;

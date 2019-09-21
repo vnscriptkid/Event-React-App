@@ -15,7 +15,8 @@ import {
   createEvent,
   updateEvent,
   createEventAsync,
-  updateEventAsync
+  updateEventAsync,
+  toggleEventCancelAsync
 } from '../eventActions';
 import { Event } from '../eventContants';
 import { reduxForm, InjectedFormProps, Field } from 'redux-form';
@@ -28,13 +29,15 @@ import { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { toastr } from 'react-redux-toastr';
 import { compose } from 'redux';
 import { withFirestore, WithFirestoreProps } from 'react-redux-firebase';
-import { DocumentSnapshot } from '@firebase/firestore-types';
 
 interface Props extends RouteComponentProps, WithFirestoreProps {
   createEvent: typeof createEvent;
   updateEvent: typeof updateEvent;
   createEventAsync: typeof createEventAsync;
   updateEventAsync: typeof updateEventAsync;
+  toggleEventCancelAsync: typeof toggleEventCancelAsync;
+  event: Event;
+  eventId: string;
 }
 
 interface State {
@@ -85,22 +88,12 @@ class _EventForm extends Component<AllProps, State> {
   }
 
   async componentDidMount() {
-    const {
-      match: { params },
-      firestore,
-      history,
-      initialValues
-    } = this.props;
-    const eventId = (params as any).id;
+    const { firestore, history, eventId } = this.props;
 
-    if (eventId && initialValues) {
+    // case of update form
+    if (eventId) {
       try {
-        const eventDoc: DocumentSnapshot = (await firestore.get(
-          `events/${eventId}`
-        )) as any;
-        if (!eventDoc.exists) {
-          throw new Error('Event not found');
-        }
+        await firestore.setListener({ collection: `events`, doc: eventId });
       } catch (e) {
         toastr.error('Ooops', e.message);
         history.push('/events');
@@ -112,7 +105,14 @@ class _EventForm extends Component<AllProps, State> {
     // values.date now is a Date (JS native) object
     if (values.id) {
       // update form
-      const { cityLatLng, venueLatLng, ...valuesToUpdate } = values;
+      const { ...valuesToUpdate } = values;
+      const { cityLatlng, venueLatLng } = this.state;
+      if (cityLatlng) {
+        valuesToUpdate.cityLatLng = cityLatlng;
+      }
+      if (venueLatLng) {
+        valuesToUpdate.venueLatLng = venueLatLng;
+      }
       await this.props.updateEventAsync(values.id, valuesToUpdate);
       this.props.history.push(`/events/${values.id}`);
     } else {
@@ -146,6 +146,16 @@ class _EventForm extends Component<AllProps, State> {
     );
   };
 
+  handleToggleCancel = async () => {
+    const { id, cancelled } = this.props.event;
+    try {
+      await this.props.toggleEventCancelAsync(id as string, !cancelled);
+      toastr.success('Success', `Event has been updated`);
+    } catch (e) {
+      toastr.error('Ooops!', e.message);
+    }
+  };
+
   getGeocodeByAddress = (address: string, cb: Function): void => {
     geocodeByAddress(address)
       .then(results => results[0])
@@ -159,8 +169,10 @@ class _EventForm extends Component<AllProps, State> {
       initialValues,
       invalid,
       submitting,
-      pristine
+      pristine,
+      event
     } = this.props;
+    const isUpdateForm = event.id;
 
     let venueOptions = {};
     if (this.state.cityLatlng) {
@@ -243,6 +255,17 @@ class _EventForm extends Component<AllProps, State> {
               >
                 Cancel
               </Button>
+              {isUpdateForm && (
+                <Button
+                  type='button'
+                  color={event.cancelled ? 'green' : 'red'}
+                  onClick={this.handleToggleCancel}
+                  floated='right'
+                  content={
+                    event.cancelled ? 'Reactivate Event' : 'Cancel Event'
+                  }
+                ></Button>
+              )}
             </Form>
           </Segment>
         </Grid.Column>
@@ -265,11 +288,12 @@ const mapStateToProps = (
   };
   const eventId = ownProps.match.params.id;
   const { events = [] } = state.firestore.ordered;
-  const foundEvent = events.find((event: Event) => event.id === eventId);
+  const foundEvent: Event =
+    events.find((event: Event) => event.id === eventId) || {};
   if (foundEvent) {
     initialValues = foundEvent;
   }
-  return { initialValues };
+  return { initialValues, event: foundEvent, eventId };
 };
 
 export const EventForm = compose(
@@ -280,7 +304,8 @@ export const EventForm = compose(
       createEvent,
       updateEvent,
       createEventAsync,
-      updateEventAsync
+      updateEventAsync,
+      toggleEventCancelAsync
     }
   ),
   reduxForm({ form: 'event', validate, enableReinitialize: true })
