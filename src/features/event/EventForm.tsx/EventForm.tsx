@@ -146,14 +146,21 @@ class _EventForm extends Component<AllProps, State> {
     );
   };
 
-  handleToggleCancel = async () => {
+  handleToggleCancel = () => {
     const { id, cancelled } = this.props.event;
-    try {
-      await this.props.toggleEventCancelAsync(id as string, !cancelled);
-      toastr.success('Success', `Event has been updated`);
-    } catch (e) {
-      toastr.error('Ooops!', e.message);
-    }
+    const message = cancelled
+      ? 'You will reactive this event, are you sure'
+      : 'Are you sure to cancel this event';
+    toastr.confirm(message, {
+      onOk: async () => {
+        try {
+          await this.props.toggleEventCancelAsync(id as string, !cancelled);
+          toastr.success('Success', `Event has been updated`);
+        } catch (e) {
+          toastr.error('Ooops!', e.message);
+        }
+      }
+    });
   };
 
   getGeocodeByAddress = (address: string, cb: Function): void => {
