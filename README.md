@@ -263,3 +263,8 @@
   - event_attendee: lookup table
 - Question to ask
   > What if user change their photoURL, photoURL that is inside embeded doc would not be updated instantly
+
+### React LazyLoad
+
+> Why: Better user experience, better performance
+> How: Defer loading of resources

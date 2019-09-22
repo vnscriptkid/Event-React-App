@@ -12,19 +12,24 @@ import { UserDetailedEvents } from './UserDetailedEvents';
 import { RouteComponentProps } from 'react-router';
 import { userDetailedQueryFactory } from './userQueries';
 import { UserDetailedSidebar } from './UserDetailedSidebar';
+import { Loading } from '../../../app/layout/Loading';
 
 export interface UserDetailedProps extends WithFirestoreProps {
   profile: UserProfile;
   photos: any[];
   userProfile: any;
   isMyProfile: boolean;
+  requesting: boolean;
 }
 
 const _UserDetailed: React.SFC<UserDetailedProps> = ({
   userProfile,
   photos = [],
-  isMyProfile
+  isMyProfile,
+  requesting
 }) => {
+  const dataLoading = Object.values(requesting).some(i => i === true);
+  if (dataLoading) return <Loading />;
   return (
     <Grid>
       {/* General info */}
@@ -48,9 +53,9 @@ const mapState = (
   profile: state.firebase.profile,
   photos: state.firestore.ordered.photos,
   userId: ownProps.match.params.id,
-  loggedUserId: state.firebase.auth.uid,
   userProfile: state.firestore.data.userProfile,
-  isMyProfile: ownProps.match.params.id === state.firebase.auth.uid
+  isMyProfile: ownProps.match.params.id === state.firebase.auth.uid,
+  requesting: state.firestore.status.requesting
 });
 
 const UserDetailed = compose(
