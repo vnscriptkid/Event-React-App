@@ -3,7 +3,7 @@ export enum EventTypes {
   DeleteEvent,
   UpdateEvent,
   FetchEvents,
-  SaveEvents
+  SaveEvents = 'SAVE_EVENTS'
 }
 
 export interface Attendee {

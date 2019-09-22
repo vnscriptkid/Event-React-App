@@ -6,17 +6,28 @@ import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
 import { Loading } from '../../../app/layout/Loading';
 import { EventActivity } from '../EventActivity/EventActivity';
-import { compose } from 'redux';
-import { firestoreConnect, isLoaded } from 'react-redux-firebase';
+import { getEventsForDashboard } from '../eventActions';
+import { toastr } from 'react-redux-toastr';
+import { createAsyncId } from '../../async/asyncReducer';
+import { AsyncActionName } from '../../async/asyncConstants';
 
 interface Props {
   events: Event[];
   loading: boolean;
+  getEventsForDashboard: typeof getEventsForDashboard;
 }
 
 export class _EventDashboard extends Component<Props, {}> {
+  async componentDidMount() {
+    try {
+      await this.props.getEventsForDashboard();
+    } catch (e) {
+      toastr.error('Oooops', 'Can not fetch events');
+    }
+  }
+
   render() {
-    if (!isLoaded(this.props.events)) return <Loading />;
+    if (this.props.loading) return <Loading />;
     return (
       <Grid>
         <Grid.Column width={10}>
@@ -33,12 +44,23 @@ export class _EventDashboard extends Component<Props, {}> {
   }
 }
 
-const mapStateToProps = (state: StoreState) => ({
-  events: state.firestore.ordered.events,
-  loading: state.async.loading
-});
+const mapStateToProps = (state: StoreState) => {
+  const eventLoadingId = createAsyncId({
+    actionName: AsyncActionName.FetchEvents
+  });
+  const eventloadingState =
+    state.async[eventLoadingId] && state.async[eventLoadingId].loading;
+  return {
+    events: state.events,
+    loading: eventloadingState
+  };
+};
 
-export const EventDashboard = compose(
-  firestoreConnect(() => ['events']),
-  connect(mapStateToProps)
-)(_EventDashboard);
+const actions = {
+  getEventsForDashboard
+};
+
+export const EventDashboard = connect(
+  mapStateToProps,
+  actions
+)(_EventDashboard as any);

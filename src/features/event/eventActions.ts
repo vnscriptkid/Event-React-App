@@ -1,15 +1,16 @@
 import { EventTypes, Event } from './eventContants';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { fetchEventsFromApi } from '../../app/data/eventsApi';
+import { toastr } from 'react-redux-toastr';
+import { firebase } from '../../app/config/firebase';
+import { Dispatch } from 'react';
 import {
   startAsyncAction,
   finishAsyncAction,
   errorAsyncAction
 } from '../async/asyncActions';
-import { fetchEventsFromApi } from '../../app/data/eventsApi';
-import { toastr } from 'react-redux-toastr';
-import { firebase } from '../../app/config/firebase';
-import { Dispatch } from 'react';
+import { AsyncActionName } from '../async/asyncConstants';
 const { firestore } = firebase;
 
 // Fetch Event Async
@@ -20,14 +21,35 @@ export const fetchEvents = (): ThunkAction<
   AnyAction
 > => {
   return async (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-    // dispatch(startAsyncAction());
     try {
       const events: Event[] = await fetchEventsFromApi();
       dispatch(saveEvents(events));
-      // dispatch(finishAsyncAction());
     } catch (e) {
       console.log(e);
-      // dispatch(errorAsyncAction());
+    }
+  };
+};
+
+export const getEventsForDashboard = () => {
+  return async (dispatch: Dispatch<any>) => {
+    const now = new Date();
+    try {
+      dispatch(startAsyncAction({ actionName: AsyncActionName.FetchEvents }));
+      const querySnapshot = await firestore()
+        .collection(`events`)
+        .where('date', '>=', now)
+        .get();
+      const eventDocs = querySnapshot.docs;
+      const events: Event[] = eventDocs.map(
+        doc => ({ ...doc.data(), id: doc.id } as Event)
+      );
+      // save to store
+      dispatch(saveEvents(events));
+      dispatch(finishAsyncAction({ actionName: AsyncActionName.FetchEvents }));
+    } catch (e) {
+      console.log(e);
+      dispatch(errorAsyncAction({ actionName: AsyncActionName.FetchEvents }));
+      throw new Error(e);
     }
   };
 };

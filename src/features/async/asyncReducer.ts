@@ -34,9 +34,12 @@ export const asyncReducer = (state = initialState, action: AsyncAction) => {
         }
       };
     case AsyncActionType.Error:
+      const asyncIdError = createAsyncId(action.payload);
       return {
         ...state,
-        loading: false
+        [asyncIdError]: {
+          loading: false
+        }
       };
   }
   return state;

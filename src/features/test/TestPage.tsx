@@ -6,7 +6,6 @@ import {
   decrementCounter,
   incrementAsync
 } from './testActions';
-import { LocationSearchInput } from './Autocomplete';
 import { Button } from 'semantic-ui-react';
 import { openModal } from '../modals/modalActions';
 import { AsyncActionPayload } from '../async/asyncActions';

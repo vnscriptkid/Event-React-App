@@ -36,10 +36,14 @@ export const finishAsyncAction = (
 
 export interface AsyncErrorAction {
   type: AsyncActionType.Error;
+  payload: AsyncActionPayload;
 }
 
-export const errorAsyncAction = (): AsyncErrorAction => ({
-  type: AsyncActionType.Error
+export const errorAsyncAction = (
+  payload: AsyncActionPayload
+): AsyncErrorAction => ({
+  type: AsyncActionType.Error,
+  payload
 });
 
 // async action

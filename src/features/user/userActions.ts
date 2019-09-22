@@ -37,7 +37,6 @@ export const updateProfile = (profile: Partial<UserProfile>) => {
 
 export const updateUserImage = (image: any, imageName: string) => {
   return async (dispatch: Dispatch<any>, ...rest: any) => {
-    console.log(rest);
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) return;
     const path = `${currentUser.uid}/user_images`;
