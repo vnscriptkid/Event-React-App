@@ -11,6 +11,7 @@ import {
   errorAsyncAction
 } from '../async/asyncActions';
 import { AsyncActionName } from '../async/asyncConstants';
+import { QueryDocumentSnapshot } from '@firebase/firestore-types';
 const { firestore } = firebase;
 
 // Fetch Event Async
@@ -30,16 +31,34 @@ export const fetchEvents = (): ThunkAction<
   };
 };
 
-export const getEventsForDashboard = () => {
+export const getEventsForDashboard = (
+  lastEvent?: { id: string },
+  limit = 2
+) => {
   return async (dispatch: Dispatch<any>) => {
-    const now = new Date();
     try {
+      const now = new Date();
       dispatch(startAsyncAction({ actionName: AsyncActionName.FetchEvents }));
-      const querySnapshot = await firestore()
-        .collection(`events`)
-        .where('date', '>=', now)
-        .get();
-      const eventDocs = querySnapshot.docs;
+      const eventsRef = await firestore().collection(`events`);
+
+      let query;
+
+      const startAfter = lastEvent && (await eventsRef.doc(lastEvent.id).get());
+
+      lastEvent
+        ? (query = await eventsRef
+            .where('date', '>=', now)
+            .orderBy('date')
+            .startAfter(startAfter)
+            .limit(limit))
+        : (query = await eventsRef
+            .where('date', '>=', now)
+            .orderBy('date')
+            .limit(limit));
+
+      const eventSnapShot = await query.get();
+      const eventDocs = eventSnapShot.docs;
+
       const events: Event[] = eventDocs.map(
         doc => ({ ...doc.data(), id: doc.id } as Event)
       );

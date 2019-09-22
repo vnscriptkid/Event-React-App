@@ -167,6 +167,8 @@
   > fetch data then you're done, don't set up a listener (the case of firestoreConnect), don't need live data
   > doc.data()
   > return doc snapshot
+- Pagination
+  > By query cursor
 
 ### Firebase Authentication
 
