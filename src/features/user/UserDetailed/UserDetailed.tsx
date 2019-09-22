@@ -33,9 +33,10 @@ const _UserDetailed: React.SFC<UserDetailedProps> = ({
   history
 }) => {
   const dataLoading =
-    Object.keys(requesting).length &&
+    Object.keys(requesting).length === 0 ||
     Object.values(requesting).some(i => i === true);
   if (dataLoading) return <Loading />;
+
   if (!userProfile) {
     toastr.error('Error', 'Can not fetch user profile');
     history.push('/events');
