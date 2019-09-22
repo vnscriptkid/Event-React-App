@@ -1,21 +1,35 @@
 import { AsyncActionType } from './asyncConstants';
 
+// async action payload
+export interface AsyncActionPayload {
+  actionName: string;
+  actionId?: string;
+}
+
 // async start
 export interface AsyncStartAction {
   type: AsyncActionType.Start;
+  payload: AsyncActionPayload;
 }
 
-export const startAsyncAction = (): AsyncStartAction => ({
-  type: AsyncActionType.Start
+export const startAsyncAction = (
+  payload: AsyncActionPayload
+): AsyncStartAction => ({
+  type: AsyncActionType.Start,
+  payload
 });
 
 // async finish
 export interface AsyncFinishAction {
   type: AsyncActionType.Finish;
+  payload: AsyncActionPayload;
 }
 
-export const finishAsyncAction = (): AsyncFinishAction => ({
-  type: AsyncActionType.Finish
+export const finishAsyncAction = (
+  payload: AsyncActionPayload
+): AsyncFinishAction => ({
+  type: AsyncActionType.Finish,
+  payload
 });
 
 // async error

@@ -20,13 +20,14 @@ export const fetchEvents = (): ThunkAction<
   AnyAction
 > => {
   return async (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-    dispatch(startAsyncAction());
+    // dispatch(startAsyncAction());
     try {
       const events: Event[] = await fetchEventsFromApi();
       dispatch(saveEvents(events));
-      dispatch(finishAsyncAction());
+      // dispatch(finishAsyncAction());
     } catch (e) {
-      dispatch(errorAsyncAction());
+      console.log(e);
+      // dispatch(errorAsyncAction());
     }
   };
 };

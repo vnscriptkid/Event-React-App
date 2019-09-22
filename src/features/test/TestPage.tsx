@@ -9,14 +9,24 @@ import {
 import { LocationSearchInput } from './Autocomplete';
 import { Button } from 'semantic-ui-react';
 import { openModal } from '../modals/modalActions';
+import { AsyncActionPayload } from '../async/asyncActions';
+import { createAsyncId } from '../async/asyncReducer';
 
 export interface TestPageProps {
   counter: number;
   incrementCounter: typeof incrementCounter;
   decrementCounter: typeof decrementCounter;
-  incrementAsync: any;
+  incrementAsync: typeof incrementAsync;
   openModal: typeof openModal;
   loading: boolean;
+}
+
+function getAsyncState(async: any, payload: AsyncActionPayload) {
+  return (
+    async &&
+    async[createAsyncId(payload)] &&
+    async[createAsyncId(payload)].loading
+  );
 }
 
 const _TestPage: React.SFC<TestPageProps> = props => {
@@ -24,11 +34,28 @@ const _TestPage: React.SFC<TestPageProps> = props => {
     <div>
       <div>
         <Button
-          loading={props.loading}
+          loading={getAsyncState(props.loading, {
+            actionName: 'increment',
+            actionId: '1'
+          })}
           color='green'
-          onClick={props.incrementAsync}
+          onClick={() =>
+            props.incrementAsync({ actionName: 'increment', actionId: '1' })
+          }
         >
-          Increment Async
+          Increment Async 1
+        </Button>
+        <Button
+          loading={getAsyncState(props.loading, {
+            actionName: 'increment',
+            actionId: '2'
+          })}
+          color='green'
+          onClick={() =>
+            props.incrementAsync({ actionName: 'increment', actionId: '2' })
+          }
+        >
+          Increment Async 2
         </Button>
       </div>
       <Button
@@ -42,7 +69,7 @@ const _TestPage: React.SFC<TestPageProps> = props => {
       >
         Open Modal
       </Button>
-      <LocationSearchInput />
+      {/* <LocationSearchInput /> */}
       Test: {props.counter}
       <div>
         <button onClick={() => props.incrementCounter()}>Increment</button>
@@ -57,7 +84,7 @@ const _TestPage: React.SFC<TestPageProps> = props => {
 const mapStateToProps = (state: StoreState) => {
   return {
     counter: state.counter,
-    loading: state.async.loading
+    loading: state.async
   };
 };
 
@@ -69,6 +96,6 @@ const TestPage = connect(
     openModal,
     incrementAsync
   }
-)(_TestPage);
+)(_TestPage as any);
 
 export { TestPage };

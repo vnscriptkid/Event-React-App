@@ -4,11 +4,11 @@ import { reset, SubmissionError } from 'redux-form';
 import { toastr } from 'react-redux-toastr';
 import { UserProfile } from './userConstants';
 import { Dispatch } from 'react';
-import {
-  startAsyncAction,
-  finishAsyncAction,
-  errorAsyncAction
-} from '../async/asyncActions';
+// import {
+//   startAsyncAction,
+//   finishAsyncAction,
+//   errorAsyncAction
+// } from '../async/asyncActions';
 const { firestore } = firebase;
 
 // Update Profile
@@ -41,7 +41,7 @@ export const updateUserImage = (image: any, imageName: string) => {
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) return;
     const path = `${currentUser.uid}/user_images`;
-    dispatch(startAsyncAction());
+    // dispatch(startAsyncAction());
 
     const imageName: string = `${currentUser.uid}_${Date.now()}.jpeg`;
 
@@ -82,10 +82,10 @@ export const updateUserImage = (image: any, imageName: string) => {
           name: imageName,
           url: downloadURL
         });
-      dispatch(finishAsyncAction());
+      // dispatch(finishAsyncAction());
     } catch (e) {
       // bubble up the error
-      dispatch(errorAsyncAction());
+      // dispatch(errorAsyncAction());
       throw new Error(e);
     }
   };
