@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid } from 'semantic-ui-react';
+import { Grid, Button } from 'semantic-ui-react';
 import EventListItem from '../EventList/EventListItem';
 import { Event } from '../eventContants';
 import { connect } from 'react-redux';
@@ -10,6 +10,7 @@ import { getEventsForDashboard } from '../eventActions';
 import { toastr } from 'react-redux-toastr';
 import { createAsyncId } from '../../async/asyncReducer';
 import { AsyncActionName } from '../../async/asyncConstants';
+import { EVENTS_PAGINATION } from '../../../config';
 
 interface Props {
   events: Event[];
@@ -17,14 +18,37 @@ interface Props {
   getEventsForDashboard: typeof getEventsForDashboard;
 }
 
-export class _EventDashboard extends Component<Props, {}> {
+export class _EventDashboard extends Component<Props, { moreEvents: boolean }> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      moreEvents: true
+    };
+  }
+
   async componentDidMount() {
     try {
-      await this.props.getEventsForDashboard();
+      const querySnapshot: any = await this.props.getEventsForDashboard();
+      this.checkLastBatch(querySnapshot);
     } catch (e) {
       toastr.error('Oooops', 'Can not fetch events');
     }
   }
+
+  checkLastBatch(queryReturned: any) {
+    const isLastBatch = queryReturned.docs.length < EVENTS_PAGINATION;
+    if (isLastBatch) {
+      this.setState({ moreEvents: false });
+    }
+  }
+
+  loadMoreEvents = async () => {
+    const lastEvent = this.props.events[this.props.events.length - 1];
+    const querySnapshot: any = await this.props.getEventsForDashboard(
+      lastEvent as any
+    );
+    this.checkLastBatch(querySnapshot);
+  };
 
   render() {
     if (this.props.loading) return <Loading />;
@@ -35,6 +59,9 @@ export class _EventDashboard extends Component<Props, {}> {
             this.props.events.map(event => (
               <EventListItem key={event.id} event={event} />
             ))}
+          {this.state.moreEvents && (
+            <Button onClick={this.loadMoreEvents}>Load More</Button>
+          )}
         </Grid.Column>
         <Grid.Column width={6}>
           <EventActivity />

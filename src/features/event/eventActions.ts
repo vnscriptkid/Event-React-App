@@ -11,7 +11,7 @@ import {
   errorAsyncAction
 } from '../async/asyncActions';
 import { AsyncActionName } from '../async/asyncConstants';
-import { QueryDocumentSnapshot } from '@firebase/firestore-types';
+import { EVENTS_PAGINATION } from '../../config';
 const { firestore } = firebase;
 
 // Fetch Event Async
@@ -33,9 +33,11 @@ export const fetchEvents = (): ThunkAction<
 
 export const getEventsForDashboard = (
   lastEvent?: { id: string },
-  limit = 2
+  limit = EVENTS_PAGINATION
 ) => {
-  return async (dispatch: Dispatch<any>) => {
+  return async (
+    dispatch: Dispatch<any>
+  ): Promise<firebase.firestore.QuerySnapshot> => {
     try {
       const now = new Date();
       dispatch(startAsyncAction({ actionName: AsyncActionName.FetchEvents }));
@@ -47,17 +49,25 @@ export const getEventsForDashboard = (
 
       lastEvent
         ? (query = await eventsRef
-            .where('date', '>=', now)
+            // .where('date', '>=', now)
             .orderBy('date')
             .startAfter(startAfter)
             .limit(limit))
         : (query = await eventsRef
-            .where('date', '>=', now)
+            // .where('date', '>=', now)
             .orderBy('date')
             .limit(limit));
 
-      const eventSnapShot = await query.get();
-      const eventDocs = eventSnapShot.docs;
+      const querySnapshot = await query.get();
+      const eventDocs = querySnapshot.docs;
+
+      // out of events
+      if (eventDocs.length === 0) {
+        dispatch(
+          finishAsyncAction({ actionName: AsyncActionName.FetchEvents })
+        );
+        return querySnapshot;
+      }
 
       const events: Event[] = eventDocs.map(
         doc => ({ ...doc.data(), id: doc.id } as Event)
@@ -65,6 +75,7 @@ export const getEventsForDashboard = (
       // save to store
       dispatch(saveEvents(events));
       dispatch(finishAsyncAction({ actionName: AsyncActionName.FetchEvents }));
+      return querySnapshot;
     } catch (e) {
       console.log(e);
       dispatch(errorAsyncAction({ actionName: AsyncActionName.FetchEvents }));
