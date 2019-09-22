@@ -13,8 +13,11 @@ import { RouteComponentProps } from 'react-router';
 import { userDetailedQueryFactory } from './userQueries';
 import { UserDetailedSidebar } from './UserDetailedSidebar';
 import { Loading } from '../../../app/layout/Loading';
+import { toastr } from 'react-redux-toastr';
 
-export interface UserDetailedProps extends WithFirestoreProps {
+export interface UserDetailedProps
+  extends WithFirestoreProps,
+    RouteComponentProps {
   profile: UserProfile;
   photos: any[];
   userProfile: any;
@@ -26,21 +29,23 @@ const _UserDetailed: React.SFC<UserDetailedProps> = ({
   userProfile,
   photos = [],
   isMyProfile,
-  requesting
+  requesting,
+  history
 }) => {
-  const dataLoading = Object.values(requesting).some(i => i === true);
+  const dataLoading =
+    Object.keys(requesting).length &&
+    Object.values(requesting).some(i => i === true);
   if (dataLoading) return <Loading />;
+  if (!userProfile) {
+    toastr.error('Error', 'Can not fetch user profile');
+    history.push('/events');
+  }
   return (
     <Grid>
-      {/* General info */}
       <UserDetailedHeader userProfile={userProfile} />
-      {/* About Section */}
       <UserDetailedAbout userProfile={userProfile} />
-      {/* Edit Section */}
       <UserDetailedSidebar isMyProfile={isMyProfile} />
-      {/* User Photos Section */}
       <UserDetailedPhotos photos={photos} />
-      {/* Events Section */}
       <UserDetailedEvents />
     </Grid>
   );
