@@ -18,17 +18,26 @@ interface Props {
   getEventsForDashboard: typeof getEventsForDashboard;
 }
 
-export class _EventDashboard extends Component<Props, { moreEvents: boolean }> {
+export class _EventDashboard extends Component<
+  Props,
+  { moreEvents: boolean; initialLoading: boolean }
+> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      moreEvents: true
+      moreEvents: true,
+      initialLoading: true
     };
   }
 
   async componentDidMount() {
+    if (this.props.events.length) {
+      this.setState({ initialLoading: false });
+      return;
+    }
     try {
       const querySnapshot: any = await this.props.getEventsForDashboard();
+      this.setState({ initialLoading: false });
       this.checkLastBatch(querySnapshot);
     } catch (e) {
       toastr.error('Oooops', 'Can not fetch events');
@@ -51,7 +60,7 @@ export class _EventDashboard extends Component<Props, { moreEvents: boolean }> {
   };
 
   render() {
-    if (this.props.loading) return <Loading />;
+    if (this.state.initialLoading) return <Loading />;
     return (
       <Grid>
         <Grid.Column width={10}>
@@ -60,7 +69,14 @@ export class _EventDashboard extends Component<Props, { moreEvents: boolean }> {
               <EventListItem key={event.id} event={event} />
             ))}
           {this.state.moreEvents && (
-            <Button onClick={this.loadMoreEvents}>Load More</Button>
+            <Button
+              color='green'
+              disabled={this.props.loading}
+              loading={this.props.loading}
+              onClick={this.loadMoreEvents}
+            >
+              Load More
+            </Button>
           )}
         </Grid.Column>
         <Grid.Column width={6}>
