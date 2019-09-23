@@ -80,4 +80,4 @@ class EventListItem extends Component<Props> {
   }
 }
 
-export default EventListItem;
+export { EventListItem };

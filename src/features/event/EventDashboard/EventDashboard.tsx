@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Grid, Button } from 'semantic-ui-react';
-import EventListItem from '../EventList/EventListItem';
+import { Grid, Button, Loader } from 'semantic-ui-react';
+import { EventListItem } from '../EventList/EventListItem';
 import { Event } from '../eventContants';
 import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
@@ -11,6 +11,7 @@ import { toastr } from 'react-redux-toastr';
 import { createAsyncId } from '../../async/asyncReducer';
 import { AsyncActionName } from '../../async/asyncConstants';
 import { EVENTS_PAGINATION } from '../../../config';
+import { EventList } from '../EventList/EventList';
 
 interface Props {
   events: Event[];
@@ -20,12 +21,12 @@ interface Props {
 
 export class _EventDashboard extends Component<
   Props,
-  { moreEvents: boolean; initialLoading: boolean }
+  { hasMoreEvents: boolean; initialLoading: boolean }
 > {
   constructor(props: Props) {
     super(props);
     this.state = {
-      moreEvents: true,
+      hasMoreEvents: true,
       initialLoading: true
     };
   }
@@ -47,7 +48,7 @@ export class _EventDashboard extends Component<
   checkLastBatch(queryReturned: any) {
     const isLastBatch = queryReturned.docs.length < EVENTS_PAGINATION;
     if (isLastBatch) {
-      this.setState({ moreEvents: false });
+      this.setState({ hasMoreEvents: false });
     }
   }
 
@@ -64,23 +65,18 @@ export class _EventDashboard extends Component<
     return (
       <Grid>
         <Grid.Column width={10}>
-          {this.props.events &&
-            this.props.events.map(event => (
-              <EventListItem key={event.id} event={event} />
-            ))}
-          {this.state.moreEvents && (
-            <Button
-              color='green'
-              disabled={this.props.loading}
-              loading={this.props.loading}
-              onClick={this.loadMoreEvents}
-            >
-              Load More
-            </Button>
-          )}
+          <EventList
+            events={this.props.events}
+            loadMore={this.loadMoreEvents}
+            hasMoreEvents={this.state.hasMoreEvents}
+            loading={this.props.loading}
+          />
         </Grid.Column>
         <Grid.Column width={6}>
           <EventActivity />
+        </Grid.Column>
+        <Grid.Column width={10}>
+          <Loader active={this.props.loading} />
         </Grid.Column>
       </Grid>
     );
