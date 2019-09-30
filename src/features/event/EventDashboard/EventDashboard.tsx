@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Button, Loader } from 'semantic-ui-react';
-import { EventListItem } from '../EventList/EventListItem';
+import { Grid, Loader } from 'semantic-ui-react';
 import { Event } from '../eventContants';
 import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
@@ -19,23 +18,23 @@ interface Props {
   getEventsForDashboard: typeof getEventsForDashboard;
 }
 
-export class _EventDashboard extends Component<
-  Props,
-  { hasMoreEvents: boolean; initialLoading: boolean }
-> {
+interface State {
+  hasMoreEvents: boolean;
+  initialLoading: boolean;
+  loadedEvents: Event[];
+}
+
+export class _EventDashboard extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       hasMoreEvents: true,
-      initialLoading: true
+      initialLoading: true,
+      loadedEvents: []
     };
   }
 
   async componentDidMount() {
-    if (this.props.events.length) {
-      this.setState({ initialLoading: false });
-      return;
-    }
     try {
       const querySnapshot: any = await this.props.getEventsForDashboard();
       this.setState({ initialLoading: false });
@@ -47,13 +46,23 @@ export class _EventDashboard extends Component<
 
   checkLastBatch(queryReturned: any) {
     const isLastBatch = queryReturned.docs.length < EVENTS_PAGINATION;
+    const outOfEvents = queryReturned.docs.length === 0;
+
+    if (!outOfEvents) {
+      const newEvents = [...this.props.events];
+      this.setState(prevState => ({
+        loadedEvents: [...prevState.loadedEvents, ...newEvents]
+      }));
+    }
     if (isLastBatch) {
       this.setState({ hasMoreEvents: false });
     }
   }
 
   loadMoreEvents = async () => {
-    const lastEvent = this.props.events[this.props.events.length - 1];
+    const lastEvent = this.state.loadedEvents[
+      this.state.loadedEvents.length - 1
+    ];
     const querySnapshot: any = await this.props.getEventsForDashboard(
       lastEvent as any
     );
@@ -66,7 +75,7 @@ export class _EventDashboard extends Component<
       <Grid>
         <Grid.Column width={10}>
           <EventList
-            events={this.props.events}
+            events={this.state.loadedEvents}
             loadMore={this.loadMoreEvents}
             hasMoreEvents={this.state.hasMoreEvents}
             loading={this.props.loading}

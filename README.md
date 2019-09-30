@@ -95,6 +95,9 @@
   > Component: try { await props.doAsync() } catch (e) { ... }
 - Async action can return a value
   > const doAsync = () => { return async () => { ... return x; } }
+- Question ?
+  > Is that neccesary to always store all the downloaded data to redux store, in what case we should
+  > Facebook does not store posts when navigating between different views
 
 ### Google Map API
 
@@ -219,6 +222,8 @@
 - Clean code:
   > modularize code: event.a = x; event.b = y; event.c = z -> newEvent = addEventProps(event, x, y, z)
 - turnOn() + turnOff() = toggle()
+- Need to filter data in different ways: getEventFiltered(conditions, filterType): Event[]
+  > Use switch - case
 
 ### Image processing on Client Side
 

@@ -20,7 +20,7 @@ export const eventReducer = (
     case EventTypes.DeleteEvent:
       return state.filter(event => event.id !== action.payload);
     case EventTypes.SaveEvents:
-      return [...state, ...action.payload];
+      return [...action.payload];
     default:
       return state;
   }
