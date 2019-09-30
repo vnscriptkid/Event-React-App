@@ -353,6 +353,21 @@ export const getfilteredEventsAsync = (
   };
 };
 
+export const addEventComment = (eventId: string, comment: any) => {
+  return async (dispatch: Dispatch<any>) => {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) return;
+    try {
+      await firebase
+        .database()
+        .ref(`event_chat/${eventId}`)
+        .push(comment);
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
+};
+
 export type EventAction =
   | CreateEventAction
   | UpdateEventAction
