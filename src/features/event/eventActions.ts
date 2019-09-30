@@ -12,6 +12,7 @@ import {
 } from '../async/asyncActions';
 import { AsyncActionName } from '../async/asyncConstants';
 import { EVENTS_PAGINATION } from '../../config';
+import { StoreState } from '../../app/reducers';
 const { firestore } = firebase;
 
 // Fetch Event Async
@@ -353,15 +354,25 @@ export const getfilteredEventsAsync = (
   };
 };
 
-export const addEventComment = (eventId: string, comment: any) => {
-  return async (dispatch: Dispatch<any>) => {
+export const addEventComment = (eventId: string, values: any) => {
+  return async (dispatch: Dispatch<any>, getState: any) => {
     try {
       const currentUser = firebase.auth().currentUser;
       if (!currentUser) throw new Error('Please log in first');
+      const profile = (getState() as StoreState).firebase.profile;
+
+      const newComment = {
+        date: Date.now(),
+        displayName: profile.displayName,
+        photoURL: profile.photoURL || '/assets/user.png',
+        uid: currentUser.uid,
+        text: values.comment
+      };
+
       await firebase
         .database()
         .ref(`event_chat/${eventId}`)
-        .push(comment);
+        .push(newComment);
     } catch (e) {
       throw new Error(e);
     }

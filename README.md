@@ -183,6 +183,8 @@
 - A giant JSON tree
 - Id that is auto generated, is somewhat timestamp, that is used to order list correctly
 - firebaseConnect HOC to listen for live changes on a ref
+- Send timestamp to firebase (new Date() won't work)
+  > message: { ..., date: Date.now() }
 
 ### React-Redux-Firebase
 
