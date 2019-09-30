@@ -9,10 +9,18 @@ import { StoreState } from '../../../app/reducers';
 import { RouteComponentProps } from 'react-router';
 import { Event } from '../eventContants';
 import { compose } from 'redux';
-import { withFirestore, WithFirestoreProps } from 'react-redux-firebase';
+import {
+  withFirestore,
+  WithFirestoreProps,
+  firebaseConnect
+} from 'react-redux-firebase';
 import { toastr } from 'react-redux-toastr';
 import { mergeKeyToObject } from '../../../app/common/utils/converter';
-import { joinEventAsync, cancelGoingToEvent } from '../eventActions';
+import {
+  joinEventAsync,
+  cancelGoingToEvent,
+  addEventComment
+} from '../eventActions';
 
 export interface EventDetailedProps
   extends WithFirestoreProps,
@@ -22,6 +30,7 @@ export interface EventDetailedProps
   auth: any;
   joinEventAsync: typeof joinEventAsync;
   cancelGoingToEvent: typeof cancelGoingToEvent;
+  addEventComment: typeof addEventComment;
 }
 
 export interface EventDetailedState {}
@@ -69,7 +78,10 @@ class _EventDetailed extends React.Component<
             cancelGoingToEvent={cancelGoingToEvent}
           />
           <EventDetailedInfo event={this.props.event} />
-          <EventDetailedChat />
+          <EventDetailedChat
+            addEventComment={addEventComment}
+            eventId={event.id as string}
+          />
         </Grid.Column>
         <Grid.Column width={6}>
           <EventDetailedSidebar attendees={attendeesArr as any} />
@@ -96,7 +108,8 @@ const mapStateToProps = (
 
 const actions = {
   joinEventAsync: joinEventAsync,
-  cancelGoingToEvent: cancelGoingToEvent
+  cancelGoingToEvent: cancelGoingToEvent,
+  addEventComment: addEventComment
 };
 
 export const EventDetailed = compose(
@@ -104,5 +117,8 @@ export const EventDetailed = compose(
     mapStateToProps,
     actions
   ),
-  withFirestore
+  withFirestore,
+  firebaseConnect((props: RouteComponentProps<Params>) => [
+    `event_chat/${props.match.params.id}`
+  ])
 )(_EventDetailed);

@@ -1,7 +1,11 @@
 import * as React from 'react';
 import { Segment, Header, Comment, Form, Button } from 'semantic-ui-react';
+import { addEventComment } from '../eventActions';
 
-export interface EventDetailedChatProps {}
+export interface EventDetailedChatProps {
+  addEventComment: typeof addEventComment;
+  eventId: string;
+}
 
 const EventDetailedChat: React.SFC<EventDetailedChatProps> = () => {
   return (

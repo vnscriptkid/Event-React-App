@@ -178,6 +178,11 @@
 - User object has some props that can not be added more (workaround: Firestore)
 - Use IndexedDB to store authentication information
 
+### Firebase
+
+- A giant JSON tree
+- firebaseConnect HOC to listen for live changes on a ref
+
 ### React-Redux-Firebase
 
 - hoc: withFirebase (better than using firebase object)
