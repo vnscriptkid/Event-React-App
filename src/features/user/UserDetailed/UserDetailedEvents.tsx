@@ -1,55 +1,67 @@
 import * as React from 'react';
 import { Grid, Segment, Header, Menu, Card, Image } from 'semantic-ui-react';
-export interface UserDetailedEventsProps {}
+import {
+  EventFilterType,
+  getfilteredEventsAsync
+} from '../../event/eventActions';
+import { Event } from '../../event/eventContants';
+import { format } from 'date-fns';
 
-const UserDetailedEvents: React.SFC<UserDetailedEventsProps> = () => {
+export interface UserDetailedEventsProps {
+  userId: string;
+  events: Event[];
+  getfilteredEventsAsync: typeof getfilteredEventsAsync;
+  loading: boolean;
+}
+
+const filtersMapping = [
+  { id: EventFilterType.All_Events, text: 'All Events' },
+  { id: EventFilterType.Past_Events, text: 'Past Events' },
+  { id: EventFilterType.Future_Events, text: 'Future Events' },
+  { id: EventFilterType.Hosted_Events, text: 'Events Hosted' }
+];
+
+const UserDetailedEvents: React.SFC<UserDetailedEventsProps> = ({
+  events = [],
+  userId,
+  getfilteredEventsAsync,
+  loading
+}) => {
+  const [activeTab, changeActiveFitler] = React.useState(
+    EventFilterType.All_Events
+  );
+
+  const handleFilterChange = (filter: EventFilterType) => {
+    changeActiveFitler(filter);
+    getfilteredEventsAsync(userId, filter);
+  };
+
   return (
     <Grid.Column width={12}>
-      <Segment attached>
+      <Segment attached loading={loading}>
         <Header icon='calendar' content='Events'></Header>
         <Menu secondary pointing>
-          <Menu.Item name='All Events' active></Menu.Item>
-          <Menu.Item name='Past Events'></Menu.Item>
-          <Menu.Item name='Future Events'></Menu.Item>
-          <Menu.Item name='Events Hosted'></Menu.Item>
+          {filtersMapping.map(filter => (
+            <Menu.Item
+              key={filter.id}
+              name={filter.text}
+              active={filter.id === activeTab}
+              onClick={() => handleFilterChange(filter.id)}
+            ></Menu.Item>
+          ))}
         </Menu>
         <Card.Group itemsPerRow={5}>
-          <Card>
-            <Image src='/assets/categoryImages/drinks.jpg' />
-            <Card.Content textAlign='center'>
-              <Card.Header>Event Title</Card.Header>
-              <Card.Meta textAlign='center'>
-                28th March 2018 at 10:00 PM
-              </Card.Meta>
-            </Card.Content>
-          </Card>
-          <Card>
-            <Image src='/assets/categoryImages/drinks.jpg' />
-            <Card.Content textAlign='center'>
-              <Card.Header>Event Title</Card.Header>
-              <Card.Meta textAlign='center'>
-                28th March 2018 at 10:00 PM
-              </Card.Meta>
-            </Card.Content>
-          </Card>
-          <Card>
-            <Image src='/assets/categoryImages/drinks.jpg' />
-            <Card.Content textAlign='center'>
-              <Card.Header>Event Title</Card.Header>
-              <Card.Meta textAlign='center'>
-                28th March 2018 at 10:00 PM
-              </Card.Meta>
-            </Card.Content>
-          </Card>
-          <Card>
-            <Image src='/assets/categoryImages/drinks.jpg' />
-            <Card.Content textAlign='center'>
-              <Card.Header>Event Title</Card.Header>
-              <Card.Meta textAlign='center'>
-                28th March 2018 at 10:00 PM
-              </Card.Meta>
-            </Card.Content>
-          </Card>
+          {events.map((event: Event) => (
+            <Card key={event.id}>
+              <Image src='/assets/categoryImages/drinks.jpg' />
+              <Card.Content textAlign='center'>
+                <Card.Header>{event.title}</Card.Header>
+                <Card.Meta textAlign='center'>
+                  {format((event.date as any).toDate(), "do MMMM y 'at' H:mm")}
+                </Card.Meta>
+              </Card.Content>
+            </Card>
+          ))}
         </Card.Group>
       </Segment>
     </Grid.Column>
