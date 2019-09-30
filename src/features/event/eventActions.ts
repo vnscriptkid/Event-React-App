@@ -355,9 +355,9 @@ export const getfilteredEventsAsync = (
 
 export const addEventComment = (eventId: string, comment: any) => {
   return async (dispatch: Dispatch<any>) => {
-    const currentUser = firebase.auth().currentUser;
-    if (!currentUser) return;
     try {
+      const currentUser = firebase.auth().currentUser;
+      if (!currentUser) throw new Error('Please log in first');
       await firebase
         .database()
         .ref(`event_chat/${eventId}`)

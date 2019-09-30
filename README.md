@@ -181,6 +181,7 @@
 ### Firebase
 
 - A giant JSON tree
+- Id that is auto generated, is somewhat timestamp, that is used to order list correctly
 - firebaseConnect HOC to listen for live changes on a ref
 
 ### React-Redux-Firebase

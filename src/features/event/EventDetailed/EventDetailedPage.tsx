@@ -62,7 +62,13 @@ class _EventDetailed extends React.Component<
   }
 
   render() {
-    const { event, auth, joinEventAsync, cancelGoingToEvent } = this.props;
+    const {
+      event,
+      auth,
+      joinEventAsync,
+      cancelGoingToEvent,
+      addEventComment
+    } = this.props;
     let { attendees = {}, hostUid = null } = event || {};
     const attendeesArr = mergeKeyToObject(attendees);
     const isHost = auth.uid === hostUid;
@@ -80,7 +86,7 @@ class _EventDetailed extends React.Component<
           <EventDetailedInfo event={this.props.event} />
           <EventDetailedChat
             addEventComment={addEventComment}
-            eventId={event.id as string}
+            eventId={event && (event.id as string)}
           />
         </Grid.Column>
         <Grid.Column width={6}>
