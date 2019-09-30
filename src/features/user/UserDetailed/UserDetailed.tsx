@@ -14,6 +14,9 @@ import { userDetailedQueryFactory } from './userQueries';
 import { UserDetailedSidebar } from './UserDetailedSidebar';
 import { Loading } from '../../../app/layout/Loading';
 import { toastr } from 'react-redux-toastr';
+import { getfilteredEventsAsync } from '../../event/eventActions';
+import { Event } from '../../event/eventContants';
+import { createAsyncId } from '../../async/asyncReducer';
 
 export interface UserDetailedProps
   extends WithFirestoreProps,
@@ -23,49 +26,90 @@ export interface UserDetailedProps
   userProfile: any;
   isMyProfile: boolean;
   requesting: boolean;
+  getfilteredEventsAsync: typeof getfilteredEventsAsync;
+  userId: string;
+  events: Event[];
+  loadingFilteredEvents: boolean;
 }
 
-const _UserDetailed: React.SFC<UserDetailedProps> = ({
-  userProfile,
-  photos = [],
-  isMyProfile,
-  requesting,
-  history
-}) => {
-  const dataLoading =
-    Object.keys(requesting).length === 0 ||
-    Object.values(requesting).some(i => i === true);
-  if (dataLoading) return <Loading />;
+export interface _UserDetailedState {}
 
-  if (!userProfile) {
-    toastr.error('Error', 'Can not fetch user profile');
-    history.push('/events');
+class _UserDetailed extends React.Component<
+  UserDetailedProps,
+  _UserDetailedState
+> {
+  componentDidMount() {
+    this.props.getfilteredEventsAsync(this.props.userId);
   }
-  return (
-    <Grid>
-      <UserDetailedHeader userProfile={userProfile} />
-      <UserDetailedAbout userProfile={userProfile} />
-      <UserDetailedSidebar isMyProfile={isMyProfile} />
-      <UserDetailedPhotos photos={photos} />
-      <UserDetailedEvents />
-    </Grid>
-  );
-};
+
+  render() {
+    const {
+      userProfile,
+      photos = [],
+      isMyProfile,
+      requesting,
+      history,
+      getfilteredEventsAsync,
+      userId,
+      events,
+      loadingFilteredEvents
+    } = this.props;
+
+    const dataLoading =
+      Object.keys(requesting).length === 0 ||
+      Object.values(requesting).some(i => i === true);
+    if (dataLoading) return <Loading />;
+
+    if (!userProfile) {
+      toastr.error('Error', 'Can not fetch user profile');
+      history.push('/events');
+    }
+    return (
+      <Grid>
+        <UserDetailedHeader userProfile={userProfile} />
+        <UserDetailedAbout userProfile={userProfile} />
+        <UserDetailedSidebar isMyProfile={isMyProfile} />
+        <UserDetailedPhotos photos={photos} />
+        <UserDetailedEvents
+          getfilteredEventsAsync={getfilteredEventsAsync}
+          userId={userId}
+          events={events}
+          loading={loadingFilteredEvents}
+        />
+      </Grid>
+    );
+  }
+}
 
 const mapState = (
   state: StoreState,
   ownProps: RouteComponentProps<{ id: string }>
-) => ({
-  profile: state.firebase.profile,
-  photos: state.firestore.ordered.photos,
-  userId: ownProps.match.params.id,
-  userProfile: state.firestore.data.userProfile,
-  isMyProfile: ownProps.match.params.id === state.firebase.auth.uid,
-  requesting: state.firestore.status.requesting
-});
+) => {
+  const loadingFilteredId = createAsyncId({ actionName: 'FilterEvents' });
+  const loadingFilteredState =
+    state.async[loadingFilteredId] && state.async[loadingFilteredId].loading;
+
+  return {
+    profile: state.firebase.profile,
+    photos: state.firestore.ordered.photos,
+    userId: ownProps.match.params.id,
+    userProfile: state.firestore.data.userProfile,
+    isMyProfile: ownProps.match.params.id === state.firebase.auth.uid,
+    requesting: state.firestore.status.requesting,
+    events: state.events,
+    loadingFilteredEvents: loadingFilteredState
+  };
+};
+
+const actions = {
+  getfilteredEventsAsync
+};
 
 const UserDetailed = compose(
-  connect(mapState),
+  connect(
+    mapState,
+    actions
+  ),
   firestoreConnect<any>(({ userId }) => userDetailedQueryFactory(userId))
 )(_UserDetailed);
 

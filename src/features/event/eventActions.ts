@@ -49,12 +49,12 @@ export const getEventsForDashboard = (
 
       lastEvent
         ? (query = await eventsRef
-            // .where('date', '>=', now)
+            .where('date', '>=', now)
             .orderBy('date')
             .startAfter(startAfter)
             .limit(limit))
         : (query = await eventsRef
-            // .where('date', '>=', now)
+            .where('date', '>=', now)
             .orderBy('date')
             .limit(limit));
 
@@ -288,6 +288,67 @@ export const cancelGoingToEvent = (event: Event) => {
         .delete();
     } catch (e) {
       throw new Error(e);
+    }
+  };
+};
+
+export enum EventFilterType {
+  Past_Events,
+  Future_Events,
+  Hosted_Events,
+  All_Events
+}
+
+export const getfilteredEventsAsync = (
+  userId: string,
+  filter?: EventFilterType
+) => {
+  return async (dispatch: Dispatch<any>) => {
+    dispatch(startAsyncAction({ actionName: 'FilterEvents' }));
+    const eventAttendeeRef = firestore().collection(`event_attendee`);
+    const now = new Date();
+    let query: firebase.firestore.Query;
+    switch (filter) {
+      case EventFilterType.Past_Events:
+        query = eventAttendeeRef
+          .where('userId', '==', userId)
+          .where('eventDate', '<=', now)
+          .orderBy('eventDate', 'desc');
+        break;
+      case EventFilterType.Future_Events:
+        query = eventAttendeeRef
+          .where('userId', '==', userId)
+          .where('eventDate', '>=', now)
+          .orderBy('eventDate');
+        break;
+      case EventFilterType.Hosted_Events:
+        query = eventAttendeeRef
+          .where('userId', '==', userId)
+          .where('host', '==', true)
+          .orderBy('eventDate', 'desc');
+        break;
+      default:
+        query = eventAttendeeRef
+          .where('userId', '==', userId)
+          .orderBy('eventDate', 'desc');
+    }
+    try {
+      const querySnapshot = await query.get();
+      const lookupRecords = querySnapshot.docs.map(doc => doc.data());
+      const events = [];
+      for (let i = 0; i < lookupRecords.length; i++) {
+        const record = lookupRecords[i];
+        const eventRef = firestore()
+          .collection(`events`)
+          .doc(record.eventId);
+        const event = await eventRef.get();
+        if (event.exists) events.push({ ...event.data(), id: record.eventId });
+      }
+      dispatch(saveEvents(events as any));
+      dispatch(finishAsyncAction({ actionName: 'FilterEvents' }));
+    } catch (e) {
+      console.log(e);
+      dispatch(errorAsyncAction({ actionName: 'FilterEvents' }));
     }
   };
 };
