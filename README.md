@@ -73,6 +73,8 @@
 - moment vs date-fns: what are the differences?
 - react-datepicker v2: use native Date and date-fns
 
+  > date-fns: formatDistance(), format()
+
 - props.change('name', 'Thanh')
 - SubmissionError
   > Can be throw in thunk

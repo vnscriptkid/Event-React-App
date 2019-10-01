@@ -29,3 +29,12 @@ export interface Event {
   attendees: Attendee[];
   cancelled?: boolean;
 }
+
+export interface EventChat {
+  date: number;
+  displayName: string;
+  id: string;
+  photoURL: string;
+  text: string;
+  uid: string;
+}

@@ -7,7 +7,7 @@ import { EventDetailedSidebar } from './EventDetailedSidebar';
 import { connect } from 'react-redux';
 import { StoreState } from '../../../app/reducers';
 import { RouteComponentProps } from 'react-router';
-import { Event } from '../eventContants';
+import { Event, EventChat } from '../eventContants';
 import { compose } from 'redux';
 import {
   withFirestore,
@@ -31,6 +31,7 @@ export interface EventDetailedProps
   joinEventAsync: typeof joinEventAsync;
   cancelGoingToEvent: typeof cancelGoingToEvent;
   addEventComment: typeof addEventComment;
+  eventChat: EventChat[];
 }
 
 export interface EventDetailedState {}
@@ -67,8 +68,10 @@ class _EventDetailed extends React.Component<
       auth,
       joinEventAsync,
       cancelGoingToEvent,
-      addEventComment
+      addEventComment,
+      eventChat
     } = this.props;
+    console.log(eventChat);
     let { attendees = {}, hostUid = null } = event || {};
     const attendeesArr = mergeKeyToObject(attendees);
     const isHost = auth.uid === hostUid;
@@ -87,6 +90,7 @@ class _EventDetailed extends React.Component<
           <EventDetailedChat
             addEventComment={addEventComment}
             eventId={event && (event.id as string)}
+            eventChat={eventChat}
           />
         </Grid.Column>
         <Grid.Column width={6}>
@@ -109,7 +113,14 @@ const mapStateToProps = (
     event = events.find((event: any) => event.id === eventId);
   }
 
-  return { event, eventId, auth: state.firebase.auth };
+  let eventChat =
+    state.firebase.data.event_chat && state.firebase.data.event_chat[eventId];
+
+  if (eventChat) {
+    eventChat = mergeKeyToObject(eventChat);
+  }
+
+  return { event, eventId, auth: state.firebase.auth, eventChat };
 };
 
 const actions = {
