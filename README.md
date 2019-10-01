@@ -84,6 +84,8 @@
   > enableReinitialize=true
 - updateForm uses `pristine` & `submitting` to check disabled of submit button
 - ReduxForm destroy data when form is unmounted
+- Show multiple forms in one view
+  > Keyword: `redux form dynamic form name`
 
 ### Redux, Redux Thunk
 

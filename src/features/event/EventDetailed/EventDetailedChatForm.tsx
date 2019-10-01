@@ -33,8 +33,8 @@ const _EventDetailedChatForm: React.SFC<EventDetailedChatFormProps> = ({
   );
 };
 
-const EventDetailedChatForm = reduxForm<any, any>({ form: 'eventChat' })(
-  _EventDetailedChatForm
-);
+const EventDetailedChatForm = reduxForm<any, any>({
+  Fields: 'comment'
+} as any)(_EventDetailedChatForm);
 
 export { EventDetailedChatForm };

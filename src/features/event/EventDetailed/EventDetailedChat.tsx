@@ -16,6 +16,12 @@ const EventDetailedChat: React.SFC<EventDetailedChatProps> = ({
   eventId,
   eventChat
 }) => {
+  const [selectedComment, selectCommentToReply] = React.useState<any>(null);
+
+  const handleCommentReplyClick = (commentId: string) => {
+    selectCommentToReply(commentId);
+  };
+
   return (
     <Segment.Group>
       <Segment
@@ -30,17 +36,28 @@ const EventDetailedChat: React.SFC<EventDetailedChatProps> = ({
       <Segment attached>
         <Comment.Group>
           {eventChat &&
-            eventChat.map((chat: EventChat) => (
-              <Comment>
-                <Comment.Avatar src={chat.photoURL} />
+            eventChat.map((comment: EventChat) => (
+              <Comment key={comment.id}>
+                <Comment.Avatar src={comment.photoURL} />
                 <Comment.Content>
-                  <Comment.Author as='a'>{chat.displayName}</Comment.Author>
+                  <Comment.Author as='a'>{comment.displayName}</Comment.Author>
                   <Comment.Metadata>
-                    <div>{formatDistance(chat.date, Date.now())} ago</div>
+                    <div>{formatDistance(comment.date, Date.now())} ago</div>
                   </Comment.Metadata>
-                  <Comment.Text>{chat.text}</Comment.Text>
+                  <Comment.Text>{comment.text}</Comment.Text>
                   <Comment.Actions>
-                    <Comment.Action>Reply</Comment.Action>
+                    <Comment.Action
+                      onClick={() => handleCommentReplyClick(comment.id)}
+                    >
+                      Reply
+                    </Comment.Action>
+                    {selectedComment === comment.id && (
+                      <EventDetailedChatForm
+                        addEventComment={addEventComment}
+                        eventId={eventId}
+                        form={`reply_${comment.id}`}
+                      />
+                    )}
                   </Comment.Actions>
                 </Comment.Content>
               </Comment>
@@ -49,6 +66,7 @@ const EventDetailedChat: React.SFC<EventDetailedChatProps> = ({
         <EventDetailedChatForm
           addEventComment={addEventComment}
           eventId={eventId}
+          form={`reply_${eventId}`}
         />
       </Segment>
     </Segment.Group>
