@@ -37,4 +37,6 @@ export interface EventChat {
   photoURL: string;
   text: string;
   uid: string;
+  replies?: EventChat[];
+  parentId?: string | number;
 }

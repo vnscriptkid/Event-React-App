@@ -354,7 +354,11 @@ export const getfilteredEventsAsync = (
   };
 };
 
-export const addEventComment = (eventId: string, values: any) => {
+export const addEventComment = (
+  eventId: string,
+  values: any,
+  parentId: string | number
+) => {
   return async (dispatch: Dispatch<any>, getState: any) => {
     try {
       const currentUser = firebase.auth().currentUser;
@@ -366,7 +370,8 @@ export const addEventComment = (eventId: string, values: any) => {
         displayName: profile.displayName,
         photoURL: profile.photoURL || '/assets/user.png',
         uid: currentUser.uid,
-        text: values.comment
+        text: values.comment,
+        parentId
       };
 
       await firebase

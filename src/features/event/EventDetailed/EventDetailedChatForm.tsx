@@ -8,17 +8,25 @@ import { toastr } from 'react-redux-toastr';
 export interface EventDetailedChatFormProps extends InjectedFormProps {
   addEventComment: typeof addEventComment;
   eventId: string;
+  commentId?: string;
+  afterAddingComment?: () => void;
 }
 
 const _EventDetailedChatForm: React.SFC<EventDetailedChatFormProps> = ({
   addEventComment,
   eventId,
   handleSubmit,
-  reset
+  reset,
+  commentId,
+  afterAddingComment
 }) => {
   const handleAddingComment = async (values: any) => {
     try {
-      await addEventComment(eventId, values);
+      const parentId = commentId || 0;
+      await addEventComment(eventId, values, parentId);
+      if (afterAddingComment) {
+        afterAddingComment();
+      }
       reset();
     } catch (e) {
       toastr.error('Ooops!', 'Can not add comment');

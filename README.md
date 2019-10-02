@@ -236,6 +236,9 @@
 - turnOn() + turnOff() = toggle()
 - Need to filter data in different ways: getEventFiltered(conditions, filterType): Event[]
   > Use switch - case
+- One level deep comment chat system
+  > `comments` + `replies` (just nested comments inside other comments)
+  > `parentId` either 0 or `commentId`
 
 ### Image processing on Client Side
 
