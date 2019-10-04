@@ -1,3 +1,5 @@
+import { Timestamp } from '@firebase/firestore-types';
+
 export enum EventTypes {
   CreateEvent,
   DeleteEvent,
@@ -39,4 +41,20 @@ export interface EventChat {
   uid: string;
   replies?: EventChat[];
   parentId?: string | number;
+}
+
+export interface Activity {
+  id: string;
+  photoURL: string;
+  type: ActivityType;
+  hostUid: string;
+  hostedBy: string;
+  eventId: string;
+  title: string;
+  timestamp: Timestamp;
+}
+
+export enum ActivityType {
+  CancelEvent = 'cancelledEvent',
+  NewEvent = 'newEvent'
 }
