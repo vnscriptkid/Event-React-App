@@ -24,3 +24,7 @@ yarn-error.log*
 
 # private keys
 **/config.ts
+
+# firestore functions
+functions/lib
+functions/node_modules

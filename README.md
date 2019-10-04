@@ -290,3 +290,11 @@
 
 > Why: Better user experience, better performance
 > How: Defer loading of resources
+
+### Cloud Functions
+
+- Setup:
+  > npm install -g firebase-tools
+  > firebase login
+  > firebase init
+  > firebase deploy --only functions
