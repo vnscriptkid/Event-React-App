@@ -1,44 +1,26 @@
 import * as React from 'react';
 import { Header, Segment, Feed } from 'semantic-ui-react';
-import { Activity, ActivityType } from '../eventContants';
+import { Activity } from '../eventContants';
 import { EventActivityItem } from './EventActivityItem';
+import { compose } from 'redux';
+import {
+  firestoreConnect,
+  ReduxFirestoreQuerySetting
+} from 'react-redux-firebase';
+import { connect } from 'react-redux';
+import { StoreState } from '../../../app/reducers';
 
-export interface EventActivityProps {}
+export interface EventActivityProps {
+  activities: Activity[];
+}
 
-const activites: Activity[] = [
-  {
-    id: '1',
-    eventId: '1',
-    hostUid: '1',
-    hostedBy: 'Thanh',
-    photoURL: '/assets/user.png',
-    timestamp: {
-      toDate: () => new Date()
-    } as any,
-    title: 'super event',
-    type: ActivityType.NewEvent
-  },
-  {
-    id: '2',
-    eventId: '2',
-    hostUid: '2',
-    hostedBy: 'Linh',
-    photoURL: '/assets/user.png',
-    timestamp: {
-      toDate: () => new Date()
-    } as any,
-    title: 'small event',
-    type: ActivityType.CancelEvent
-  }
-];
-
-const EventActivity: React.SFC<EventActivityProps> = () => {
+const _EventActivity: React.SFC<EventActivityProps> = ({ activities }) => {
   return (
     <React.Fragment>
       <Header attached='top' content='Recent Activity' />
       <Segment attached>
         <Feed>
-          {activites.map((activity: Activity) => (
+          {activities.map((activity: Activity) => (
             <EventActivityItem activity={activity} key={activity.id} />
           ))}
         </Feed>
@@ -46,5 +28,20 @@ const EventActivity: React.SFC<EventActivityProps> = () => {
     </React.Fragment>
   );
 };
+
+const query: ReduxFirestoreQuerySetting = {
+  collection: `activities`,
+  limit: 5,
+  storeAs: `activities`
+};
+
+const mapState = (state: StoreState) => ({
+  activities: state.firestore.ordered.activities || []
+});
+
+const EventActivity = compose(
+  firestoreConnect([query]),
+  connect(mapState)
+)(_EventActivity) as any;
 
 export { EventActivity };
