@@ -44,7 +44,7 @@ export interface EventChat {
 }
 
 export interface Activity {
-  id: string;
+  id?: string;
   photoURL: string;
   type: ActivityType;
   hostUid: string;
