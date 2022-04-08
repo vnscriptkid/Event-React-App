@@ -1,18 +1,18 @@
-import { EventTypes, Event } from './eventContants';
-import { ThunkDispatch, ThunkAction } from 'redux-thunk';
-import { AnyAction } from 'redux';
-import { fetchEventsFromApi } from '../../app/data/eventsApi';
-import { toastr } from 'react-redux-toastr';
-import { firebase } from '../../app/config/firebase';
-import { Dispatch } from 'react';
+import { EventTypes, Event } from "./eventContants";
+import { ThunkDispatch, ThunkAction } from "redux-thunk";
+import { AnyAction } from "redux";
+import { fetchEventsFromApi } from "../../app/data/eventsApi";
+import { toastr } from "react-redux-toastr";
+import { firebase } from "../../app/config/firebase";
+import { Dispatch } from "react";
 import {
   startAsyncAction,
   finishAsyncAction,
-  errorAsyncAction
-} from '../async/asyncActions';
-import { AsyncActionName } from '../async/asyncConstants';
-import { EVENTS_PAGINATION } from '../../config';
-import { StoreState } from '../../app/reducers';
+  errorAsyncAction,
+} from "../async/asyncActions";
+import { AsyncActionName } from "../async/asyncConstants";
+import { EVENTS_PAGINATION } from "../../config";
+import { StoreState } from "../../app/reducers";
 const { firestore } = firebase;
 
 // Fetch Event Async
@@ -50,13 +50,13 @@ export const getEventsForDashboard = (
 
       lastEvent
         ? (query = await eventsRef
-            .where('date', '>=', now)
-            .orderBy('date')
+            .where("date", ">=", now)
+            .orderBy("date")
             .startAfter(startAfter)
             .limit(limit))
         : (query = await eventsRef
-            .where('date', '>=', now)
-            .orderBy('date')
+            .where("date", ">=", now)
+            .orderBy("date")
             .limit(limit));
 
       const querySnapshot = await query.get();
@@ -71,7 +71,7 @@ export const getEventsForDashboard = (
       }
 
       const events: Event[] = eventDocs.map(
-        doc => ({ ...doc.data(), id: doc.id } as Event)
+        (doc) => ({ ...doc.data(), id: doc.id } as Event)
       );
       // save to store
       dispatch(saveEvents(events));
@@ -93,7 +93,12 @@ export interface SaveEventsAction {
 
 export const saveEvents = (events: Event[]): SaveEventsAction => ({
   type: EventTypes.SaveEvents,
-  payload: events
+  payload: events,
+});
+
+export const listenForEvents = (events: Event[]): SaveEventsAction => ({
+  type: EventTypes.SaveEvents,
+  payload: events,
 });
 
 // Create Event
@@ -104,7 +109,7 @@ export interface CreateEventAction {
 
 export const createEvent = (event: Event): CreateEventAction => ({
   type: EventTypes.CreateEvent,
-  payload: event
+  payload: event,
 });
 
 function addEventProps(
@@ -122,26 +127,24 @@ function addEventProps(
       [uid]: {
         going: true,
         joinDate: firestore.FieldValue.serverTimestamp(),
-        photoURL: photoURL || '/assets/user.png',
+        photoURL: photoURL || "/assets/user.png",
         displayName,
-        host: true
-      }
-    }
+        host: true,
+      },
+    },
   };
 }
 
 export const createEventAsync = (event: Event) => {
   return async (dispatch: Dispatch<any>) => {
     const { currentUser } = firebase.auth();
-    if (!currentUser) throw new Error('Unauthenticated user');
+    if (!currentUser) throw new Error("Unauthenticated user");
     try {
       // pre-process event
       const newEvent = addEventProps(event, currentUser as any);
 
       // create new event in firestore at path /events/eventid/event
-      const eventDoc = await firestore()
-        .collection(`events`)
-        .add(newEvent);
+      const eventDoc = await firestore().collection(`events`).add(newEvent);
 
       // save to look up table event_attendee (determine who attend what event)
       await firestore()
@@ -151,7 +154,7 @@ export const createEventAsync = (event: Event) => {
           eventId: eventDoc.id,
           userId: currentUser.uid,
           eventDate: event.date,
-          host: true
+          host: true,
         });
 
       return eventDoc;
@@ -175,17 +178,17 @@ export const _updateEvent = (id: string, data: Event): UpdateEventAction => ({
   type: EventTypes.UpdateEvent,
   payload: {
     id,
-    data
-  }
+    data,
+  },
 });
 
 export const updateEvent = (id: string, data: Event): any => {
   return async (dispatch: any) => {
     try {
       dispatch(_updateEvent(id, data));
-      toastr.success('Success', 'Event has been updated');
+      toastr.success("Success", "Event has been updated");
     } catch (e) {
-      toastr.error('Oooops!', 'Something went wrong');
+      toastr.error("Oooops!", "Something went wrong");
     }
   };
 };
@@ -193,13 +196,10 @@ export const updateEvent = (id: string, data: Event): any => {
 export const updateEventAsync = (id: string, data: Partial<Event>): any => {
   return async (dispatch: any) => {
     try {
-      await firestore()
-        .collection(`events`)
-        .doc(id)
-        .update(data);
-      toastr.success('Success', 'Event has been updated');
+      await firestore().collection(`events`).doc(id).update(data);
+      toastr.success("Success", "Event has been updated");
     } catch (e) {
-      toastr.error('Oooops!', 'Something went wrong');
+      toastr.error("Oooops!", "Something went wrong");
     }
   };
 };
@@ -208,12 +208,9 @@ export const updateEventAsync = (id: string, data: Partial<Event>): any => {
 export const toggleEventCancelAsync = (id: string, cancelled: boolean) => {
   return async (dispatch: any) => {
     try {
-      await firestore()
-        .collection(`events`)
-        .doc(id)
-        .update({
-          cancelled
-        });
+      await firestore().collection(`events`).doc(id).update({
+        cancelled,
+      });
     } catch (e) {
       console.log(e);
       throw new Error(e);
@@ -229,7 +226,7 @@ export interface DeleteEventAction {
 
 export const deleteEvent = (eventId: string): DeleteEventAction => ({
   type: EventTypes.DeleteEvent,
-  payload: eventId
+  payload: eventId,
 });
 
 // Join an event
@@ -237,7 +234,7 @@ export const joinEventAsync = (event: Event) => {
   return async (dispatch: Dispatch<any>) => {
     try {
       const currentUser = firebase.auth().currentUser;
-      if (!currentUser) throw new Error('You are not authenticated');
+      if (!currentUser) throw new Error("You are not authenticated");
       // add user current logged user to events/eventId/attendees
       await firestore()
         .collection(`events`)
@@ -248,8 +245,8 @@ export const joinEventAsync = (event: Event) => {
             going: true,
             host: false,
             joinDate: firestore.FieldValue.serverTimestamp(),
-            photoURL: currentUser.photoURL || '/assets/user.png'
-          }
+            photoURL: currentUser.photoURL || "/assets/user.png",
+          },
         });
 
       // add a new record to event_attendee collection
@@ -260,7 +257,7 @@ export const joinEventAsync = (event: Event) => {
           eventDate: event.date,
           eventId: event.id,
           host: false,
-          userId: currentUser.uid
+          userId: currentUser.uid,
         });
     } catch (e) {
       throw new Error(e);
@@ -273,13 +270,13 @@ export const cancelGoingToEvent = (event: Event) => {
   return async (dispatch: Dispatch<any>) => {
     try {
       const currentUser = firebase.auth().currentUser;
-      if (!currentUser) throw new Error('You are not authenticated');
+      if (!currentUser) throw new Error("You are not authenticated");
       // remove current logged user from /events/eventId/attendees
       await firestore()
         .collection(`events`)
         .doc(event.id)
         .update({
-          [`attendees.${currentUser.uid}`]: firestore.FieldValue.delete()
+          [`attendees.${currentUser.uid}`]: firestore.FieldValue.delete(),
         });
 
       // remove one record from /event_attendee
@@ -297,7 +294,7 @@ export enum EventFilterType {
   Past_Events,
   Future_Events,
   Hosted_Events,
-  All_Events
+  All_Events,
 }
 
 export const getfilteredEventsAsync = (
@@ -305,51 +302,49 @@ export const getfilteredEventsAsync = (
   filter?: EventFilterType
 ) => {
   return async (dispatch: Dispatch<any>) => {
-    dispatch(startAsyncAction({ actionName: 'FilterEvents' }));
+    dispatch(startAsyncAction({ actionName: "FilterEvents" }));
     const eventAttendeeRef = firestore().collection(`event_attendee`);
     const now = new Date();
     let query: firebase.firestore.Query;
     switch (filter) {
       case EventFilterType.Past_Events:
         query = eventAttendeeRef
-          .where('userId', '==', userId)
-          .where('eventDate', '<=', now)
-          .orderBy('eventDate', 'desc');
+          .where("userId", "==", userId)
+          .where("eventDate", "<=", now)
+          .orderBy("eventDate", "desc");
         break;
       case EventFilterType.Future_Events:
         query = eventAttendeeRef
-          .where('userId', '==', userId)
-          .where('eventDate', '>=', now)
-          .orderBy('eventDate');
+          .where("userId", "==", userId)
+          .where("eventDate", ">=", now)
+          .orderBy("eventDate");
         break;
       case EventFilterType.Hosted_Events:
         query = eventAttendeeRef
-          .where('userId', '==', userId)
-          .where('host', '==', true)
-          .orderBy('eventDate', 'desc');
+          .where("userId", "==", userId)
+          .where("host", "==", true)
+          .orderBy("eventDate", "desc");
         break;
       default:
         query = eventAttendeeRef
-          .where('userId', '==', userId)
-          .orderBy('eventDate', 'desc');
+          .where("userId", "==", userId)
+          .orderBy("eventDate", "desc");
     }
     try {
       const querySnapshot = await query.get();
-      const lookupRecords = querySnapshot.docs.map(doc => doc.data());
+      const lookupRecords = querySnapshot.docs.map((doc) => doc.data());
       const events = [];
       for (let i = 0; i < lookupRecords.length; i++) {
         const record = lookupRecords[i];
-        const eventRef = firestore()
-          .collection(`events`)
-          .doc(record.eventId);
+        const eventRef = firestore().collection(`events`).doc(record.eventId);
         const event = await eventRef.get();
         if (event.exists) events.push({ ...event.data(), id: record.eventId });
       }
       dispatch(saveEvents(events as any));
-      dispatch(finishAsyncAction({ actionName: 'FilterEvents' }));
+      dispatch(finishAsyncAction({ actionName: "FilterEvents" }));
     } catch (e) {
       console.log(e);
-      dispatch(errorAsyncAction({ actionName: 'FilterEvents' }));
+      dispatch(errorAsyncAction({ actionName: "FilterEvents" }));
     }
   };
 };
@@ -362,22 +357,19 @@ export const addEventComment = (
   return async (dispatch: Dispatch<any>, getState: any) => {
     try {
       const currentUser = firebase.auth().currentUser;
-      if (!currentUser) throw new Error('Please log in first');
+      if (!currentUser) throw new Error("Please log in first");
       const profile = (getState() as StoreState).firebase.profile;
 
       const newComment = {
         date: Date.now(),
         displayName: profile.displayName,
-        photoURL: profile.photoURL || '/assets/user.png',
+        photoURL: profile.photoURL || "/assets/user.png",
         uid: currentUser.uid,
         text: values.comment,
-        parentId
+        parentId,
       };
 
-      await firebase
-        .database()
-        .ref(`event_chat/${eventId}`)
-        .push(newComment);
+      await firebase.database().ref(`event_chat/${eventId}`).push(newComment);
     } catch (e) {
       throw new Error(e);
     }
