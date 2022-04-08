@@ -1,11 +1,11 @@
-import { Timestamp } from '@firebase/firestore-types';
+import { Timestamp } from "@firebase/firestore-types";
 
 export enum EventTypes {
-  CreateEvent,
-  DeleteEvent,
-  UpdateEvent,
-  FetchEvents,
-  SaveEvents = 'SAVE_EVENTS'
+  CreateEvent = "CREATE_EVENT",
+  DeleteEvent = "DELETE_EVENT",
+  UpdateEvent = "UPDATE_EVENT",
+  FetchEvents = "FETCH_EVENTS",
+  SaveEvents = "SAVE_EVENTS",
 }
 
 export interface Attendee {
@@ -55,6 +55,6 @@ export interface Activity {
 }
 
 export enum ActivityType {
-  CancelEvent = 'cancelledEvent',
-  NewEvent = 'newEvent'
+  CancelEvent = "cancelledEvent",
+  NewEvent = "newEvent",
 }
