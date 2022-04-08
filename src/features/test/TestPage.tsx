@@ -1,24 +1,14 @@
-import * as React from 'react';
-import { connect } from 'react-redux';
-import { StoreState } from '../../app/reducers';
+import * as React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   incrementCounter,
   decrementCounter,
-  incrementAsync
-} from './testActions';
-import { Button } from 'semantic-ui-react';
-import { openModal } from '../modals/modalActions';
-import { AsyncActionPayload } from '../async/asyncActions';
-import { createAsyncId } from '../async/asyncReducer';
-
-export interface TestPageProps {
-  counter: number;
-  incrementCounter: typeof incrementCounter;
-  decrementCounter: typeof decrementCounter;
-  incrementAsync: typeof incrementAsync;
-  openModal: typeof openModal;
-  loading: boolean;
-}
+  incrementAsync,
+} from "./testActions";
+import { Button } from "semantic-ui-react";
+import { openModal } from "../modals/modalActions";
+import { AsyncActionPayload } from "../async/asyncActions";
+import { createAsyncId } from "../async/asyncReducer";
 
 function getAsyncState(async: any, payload: AsyncActionPayload) {
   return (
@@ -28,73 +18,65 @@ function getAsyncState(async: any, payload: AsyncActionPayload) {
   );
 }
 
-const _TestPage: React.SFC<TestPageProps> = props => {
+const TestPage = (): JSX.Element => {
+  const { counter, loading } = useSelector((state: any) => ({
+    counter: state.counter,
+    loading: state.async,
+  }));
+
+  const dispatch = useDispatch();
+
   return (
     <div>
       <div>
         <Button
-          loading={getAsyncState(props.loading, {
-            actionName: 'increment',
-            actionId: '1'
+          loading={getAsyncState(loading, {
+            actionName: "increment",
+            actionId: "1",
           })}
-          color='green'
+          color="green"
           onClick={() =>
-            props.incrementAsync({ actionName: 'increment', actionId: '1' })
+            dispatch(incrementAsync({ actionName: "increment", actionId: "1" }))
           }
         >
           Increment Async 1
         </Button>
         <Button
-          loading={getAsyncState(props.loading, {
-            actionName: 'increment',
-            actionId: '2'
+          loading={getAsyncState(loading, {
+            actionName: "increment",
+            actionId: "2",
           })}
-          color='green'
+          color="green"
           onClick={() =>
-            props.incrementAsync({ actionName: 'increment', actionId: '2' })
+            dispatch(incrementAsync({ actionName: "increment", actionId: "2" }))
           }
         >
           Increment Async 2
         </Button>
       </div>
       <Button
-        color='brown'
+        color="brown"
         onClick={() =>
-          props.openModal({
-            modalType: 'TestModal',
-            modalProps: { count: 100 }
-          })
+          dispatch(
+            openModal({
+              modalType: "TestModal",
+              modalProps: { count: 100 },
+            })
+          )
         }
       >
         Open Modal
       </Button>
       {/* <LocationSearchInput /> */}
-      Test: {props.counter}
+      Test: {counter}
       <div>
-        <button onClick={() => props.incrementCounter()}>Increment</button>
+        <button onClick={() => dispatch(incrementCounter())}>Increment</button>
       </div>
       <div>
-        <button onClick={() => props.decrementCounter()}>Decrement</button>
+        <button onClick={() => dispatch(decrementCounter())}>Decrement</button>
       </div>
     </div>
   );
 };
-
-const mapStateToProps = (state: StoreState) => {
-  return {
-    counter: state.counter,
-    loading: state.async
-  };
-};
-
-const TestPage = connect(
-  mapStateToProps,
-  {
-    incrementCounter,
-    decrementCounter,
-    openModal,
-    incrementAsync
-  }
-)(_TestPage as any);
 
 export { TestPage };
