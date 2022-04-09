@@ -19,6 +19,6 @@ export function dataFromSnapshot(snapshot: any) {
   };
 }
 
-export function getEventsFromFirestore(observer: any) {
-  return db.collection(`events`).onSnapshot(observer);
+export function getEventsFromFirestore() {
+  return db.collection(`events`);
 }
