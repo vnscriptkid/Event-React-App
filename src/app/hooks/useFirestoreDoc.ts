@@ -14,7 +14,7 @@ interface Props {
   loadingId: string;
 }
 
-export const useFirestoreCollection = ({
+export const useFirestoreDoc = ({
   query,
   dataConsumer,
   deps,
@@ -27,9 +27,7 @@ export const useFirestoreCollection = ({
 
     const unsub = query().onSnapshot({
       next: (snapshot: any) => {
-        const items = snapshot.docs.map(dataFromSnapshot);
-
-        dataConsumer(items);
+        dataConsumer(dataFromSnapshot(snapshot));
         dispatch(finishAsyncAction({ actionName: loadingId }));
       },
       error: (err: any) => {

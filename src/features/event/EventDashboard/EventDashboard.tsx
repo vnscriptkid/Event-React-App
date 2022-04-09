@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { EventActivity } from "../EventActivity/EventActivity";
 import { listenForEvents } from "../eventActions";
 import { EventList } from "../EventList/EventList";
-import { getEventsFromFirestore } from "../../../app/firestore/firestoreService";
+import { listenToEventsFromFirestore } from "../../../app/firestore/firestoreService";
 import { useFirestoreCollection } from "../../../app/hooks/useFirestoreCollection";
 
 export const EventDashboard = (): JSX.Element => {
@@ -16,7 +16,7 @@ export const EventDashboard = (): JSX.Element => {
   const dispatch = useDispatch();
 
   useFirestoreCollection({
-    query: getEventsFromFirestore,
+    query: listenToEventsFromFirestore,
     dataConsumer: (events) => dispatch(listenForEvents(events)),
     deps: [],
     loadingId: "fetch-events",
