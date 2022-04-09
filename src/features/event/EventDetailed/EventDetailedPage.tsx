@@ -14,15 +14,16 @@ import {
 import { useFirestoreDoc } from "../../../app/hooks/useFirestoreDoc";
 import { listenToEventFromFirestore } from "../../../app/firestore/firestoreService";
 import { mergeKeyToObject } from "../../../app/common/utils/converter";
+import { Redirect } from "react-router";
 
 export const EventDetailed = ({ match }: any): JSX.Element => {
   const dispatch = useDispatch();
 
   const eventId: string = match.params.id;
 
-  const { event } = useSelector((state: any) => ({
+  const { event, error } = useSelector((state: any) => ({
     event: state.events.find((event: any) => event.id === eventId),
-    loading: state.async[eventId] && state.async[eventId].loading,
+    error: state.async?.error,
   }));
 
   useFirestoreDoc({
@@ -31,6 +32,8 @@ export const EventDetailed = ({ match }: any): JSX.Element => {
     deps: [match.params.id],
     loadingId: `fetching-event-${match.params.id}`,
   });
+
+  if (error) return <Redirect to="/error" />;
 
   return (
     <Grid>

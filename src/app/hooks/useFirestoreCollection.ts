@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {
-  errorAsyncAction,
-  finishAsyncAction,
-  startAsyncAction,
-} from "../../features/async/asyncActions";
 import { dataFromSnapshot } from "../firestore/firestoreService";
+import {
+  asyncActionStart,
+  asyncActionFinish,
+  asyncActionError,
+} from "../../features/async/asyncReducer";
 
 interface Props {
   query: any;
@@ -23,18 +23,18 @@ export const useFirestoreCollection = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(startAsyncAction({ actionName: loadingId }));
+    dispatch(asyncActionStart());
 
     const unsub = query().onSnapshot({
       next: (snapshot: any) => {
         const items = snapshot.docs.map(dataFromSnapshot);
 
         dataConsumer(items);
-        dispatch(finishAsyncAction({ actionName: loadingId }));
+        dispatch(asyncActionFinish());
       },
       error: (err: any) => {
         console.log(err);
-        dispatch(errorAsyncAction({ actionName: loadingId }));
+        dispatch(asyncActionError({ message: "oops" }));
       },
     });
 

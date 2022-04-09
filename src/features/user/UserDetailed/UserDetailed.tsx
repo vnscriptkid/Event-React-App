@@ -1,22 +1,21 @@
-import React from 'react';
-import { Grid } from 'semantic-ui-react';
-import { connect } from 'react-redux';
-import { StoreState } from '../../../app/reducers';
-import { UserProfile } from '../userConstants';
-import { compose } from 'redux';
-import { firestoreConnect, WithFirestoreProps } from 'react-redux-firebase';
-import { UserDetailedHeader } from './UserDetailedHeader';
-import { UserDetailedAbout } from './UserDetailedAbout';
-import { UserDetailedPhotos } from './UserDetailedPhotos';
-import { UserDetailedEvents } from './UserDetailedEvents';
-import { RouteComponentProps } from 'react-router';
-import { userDetailedQueryFactory } from './userQueries';
-import { UserDetailedSidebar } from './UserDetailedSidebar';
-import { Loading } from '../../../app/layout/Loading';
-import { toastr } from 'react-redux-toastr';
-import { getfilteredEventsAsync } from '../../event/eventActions';
-import { Event } from '../../event/eventContants';
-import { createAsyncId } from '../../async/asyncReducer';
+import React from "react";
+import { Grid } from "semantic-ui-react";
+import { connect } from "react-redux";
+import { StoreState } from "../../../app/reducers";
+import { UserProfile } from "../userConstants";
+import { compose } from "redux";
+import { firestoreConnect, WithFirestoreProps } from "react-redux-firebase";
+import { UserDetailedHeader } from "./UserDetailedHeader";
+import { UserDetailedAbout } from "./UserDetailedAbout";
+import { UserDetailedPhotos } from "./UserDetailedPhotos";
+import { UserDetailedEvents } from "./UserDetailedEvents";
+import { RouteComponentProps } from "react-router";
+import { userDetailedQueryFactory } from "./userQueries";
+import { UserDetailedSidebar } from "./UserDetailedSidebar";
+import { Loading } from "../../../app/layout/Loading";
+import { toastr } from "react-redux-toastr";
+import { getfilteredEventsAsync } from "../../event/eventActions";
+import { Event } from "../../event/eventContants";
 
 export interface UserDetailedProps
   extends WithFirestoreProps,
@@ -52,17 +51,17 @@ class _UserDetailed extends React.Component<
       getfilteredEventsAsync,
       userId,
       events,
-      loadingFilteredEvents
+      loadingFilteredEvents,
     } = this.props;
 
     const dataLoading =
       Object.keys(requesting).length === 0 ||
-      Object.values(requesting).some(i => i === true);
+      Object.values(requesting).some((i) => i === true);
     if (dataLoading) return <Loading />;
 
     if (!userProfile) {
-      toastr.error('Error', 'Can not fetch user profile');
-      history.push('/events');
+      toastr.error("Error", "Can not fetch user profile");
+      history.push("/events");
     }
     return (
       <Grid>
@@ -85,9 +84,9 @@ const mapState = (
   state: StoreState,
   ownProps: RouteComponentProps<{ id: string }>
 ) => {
-  const loadingFilteredId = createAsyncId({ actionName: 'FilterEvents' });
-  const loadingFilteredState =
-    state.async[loadingFilteredId] && state.async[loadingFilteredId].loading;
+  // const loadingFilteredId = createAsyncId({ actionName: 'FilterEvents' });
+  // const loadingFilteredState =
+  //   state.async[loadingFilteredId] && state.async[loadingFilteredId].loading;
 
   return {
     profile: state.firebase.profile,
@@ -97,19 +96,16 @@ const mapState = (
     isMyProfile: ownProps.match.params.id === state.firebase.auth.uid,
     requesting: state.firestore.status.requesting,
     events: state.events,
-    loadingFilteredEvents: loadingFilteredState
+    loadingFilteredEvents: false /*loadingFilteredState */,
   };
 };
 
 const actions = {
-  getfilteredEventsAsync
+  getfilteredEventsAsync,
 };
 
 const UserDetailed = compose(
-  connect(
-    mapState,
-    actions
-  ),
+  connect(mapState, actions),
   firestoreConnect<any>(({ userId }) => userDetailedQueryFactory(userId))
 )(_UserDetailed);
 

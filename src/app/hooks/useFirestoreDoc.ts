@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {
-  errorAsyncAction,
-  finishAsyncAction,
-  startAsyncAction,
-} from "../../features/async/asyncActions";
 import { dataFromSnapshot } from "../firestore/firestoreService";
+import {
+  asyncActionStart,
+  asyncActionError,
+  asyncActionFinish,
+} from "../../features/async/asyncReducer";
 
 interface Props {
   query: any;
@@ -23,16 +23,21 @@ export const useFirestoreDoc = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(startAsyncAction({ actionName: loadingId }));
+    dispatch(asyncActionStart());
 
     const unsub = query().onSnapshot({
       next: (snapshot: any) => {
+        if (!snapshot.exists) {
+          dispatch(asyncActionError({ code: "404", message: "not-found" }));
+          return;
+        }
+
         dataConsumer(dataFromSnapshot(snapshot));
-        dispatch(finishAsyncAction({ actionName: loadingId }));
+        dispatch(asyncActionFinish());
       },
       error: (err: any) => {
         console.log(err);
-        dispatch(errorAsyncAction({ actionName: loadingId }));
+        dispatch(asyncActionError({}));
       },
     });
 

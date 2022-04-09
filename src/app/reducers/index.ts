@@ -1,14 +1,14 @@
-import { combineReducers } from 'redux';
-import { testReducer } from '../../features/test/testReducer';
-import { eventReducer } from '../../features/event/eventReducer';
-import { Event } from '../../features/event/eventContants';
-import { reducer as formReducer } from 'redux-form';
-import { reducer as toastrReducer } from 'react-redux-toastr';
-import { modalReducer } from '../../features/modals/modalReducer';
-import { authReducer } from '../../features/auth/authReducer';
-import { asyncReducer } from '../../features/async/asyncReducer';
-import { firebaseReducer } from 'react-redux-firebase';
-import { firestoreReducer } from 'redux-firestore';
+import { combineReducers } from "redux";
+import { testReducer } from "../../features/test/testReducer";
+import { eventReducer } from "../../features/event/eventReducer";
+import { Event } from "../../features/event/eventContants";
+import { reducer as formReducer } from "redux-form";
+import { reducer as toastrReducer } from "react-redux-toastr";
+import { modalReducer } from "../../features/modals/modalReducer";
+import { authReducer } from "../../features/auth/authReducer";
+import { asyncReducer } from "../../features/async/asyncReducer";
+import { firebaseReducer } from "react-redux-firebase";
+import { firestoreReducer } from "redux-firestore";
 
 export interface StoreState {
   counter: number;
@@ -31,5 +31,5 @@ export const rootReducer = combineReducers<StoreState>({
   async: asyncReducer,
   toastr: toastrReducer,
   firebase: firebaseReducer,
-  firestore: firestoreReducer as any
+  firestore: firestoreReducer as any,
 });
