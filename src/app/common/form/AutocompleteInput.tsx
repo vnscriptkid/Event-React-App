@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Form, Label, Segment, List } from 'semantic-ui-react';
-import PlacesAutocomplete from 'react-places-autocomplete';
-import { WrappedFieldProps } from 'redux-form';
+import * as React from "react";
+import { Form, Label, Segment, List } from "semantic-ui-react";
+import PlacesAutocomplete from "react-places-autocomplete";
+import { WrappedFieldProps } from "redux-form";
 
 export interface AutocompleteInputProps
   extends WrappedFieldProps,
@@ -25,29 +25,29 @@ const AutocompleteInput: React.SFC<AutocompleteInputProps> = ({
       onChange={onChange}
       onSelect={handleSelect}
       searchOptions={options}
-      {...rest}
+      {...(rest as any)}
     >
       {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
         <Form.Field error={touched && !!error}>
           <input
             placeholder={placeholder}
-            {...getInputProps({
+            {...(getInputProps({
               placeholder,
-              onBlur
-            })}
+              onBlur,
+            }) as any)}
           />
           {touched && !!error && (
-            <Label basic color='red'>
+            <Label basic color="red">
               {error}
             </Label>
           )}
           {suggestions.length > 0 && (
             <Segment
-              style={{ position: 'absolute', zIndex: 1000, marginTop: 0 }}
+              style={{ position: "absolute", zIndex: 1000, marginTop: 0 }}
             >
               {loading && <div>Loading...</div>}
               <List selection>
-                {suggestions.map(suggestion => (
+                {suggestions.map((suggestion) => (
                   <List.Item {...getSuggestionItemProps(suggestion)}>
                     <List.Header>
                       {suggestion.formattedSuggestion.mainText}

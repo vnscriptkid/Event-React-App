@@ -4,8 +4,8 @@ export const mergeKeyToObject = (object: any): any[] => {
   // output: [{ id: '123', name: 'thanh' }, { id: '234', name: dung }]
   return object
     ? Object.entries(object).map(([id, obj]) => ({
-        ...obj,
-        id
+        ...(obj as any),
+        id,
       }))
     : [];
 };
