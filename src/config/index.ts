@@ -1,5 +1,5 @@
 export const EVENTS_PAGINATION = 10;
-export const GOOGLE_API_KEY = "AIzaSyBScF6081i8FsfeSBZVFW-394rmAPzjhps";
+export const GOOGLE_API_KEY = "AIzaSyCC1A2VfclsTHf86QjVqfN79duYhj8em9M";
 
 export const firebaseConfig = {
   apiKey: "AIzaSyB_oIQI0v4k68-EN3IN1p-gZS9gwytcZpY",

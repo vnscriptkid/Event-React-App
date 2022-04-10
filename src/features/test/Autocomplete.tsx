@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 import PlacesAutocomplete, {
   geocodeByAddress,
-  getLatLng
-} from 'react-places-autocomplete';
-import GoogleMapReact from 'google-map-react';
-import { GOOGLE_API_KEY } from '../../config';
+  getLatLng,
+} from "react-places-autocomplete";
+import GoogleMapReact from "google-map-react";
+import { GOOGLE_API_KEY } from "../../config";
 
 interface LocationSearchInputProps {}
 interface LocationSearchInputState {
@@ -22,8 +22,8 @@ export class LocationSearchInput extends React.Component<
     super(props);
     this.defaultLatLng = { lat: 21, lng: 105 };
     this.state = {
-      address: '',
-      latLng: this.defaultLatLng
+      address: "",
+      latLng: this.defaultLatLng,
     };
   }
 
@@ -33,9 +33,9 @@ export class LocationSearchInput extends React.Component<
 
   handleSelect = (address: string) => {
     geocodeByAddress(address)
-      .then(results => getLatLng(results[0]))
-      .then(latLng => this.setState({ latLng }))
-      .catch(error => console.error('Error', error));
+      .then((results) => getLatLng(results[0]))
+      .then((latLng) => this.setState({ latLng }))
+      .catch((error) => console.error("Error", error));
   };
 
   render() {
@@ -51,31 +51,31 @@ export class LocationSearchInput extends React.Component<
             getInputProps,
             suggestions,
             getSuggestionItemProps,
-            loading
+            loading,
           }) => (
             <div>
               <input
-                {...getInputProps({
-                  placeholder: 'Search Places ...',
-                  className: 'location-search-input'
-                })}
+                {...(getInputProps({
+                  placeholder: "Search Places ...",
+                  className: "location-search-input",
+                }) as any)}
               />
-              <div className='autocomplete-dropdown-container'>
+              <div className="autocomplete-dropdown-container">
                 {loading && <div>Loading...</div>}
-                {suggestions.map(suggestion => {
+                {suggestions.map((suggestion) => {
                   const className = suggestion.active
-                    ? 'suggestion-item--active'
-                    : 'suggestion-item';
+                    ? "suggestion-item--active"
+                    : "suggestion-item";
                   // inline style for demonstration purpose
                   const style = suggestion.active
-                    ? { backgroundColor: '#fafafa', cursor: 'pointer' }
-                    : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                    ? { backgroundColor: "#fafafa", cursor: "pointer" }
+                    : { backgroundColor: "#ffffff", cursor: "pointer" };
                   return (
                     <div
-                      {...getSuggestionItemProps(suggestion, {
+                      {...(getSuggestionItemProps(suggestion, {
                         className,
-                        style
-                      })}
+                        style,
+                      }) as any)}
                     >
                       <span>{suggestion.description}</span>
                     </div>
@@ -85,7 +85,7 @@ export class LocationSearchInput extends React.Component<
             </div>
           )}
         </PlacesAutocomplete>
-        <div style={{ height: '500px', width: '100%' }}>
+        <div style={{ height: "500px", width: "100%" }}>
           <GoogleMapReact
             bootstrapURLKeys={{ key: GOOGLE_API_KEY }}
             defaultCenter={this.defaultLatLng}

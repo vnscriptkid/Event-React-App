@@ -26,3 +26,19 @@ export function listenToEventsFromFirestore() {
 export function listenToEventFromFirestore(eventId: string) {
   return db.collection(`events`).doc(eventId);
 }
+
+export function addEventToFirestore(event: any) {
+  return db.collection(`events`).add({
+    ...event,
+    hostUid: "uid",
+    hostedBy: "thanh",
+    hostPhotoURL:
+      "https://meragor.com/files/styles//220_220_bottom_wm/avatar-211923-001916.png" ||
+      null,
+    // attendees: arrayUnion({
+    //   id: user.uid,
+    //   displayName: user.displayName,
+    //   photoURL: user.photoURL || null
+    // }),
+  });
+}
